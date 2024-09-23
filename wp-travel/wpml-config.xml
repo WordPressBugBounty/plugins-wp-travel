@@ -1,0 +1,87 @@
+<wpml-config>
+    
+    <custom-types>
+        <custom-type translate="1">itineraries</custom-type>
+        <custom-type translate="1">itinerary-booking</custom-type>
+    </custom-types>  
+    <taxonomies>
+        <taxonomy translate="1">itinerary_types</taxonomy>
+        <taxonomy translate="1">travel_locations</taxonomy>
+        <taxonomy translate="1">travel_keywords</taxonomy>
+    </taxonomies> 
+    <admin-texts>
+		<key name="wp_travel_settings">
+			<key name="global_tab_settings">
+				<key name="overview">
+					<key name="label"/>
+				</key>
+				<key name="trip_outline">
+					<key name="label"/>
+				</key>
+				<key name="trip_includes">
+					<key name="label"/>
+				</key>
+				<key name="trip_excludes">
+					<key name="label"/>
+				</key>
+				<key name="gallery">
+					<key name="label"/>
+				</key>
+				<key name="reviews">
+					<key name="label"/>
+				</key>
+				<key name="booking">
+					<key name="label"/>
+				</key>
+				<key name="faq">
+					<key name="label"/>
+				</key>
+			</key>
+			<key name="wp_travel_trip_facts_settings">
+				<key>
+					<key name="name"/>
+					<key name="options">
+						<key name="option1"/>
+						<key name="option2"/>
+						<key name="option3"/>
+						<key name="option4"/>
+						<key name="option5"/>
+						<key name="option6"/>
+						<key name="option7"/>
+						<key name="option8"/>
+						<key name="option9"/>
+					</key>
+				</key>
+			</key>
+			<key name="wp_travel_gdpr_message"/>
+
+			<key name="booking_admin_template_settings">
+				<key name="admin_subject"/>
+				<key name="admin_title"/>
+				<key name="email_content"/>
+			</key>
+			<key name="booking_client_template_settings">
+				<key name="client_subject"/>
+				<key name="client_title"/>
+				<key name="email_content"/>
+			</key>
+
+			<key name="payment_admin_template_settings">
+				<key name="admin_subject"/>
+				<key name="admin_title"/>
+				<key name="email_content"/>
+			</key>
+			<key name="payment_client_template_settings">
+				<key name="client_subject"/>
+				<key name="client_title"/>
+				<key name="email_content"/>
+			</key>
+
+			<key name="enquiry_admin_template_settings">
+				<key name="admin_subject"/>
+				<key name="admin_title"/>
+				<key name="email_content"/>
+			</key>
+		</key>
+	</admin-texts>      
+</wpml-config>
