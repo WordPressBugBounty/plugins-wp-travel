@@ -2198,8 +2198,13 @@ function wptravel_archive_listing_sidebar() {
  */
 function wptravel_posts_filter( $query ) {
 
-	if ( ! WP_Travel::verify_nonce( true ) ) {
+	if ( ! WP_Travel::verify_nonce( true ) ) {		
 		return $query;
+	}else{
+		if ( !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {
+			$query->set( 'orderby', 'post_title' );
+			$query->set( 'order', apply_filters( 'wp_travel_list_trips_orders', '' ) );
+		}
 	}
 
 	global $pagenow;

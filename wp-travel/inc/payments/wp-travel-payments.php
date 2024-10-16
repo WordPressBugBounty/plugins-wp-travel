@@ -263,7 +263,8 @@ function wptravel_enabled_payment_gateways() {
 }
 
 /** Return true if Payment checked */
-function wptravel_is_payment_enabled() {
+function wptravel_is_payment_enabled( $trip_id = '' ) {
+
 	$enabled_payment_gateways = wptravel_enabled_payment_gateways();
 
 	$enabled = ! empty( $enabled_payment_gateways ) ? true : false;
@@ -273,6 +274,13 @@ function wptravel_is_payment_enabled() {
 	 * @since 5.3.1
 	 */
 	$enabled = apply_filters( 'wptravel_is_payment_enabled', $enabled );
+
+	if( count( apply_filters( 'wptravel_disable_payment_option_for_specific_trips', array() ) ) > 0  ){
+		if (in_array($trip_id, apply_filters( 'wptravel_disable_payment_option_for_specific_trips', array() ))) {
+			$enabled = false;
+		} 
+	}
+
 	return $enabled;
 }
 

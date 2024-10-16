@@ -301,7 +301,7 @@ jQuery(function($) {
         } 
     }) 
 
-    $(document).on('click', '.datepicker--cell:not(.-disabled-)', function(event) {
+    $(document).on('click', '.datepicker--cell-day:not(.-disabled-)', function(event) {
         $('.datepicker').css( 'left', '-100000px' );
         $('.datepicker').removeClass( 'active' );
     });    

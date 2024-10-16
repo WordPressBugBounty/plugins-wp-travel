@@ -229,6 +229,54 @@ class WP_Travel_FW_Field {
 			'style' => true
 		);
 
+		$allow_html[ 'h2' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'h3' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'h4' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'h5' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'h6' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'ul' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'ol' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
+		$allow_html[ 'li' ] = array(
+			'class' => true,
+			'id' => true,
+			'style' => true
+		);
+
 		$allow_html[ 'iframe' ] = array(
 			'title' => true,
 			'width' => true,

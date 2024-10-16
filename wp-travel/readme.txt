@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 9.6.0
+Stable tag: 9.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -400,6 +400,19 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 9.7.0 =
+Release Date: 16th October 2024
+
+Fixes:
+* Fixed PHP v8.2 warnings
+* Fixed the security issue of import/export settings 
+
+Enhancements:
+* Added code for redirecting to current page after successful login
+* Added ul, ol and li tag on the allow tag lists hook
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v9-7-0-update-release-note).**
 
 = 9.6.0 =
 Release Date: 23rd September 2024

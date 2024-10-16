@@ -295,7 +295,8 @@ class WpTravel_Localize_Admin {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 		$translation_array = array(
-			'_nonce'                        => wp_create_nonce( 'wp_travel_nonce' ),
+            '_nonce'                        => wp_create_nonce( 'wp_travel_nonce' ),
+			'rest_nonce'                    => wp_create_nonce('wp_rest'),
 			'admin_url'                     => admin_url(),
 			'site_url'                      => site_url(),
 			'plugin_url'                    => plugin_dir_url( WP_TRAVEL_PLUGIN_FILE ),

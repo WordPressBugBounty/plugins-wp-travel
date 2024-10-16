@@ -12,8 +12,7 @@ global $wt_cart;
 
 // Fields array.
 $wptravel_checkout_fields              = wptravel_get_checkout_form_fields();
-// echo "<pre>";
-// var_dump( $wptravel_checkout_fields    );
+
 $wptravel_traveller_fields             = isset( $wptravel_checkout_fields['traveller_fields'] ) ? $wptravel_checkout_fields['traveller_fields'] : array();
 
 

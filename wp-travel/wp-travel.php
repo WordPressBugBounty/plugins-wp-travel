@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 9.6.0
+ * Version: 9.7.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -38,7 +38,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '9.6.0';
+		public $version = '9.7.0';
 
 		/**
 		 * WP Travel API version.
@@ -281,11 +281,13 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 				foreach ( $booking_posts as $post ) {
 
 					$oreder_items = get_post_meta( $post->ID, 'order_items_data', true );
-
-					foreach( $oreder_items as $item ){
-						$reserved_booking_dates[$i]['id'] = $item['trip_id'];
-						$reserved_booking_dates[$i]['date'] = isset( $item['trip_start_date'] ) ? $item['trip_start_date'] : '';
-						$i++;
+					
+					if( is_array( $oreder_items ) ){
+						foreach( $oreder_items as $item ){
+							$reserved_booking_dates[$i]['id'] = $item['trip_id'];
+							$reserved_booking_dates[$i]['date'] = isset( $item['trip_start_date'] ) ? $item['trip_start_date'] : '';
+							$i++;
+						}
 					}
 					
 				}

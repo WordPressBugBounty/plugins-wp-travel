@@ -172,10 +172,23 @@ if ( wptravel_is_react_version_enabled() ) {
 											<?php endif; ?>
 										</span>
 									</div>
-				
+									<?php									
+										if( isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
+											$date = new DateTime($cart_item['arrival_date']);
+											$date->modify('+'.$cart_item['trip_data']['trip_duration']['days'].' days');										
+											$return_date = wptravel_format_date( $date->format('Y-m-d') );		
+										}
+									?>
 									<div class="trip-meta-content">
 										<span class="date">
 											<span><?php echo $trip_date . $trip_time; ?></span>
+											<?php 
+												if( isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
+												?>
+													<span> - <?php echo $return_date; ?></span>
+												<?php
+												}
+											?>
 										</span>
 										<?php
 										// This will only for displaying purpose. Need to change this in update method[wp_travel_group_discount_price] of cart class also to update cart data.

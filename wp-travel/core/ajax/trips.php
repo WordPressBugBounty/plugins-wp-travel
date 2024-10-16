@@ -225,7 +225,7 @@ class WP_Travel_Ajax_Trips {
 	 * Filter Trips according to Param.
 	 */
 	public static function filter_trips() {
-
+		
 		/**
 		 * Permission and nonce Check
 		 */

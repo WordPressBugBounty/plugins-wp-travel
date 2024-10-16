@@ -128,6 +128,7 @@ class Wp_Travel_Shortcodes {
 		);
 
 		$atts = shortcode_atts( $default, $shortcode_atts, 'WP_TRAVEL_ITINERARIES' );
+		
 
 		$type      = $atts['type'];
 		$iti_id    = $atts['itinerary_id'];
@@ -145,7 +146,6 @@ class Wp_Travel_Shortcodes {
 
 		$multi_type = explode(",", $type);
 
-
 		if ( ! empty( $iti_id ) ) :
 			$args['p'] = $iti_id;
 		else :
@@ -153,10 +153,12 @@ class Wp_Travel_Shortcodes {
 			// if type is taxonomy.
 			if( is_array( $multi_type ) && count( $multi_type ) > 1 ){
 				$relation = isset( $shortcode_atts['query_relation'] ) ? $shortcode_atts['query_relation'] : 'OR';
+		
 				$args['tax_query']['relation'] = $relation;
 
 				foreach ( $multi_type as $value ) {
-					if( $value = 'travel_locations' ){
+
+					if( $value == 'travel_locations' ){
 						
 						$terms = isset( $shortcode_atts['trip_location'] ) ? explode(",", $shortcode_atts['trip_location'] ) : '';
 
@@ -167,7 +169,7 @@ class Wp_Travel_Shortcodes {
 						);
 					}
 
-					if( $value = 'activity' ){
+					if( $value == 'activity' ){
 						
 						$terms = isset( $shortcode_atts['trip_activity'] ) ? explode(",", $shortcode_atts['trip_activity'] ) : '';
 
@@ -178,7 +180,7 @@ class Wp_Travel_Shortcodes {
 						);
 					}
 
-					if( $value = 'itinerary_types' ){
+					if( $value == 'itinerary_types' ){
 						
 						$terms = isset( $shortcode_atts['trip_types'] ) ? explode(",", $shortcode_atts['trip_types'] ) : '';
 
@@ -268,6 +270,8 @@ class Wp_Travel_Shortcodes {
 			$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 			$args['paged'] = $paged;
 		}
+
+	
 		$query          = new WP_Query( $args );
 		
 		ob_start();

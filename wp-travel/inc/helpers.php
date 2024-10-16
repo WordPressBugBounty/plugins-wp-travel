@@ -738,12 +738,13 @@ function wptravel_search_form( $args = array() ) {
 	<div class="wp-travel-search">
 		<form method="get" name="wp-travel_search" action="<?php echo esc_url( home_url( '/' ) ); ?>" >
 			<input type="hidden" name="post_type" value="<?php echo esc_attr( WP_TRAVEL_POST_TYPE ); ?>" />
+			<input type="hidden" name="trip_name" id="trip_name" value="<?php echo apply_filters( 'wp_travel_list_trips_orders', '' ); ?>" >
 			<?php if ( $show_input == 'true' ) : ?>
 				<?php if ( $input_field['search'] ) : ?>
 					<p>
 						<label><?php echo esc_html( $search_string ); ?></label>
 						<?php $placeholder = __( 'Ex: Trekking', 'wp-travel' ); ?>
-						<input type="text" name="s" id="s" value="<?php the_search_query(); ?>" placeholder="<?php echo esc_attr( apply_filters( 'wp_travel_search_placeholder', $placeholder ) ); ?>">
+						<input type="text" name="wts" id="s" value="<?php the_search_query(); ?>" placeholder="<?php echo esc_attr( apply_filters( 'wp_travel_search_placeholder', $placeholder ) ); ?>">
 					</p>
 				<?php endif; ?>
 			<?php endif; ?>
