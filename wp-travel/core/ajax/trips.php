@@ -46,11 +46,7 @@ class WP_Travel_Ajax_Trips {
 	public static function get_extra_gallery() {
 
 		$user = wp_get_current_user();
-		$allowed_roles = array( 'editor', 'administrator', 'author' );
 
-		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
 
 		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			$nonce_trip_extra  = $_POST['nonce'];
@@ -75,11 +71,6 @@ class WP_Travel_Ajax_Trips {
 		 */
 
 		$user = wp_get_current_user();
-		$allowed_roles = array( 'editor', 'administrator', 'author' );
-
-		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
 		
 		$permission = self::get_trip_permission_check();
 
@@ -153,11 +144,7 @@ class WP_Travel_Ajax_Trips {
 	public static function get_trip() {
 
 		$user = wp_get_current_user();
-		$allowed_roles = array( 'editor', 'administrator', 'author' );
 
-		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
 
 		$permission = self::get_trip_permission_check();
 
@@ -269,11 +256,7 @@ class WP_Travel_Ajax_Trips {
 		 */
 
 		$user = wp_get_current_user();
-		$allowed_roles = array( 'editor', 'administrator', 'author' );
 
-		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
 		
 		$permission = self::get_trips_permissions_check();
 

@@ -827,7 +827,7 @@ class WpTravel_Helpers_Trips {
 		if ( isset( $args['orderby'] ) && $args['orderby'] ) {
 			$orderby     = $args['orderby'];
 			$order       = isset( $args['order'] ) && $args['order'] ? $args['order'] : 'desc';
-			$orderby_sql = " ORDER BY ${orderby} {$order}";
+			$orderby_sql = " ORDER BY {$orderby} {$order}";
 		}
 
 		$year      = '';

@@ -146,10 +146,10 @@ function wptravel_posts_clauses_filter( $post_clauses, $object ) {
 	 */
 	// Where clause.
 	$where      = '';
-	$start_date = isset( $_GET['trip_start'] ) ? sanitize_text_field( wp_unslash( $_GET['trip_start'] ) ) : ''; // @phpcs:ignore
-	$end_date   = isset( $_GET['trip_end'] ) ? sanitize_text_field( wp_unslash( $_GET['trip_end'] ) ) : ''; // @phpcs:ignore
+	$start_date = isset( $_GET['trip_start'] ) && !empty( $_GET['trip_start'] ) ? DateTime::createFromFormat('m/d/Y', sanitize_text_field( wp_unslash( $_GET['trip_start'] ) ) )->format('Y-m-d') : ''; // @phpcs:ignore
+	$end_date   = isset( $_GET['trip_end'] ) && !empty( $_GET['trip_end'] ) ? DateTime::createFromFormat('m/d/Y', sanitize_text_field( wp_unslash( $_GET['trip_end'] ) ) )->format('Y-m-d') : ''; // @phpcs:ignore
 
-		// Filter by date clause.
+	// Filter by date clause.
 	if ( ! empty( $start_date ) || ! empty( $end_date ) ) { // For search filter Widgets.
 		$where .= ' AND ( '; // <1
 		$where .= ' ( '; // <2
@@ -2197,8 +2197,13 @@ function wptravel_archive_listing_sidebar() {
  * @return void
  */
 function wptravel_posts_filter( $query ) {
-
-	if ( ! WP_Travel::verify_nonce( true ) ) {		
+	
+	if ( ! WP_Travel::verify_nonce( true ) ) {	
+		if ( !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {
+			$query->set( 'orderby', 'post_title' );
+			$query->set( 'order', apply_filters( 'wp_travel_list_trips_orders', '' ) );
+		}
+			
 		return $query;
 	}else{
 		if ( !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {

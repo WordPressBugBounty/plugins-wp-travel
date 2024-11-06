@@ -172,18 +172,21 @@ if ( wptravel_is_react_version_enabled() ) {
 											<?php endif; ?>
 										</span>
 									</div>
-									<?php									
-										if( isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
-											$date = new DateTime($cart_item['arrival_date']);
-											$date->modify('+'.$cart_item['trip_data']['trip_duration']['days'].' days');										
-											$return_date = wptravel_format_date( $date->format('Y-m-d') );		
-										}
+									<?php	
+										if( apply_filters( 'wp_travel_enable_arrival_date_on_checkout', false ) == true ){
+											if( isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
+												$date = DateTime::createFromFormat( get_option('date_format'), $cart_item['arrival_date'] );
+												$date->modify('+'.$cart_item['trip_data']['trip_duration']['days'].' days');										
+												$return_date = wptravel_format_date( $date->format('Y-m-d') );		
+											}
+										}								
+										
 									?>
 									<div class="trip-meta-content">
 										<span class="date">
 											<span><?php echo $trip_date . $trip_time; ?></span>
 											<?php 
-												if( isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
+												if( apply_filters( 'wp_travel_enable_arrival_date_on_checkout', false ) == true && isset( $cart_item['trip_data']['trip_duration']['days'] ) && $cart_item['trip_data']['trip_duration']['days'] > 1 ){
 												?>
 													<span> - <?php echo $return_date; ?></span>
 												<?php

@@ -201,9 +201,8 @@ class WP_Travel_Admin_Booking {
 	 * @since 4.4.2
 	 */
 	public function register_metaboxes() {		
-		
-		// if ( get_current_screen()->base == 'woocommerce_page_wc-orders' ) { 
-		if ( get_current_screen()->base == 'woocommerce_page_wc-orders' || get_current_screen()->id != 'itinerary-booking' ) { 
+
+		if ( get_current_screen()->base == 'woocommerce_page_wc-orders' ) { 
 			return;
 		}
 		
@@ -428,7 +427,7 @@ class WP_Travel_Admin_Booking {
 							$form_field->init( $field, array( 'single' => true ) )->render();
 						}
 
-					?>
+						?>
 
 				</div>
 				<div class="wp-travel-form-field-wrapper">

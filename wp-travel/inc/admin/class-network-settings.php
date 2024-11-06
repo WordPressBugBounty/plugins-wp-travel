@@ -189,8 +189,8 @@ function wptravel_license_tab_content( $args ) {
 						</label>
 					</h3>
 					<div class="subject_input">
-						<a href=<?php echo esc_url( $module['license_link'] ); ?> title="Add License"><?php echo esc_html__( 'Add License', 'wp-travel' ); ?></a> |
-						<a href="<?php echo esc_url( $module['account_link'] ); ?>" title="Manage License"><?php echo esc_html__( 'Manage License', 'wp-travel' ); ?></a>  
+						<a href=<?php echo esc_url( $module['license_link'] ); ?> title="Add License">Add License</a> |
+						<a href="<?php echo esc_url( $module['account_link'] ); ?>" title="Manage License">Manage License</a>  
 					</div>
 				</div>
 			</div>

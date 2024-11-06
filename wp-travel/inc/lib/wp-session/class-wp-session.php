@@ -131,15 +131,7 @@ final class WP_Session extends Recursive_ArrayAccess {
 		$httponly = apply_filters( 'wp_session_cookie_httponly', false );
 		if ( ! headers_sent( $file, $line ) ) {
 
-			// setcookie( WP_TRAVEL_SESSION_COOKIE, $this->session_id . '||' . $this->expires . '||' . $this->exp_variant, $this->expires, COOKIEPATH, COOKIE_DOMAIN, $secure, $httponly );
-			setcookie(WP_TRAVEL_SESSION_COOKIE, $this->session_id . '||' . $this->expires . '||' . $this->exp_variant, [
-				'expires'  => $this->expires,   // Expiration time
-				'path'     => COOKIEPATH,       // Path
-				'domain'   => COOKIE_DOMAIN,    // Domain
-				'secure'   => $secure,          // Secure flag (true if using HTTPS)
-				'httponly' => $httponly,        // HttpOnly flag
-				'samesite' => 'Strict'          // SameSite attribute (protects against CSRF)
-			]);
+			setcookie( WP_TRAVEL_SESSION_COOKIE, $this->session_id . '||' . $this->expires . '||' . $this->exp_variant, $this->expires, COOKIEPATH, COOKIE_DOMAIN, $secure, $httponly );
 		}
 	}
 

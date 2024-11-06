@@ -19,7 +19,7 @@ class WP_Travel_Setup_Page {
 
 		add_action( 'admin_menu', array( $this, 'wp_travel_welcome_screen_pages' ) );
 		add_action( 'admin_init', array( $this, 'wp_travel_setup_page_redirect' ) );
-		add_action( 'admin_head', array( $this, 'wp_travel_welcome_screen_remove_menus' ) );
+		// add_action( 'admin_head', array( $this, 'wp_travel_welcome_screen_remove_menus' ) );
 		add_action( 'rest_api_init', array( $this, 'add_custom_users_api' ) );
 	}
 
@@ -313,7 +313,9 @@ class WP_Travel_Setup_Page {
 			 </div>
 			<?php else : ?>
 			  <p><?php echo esc_html__( 'Scripts is not loaded..', 'wp-travel' ); ?></p>
-		<?php endif;
+		<?php endif ?>
+	  
+		<?php
 	}
 
 	function wp_travel_welcome_screen_remove_menus() {

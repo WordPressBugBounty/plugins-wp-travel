@@ -140,11 +140,10 @@ class WP_Travel_Admin_Metaboxes {
 	 * Register metabox.
 	 */
 	public function register_metaboxes() {
-		
+
 		$settings = wptravel_get_settings();
 
-		// if( $settings['enable_woo_checkout'] == 'yes' ){ 
-		if( $settings['enable_woo_checkout'] == 'yes' || get_current_screen()->id != 'itinerary-booking' ){ 
+		if( $settings['enable_woo_checkout'] == 'yes' ){ 
 			return;
 		}
 
@@ -153,7 +152,6 @@ class WP_Travel_Admin_Metaboxes {
 			add_meta_box( 'wp-travel-' . WP_TRAVEL_POST_TYPE . '-detail', __( 'Trip Detail', 'wp-travel' ), array( $this, 'load_tab_template' ), WP_TRAVEL_POST_TYPE, 'normal', 'high' );
 			remove_meta_box( 'travel_locationsdiv', WP_TRAVEL_POST_TYPE, 'side' );
 		}
-		
 		add_meta_box( 'wp-travel-itinerary-payment-detail', __( 'Payment Detail', 'wp-travel' ), array( $this, 'payment_info' ), 'itinerary-booking', 'normal', 'low' );
 		add_meta_box( 'wp-travel-itinerary-single-payment-detail', __( 'Payment Info', 'wp-travel' ), array( $this, 'single_payment_info' ), 'itinerary-booking', 'side', 'low' );
 
@@ -186,20 +184,20 @@ class WP_Travel_Admin_Metaboxes {
 								<th align="right"><?php esc_html_e( 'Payment ID : ', 'wp-travel' ); ?></th>
 								<td><?php echo esc_html( $payment_args['payment_id'] ); ?></td>
 							</tr>
-						<?php endif;
-						if ( isset( $payment_args['payment_method'] ) ) : ?>
+						<?php endif; ?>
+						<?php if ( isset( $payment_args['payment_method'] ) ) : ?>
 							<tr>
 								<th align="right"><?php esc_html_e( 'Payment Method : ', 'wp-travel' ); ?></th>
 								<td><?php echo esc_html( $payment_args['payment_method'] ); ?></td>
 							</tr>
-						<?php endif;
-						if ( isset( $payment_args['payment_date'] ) ) : ?>
+						<?php endif; ?>
+						<?php if ( isset( $payment_args['payment_date'] ) ) : ?>
 							<tr>
 								<th align="right"><?php esc_html_e( 'Payment Date : ', 'wp-travel' ); ?></th>
 								<td><?php echo esc_html( $payment_args['payment_date'] ); ?></td>
 							</tr>
-						<?php endif;
-						foreach ( $payment_args['data'] as $title => $description ) : ?>
+						<?php endif; ?>
+						<?php foreach ( $payment_args['data'] as $title => $description ) : ?>
 							<tr>
 								<th align="right"><?php echo esc_html( $title . ' : ' ); ?></th>
 								<td>
@@ -615,16 +613,11 @@ class WP_Travel_Admin_Metaboxes {
 	 * @return array.
 	 */
 	public function localize_gallery_data( $data ) {
-		
 		global $post;
-		// if ( ! $post ) {
-		if ( ! $post || $post->post_type != 'itineraries' ) {
+		if ( ! $post ) {
 			return;
 		}
-
 		$gallery_ids = get_post_meta( $post->ID, 'wp_travel_itinerary_gallery_ids', true );
-		
-		
 		if ( false !== $gallery_ids && ! empty( $gallery_ids ) ) {
 			$gallery_data  = array();
 			$i             = 0;

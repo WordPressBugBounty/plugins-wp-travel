@@ -26,7 +26,7 @@ function wptravel_tour_extras_general_tab_callback() {
 		<tbody>
 			<tr>
 				<td><label for="extras-item-description"><?php esc_html_e( 'Description', 'wp-travel' ); ?></label>
-					<span class="tooltip-area" title="<?php esc_attr_e( 'Description for the service/item', 'wp-travel' ); ?>">
+					<span class="tooltip-area" title="<?php esc_html_e( 'Description for the service/item', 'wp-travel' ); ?>">
 						<i class="wt-icon wt-icon-question-circle" aria-hidden="true"></i>
 					</span>
 				</td>

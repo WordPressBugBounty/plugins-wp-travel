@@ -23,11 +23,7 @@ class WP_Travel_Ajax_Settings {
 		 */
 
 		$user = wp_get_current_user();
-		$allowed_roles = array( 'editor', 'administrator', 'author' );
 
-		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
 
 		$permission = WP_Travel::verify_nonce();
 
@@ -46,11 +42,6 @@ class WP_Travel_Ajax_Settings {
 		 * Permission Check
 		 */
 		$user = wp_get_current_user();
-		$allowed_roles = array('editor', 'administrator', 'author');
-	
-		if ( ! array_intersect($allowed_roles, $user->roles) ) {
-			return wp_send_json_error(array('result' => 'Authentication error'));
-		}
 	
 		$permission = WP_Travel::verify_nonce();
 	

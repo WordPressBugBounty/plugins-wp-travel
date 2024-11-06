@@ -29,13 +29,14 @@ function wptravel_get_paypal_redirect_url( $ssl_check = false ) {
  * This would also do the "set-up" for an "alternate purchase verification"
  */
 function wptravel_listen_paypal_ipn() {
-	
-	// if ( ! WP_Travel::verify_nonce( true ) ) {
-	// 	return;
-	// }	
+	if ( ! WP_Travel::verify_nonce( true ) ) {
+		return;
+	}
 
-	if ( isset( $_POST['payer_id'] ) && $_POST['payer_status'] == 'VERIFIED'  ) {
-		
+	if ( isset( $_GET['wp_travel_listener'] )
+		&& $_GET['wp_travel_listener'] == 'IPN'
+		|| isset( $_GET['test'] )
+		&& $_GET['test'] == true ) {
 		do_action( 'wp_travel_verify_paypal_ipn' );
 	}
 
@@ -50,7 +51,6 @@ add_action( 'init', 'wptravel_listen_paypal_ipn' );
  * This is the Pink Lilly of the whole operation.
  */
 function wptravel_paypal_ipn_process() {
-	
 	/**
 	 * Instantiate the IPNListener class
 	 */
@@ -67,7 +67,7 @@ function wptravel_paypal_ipn_process() {
 	 * Check if IPN was successfully processed
 	 */
 	if ( $verified = $listener->processIpn() ) {
-		
+
 		$message = null;
 		/**
 		 * Verify seller PayPal email with PayPal email in settings
@@ -75,9 +75,9 @@ function wptravel_paypal_ipn_process() {
 		 * Check if the seller email that was processed by the IPN matches what is saved as
 		 * the seller email in our DB
 		 */
-		// if ( $_POST['receiver_email'] != $settings['paypal_email'] ) { // @phpcs:ignore
-		// 	$message .= "\nEmail seller email does not match email in settings\n";
-		// }
+		if ( $_POST['receiver_email'] != $settings['paypal_email'] ) { // @phpcs:ignore
+			$message .= "\nEmail seller email does not match email in settings\n";
+		}
 
 		/**
 		 * Verify currency

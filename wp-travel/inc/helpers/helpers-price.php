@@ -607,6 +607,10 @@ function wptravel_get_formated_price( $price, $format = true, $number_of_decimal
 		return $price;
 	}
 
+	// $settings           = wptravel_get_settings();
+	// $thousand_separator = '';
+	// $decimal_separator  = $settings['decimal_separator'];
+	// $number_of_decimals = isset( $settings['number_of_decimals'] ) && ! empty( $settings['number_of_decimals'] ) ? $settings['number_of_decimals'] : 0;
 	/**
 	 * Defaults to all the currency to fix the issue caused by formatting.
 	 *

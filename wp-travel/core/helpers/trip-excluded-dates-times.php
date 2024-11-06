@@ -30,59 +30,43 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 	 * @param int $trip_id Trip ID.
 	 */
 	public static function get_dates_times($trip_id = false) {
-		static $cache = array(); // Static variable to store cached results
-	
-		if (empty($trip_id)) {
-			return WP_Travel_Helpers_Error_Codes::get_error('WP_TRAVEL_NO_TRIP_ID');
+		if ( empty( $trip_id ) ) {
+			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
-	
-		// Check if results are already in cache
-		if (isset($cache[$trip_id])) {
-			return $cache[$trip_id];
-		}
-	
 		global $wpdb;
-	
-		// Query the database
-		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wt_excluded_dates_times WHERE `trip_id` = %d", $trip_id));
-		
-		if (empty($results)) {
-			$cache[$trip_id] = WP_Travel_Helpers_Error_Codes::get_error('WP_TRAVEL_NO_TRIP_EXCLUDED_DATE_TIME');
-			return $cache[$trip_id];
+
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_excluded_dates_times WHERE `trip_id` = %d", $trip_id ) );
+		if ( empty( $results ) ) {
+			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_EXCLUDED_DATE_TIME' );
 		}
-	
+
 		$dates = array();
 		$index = 0;
-		foreach ($results as $result) {
-			$dates[$index]['id']                      = absint($result->id);
-			$dates[$index]['title']                   = $result->title;
-			$dates[$index]['years']                   = empty($result->years) ? 'every_year' : $result->years;
-			$dates[$index]['months']                  = empty($result->months) ? 'every_month' : $result->months;
-			$dates[$index]['days']                    = empty($result->days) ? '' : $result->days;
-			$dates[$index]['date_days']               = empty($result->date_days) ? '' : $result->date_days;
-			$dates[$index]['start_date']              = $result->start_date;
-			$dates[$index]['end_date']                = $result->end_date;
-			$dates[$index]['is_recurring']            = !empty($result->recurring) ? true : false;
-			$dates[$index]['trip_time']               = !empty($result->time) ? $result->time : '';
-			$dates[$index]['recurring_weekdays_type'] = '';
-	
-			if (!empty($result->days)) {
-				$dates[$index]['recurring_weekdays_type'] = 'every_days';
-			} elseif (!empty($result->date_days)) {
-				$dates[$index]['recurring_weekdays_type'] = 'every_date_days';
+		foreach ( $results as $result ) {
+			$dates[ $index ]['id']                      = absint( $result->id );
+			$dates[ $index ]['title']                   = $result->title;
+			$dates[ $index ]['years']                   = empty( $result->years ) ? 'every_year' : $result->years;
+			$dates[ $index ]['months']                  = empty( $result->months ) ? 'every_month' : $result->months;
+			$dates[ $index ]['days']                    = empty( $result->days ) ? '' : $result->days;
+			$dates[ $index ]['date_days']               = empty( $result->date_days ) ? '' : $result->date_days;
+			$dates[ $index ]['start_date']              = $result->start_date;
+			$dates[ $index ]['end_date']                = $result->end_date;
+			$dates[ $index ]['is_recurring']            = ! empty( $result->recurring ) ? true : false;
+			$dates[ $index ]['trip_time']               = ! empty( $result->time ) ? $result->time : '';
+			$dates[ $index ]['recurring_weekdays_type'] = '';
+			if ( ! empty( $result->days ) ) {
+				$dates[ $index ]['recurring_weekdays_type'] = 'every_days';
+			} elseif ( ! empty( $result->date_days ) ) {
+				$dates[ $index ]['recurring_weekdays_type'] = 'every_date_days';
 			}
 			$index++;
 		}
-	
-		// Cache the results
-		$cache[$trip_id] = WP_Travel_Helpers_Response_Codes::get_success_response(
+		return WP_Travel_Helpers_Response_Codes::get_success_response(
 			'WP_TRAVEL_TRIP_EXCLUDED_DATES_TIMES',
 			array(
 				'dates_times' => $dates,
 			)
 		);
-	
-		return $cache[$trip_id];
 	}
 	
 

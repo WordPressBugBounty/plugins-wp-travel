@@ -143,7 +143,7 @@ function wptravel_settings_bank_deposit( $args ) {
 							
 						</tbody>
 					</table>
-					<button class="button btn-add-new-bank-deposite"><?php echo esc__html__( 'Add New', 'wp-travel' ); ?></button>
+					<button class="button btn-add-new-bank-deposite">Add New</button>
 					
 				</td>
 			</tr>

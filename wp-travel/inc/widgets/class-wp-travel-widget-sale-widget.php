@@ -89,8 +89,9 @@ class WP_Travel_Widget_Sale_Itineraries extends WP_Widget { // @phpcs:ignore
 
 				<div class="wp-travel-itinerary-list">
 
-			<?php endif;
-				
+			<?php endif; ?>
+
+				<?php
 				while ( $itineraries->have_posts() ) :
 					$itineraries->the_post();
 
@@ -188,7 +189,7 @@ class WP_Travel_Widget_Sale_Itineraries extends WP_Widget { // @phpcs:ignore
 					foreach ( $view_mode_options as $key => $value ) {
 						echo '<option value="' . esc_attr( $key ) . '" ' . selected( $key, $view_mode, false ) . '>' . esc_html( $value ) . '</option>';
 					}
-				?>
+					?>
 			</select>
 		</p>
 		<p>

@@ -212,7 +212,7 @@ class WP_Travel_Import_Dummy_Trip {
 													'price_per' => $pricing_category['price_per'],
 													'regular_price' => $pricing_category['regular_price'],
 													'is_sale' => $pricing_category['is_sale'],
-													'is_sale_percentage' => isset( $pricing_category['is_sale_percentage'] ) ? $pricing_category['is_sale_percentage'] : '',
+													'is_sale_percentage' => $pricing_category['is_sale_percentage'],
 													'sale_price' => $pricing_category['sale_price'],
 													'has_group_price' => $pricing_category['has_group_price'],
 													'group_prices' => maybe_serialize( $pricing_category['group_prices'] ),

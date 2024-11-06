@@ -60,114 +60,103 @@ class WP_Travel_Helpers_Cart {
 	}
 
 	public static function get_cart_items() {
-
-		static $cache = null;  // Static variable to store cache
-	
-		// Return cached result if it exists
-		if ($cache !== null) {
-			return $cache;
-		}
-	
 		global $wt_cart;
 		$cart_items = $wt_cart->getItems();
-	
-		if (empty($cart_items)) {
-			$cache = new WP_Error('WP_TRAVEL_EMPTY_CART', __('Cart is empty.', 'wp-travel'));
-			return $cache;
+		if ( empty( $cart_items ) ) {
+			$wt_cart->clear(); // Added to remove coupon discount when no items.
+			return new WP_Error( 'WP_TRAVEL_EMPTY_CART', __( 'Cart is empty.', 'wp-travel' ) );
 		}
-	
-		$date_format = get_option('date_format');
-		// Section to apply category group discount
+		$date_format = get_option( 'date_format' );
+		// Section to apply category group disocunt.
 		$category_discount_data = array();  // To get Discount as per trip id.
-		$cart_trip_count = array(); // To calculate Total no of trips as per trip id.
-	
+		$cart_trip_count        = array(); // To calculate Total no of trips as per trip id.
+
 		// Start Discount Implementation
-		$terms = array();
-		$discount = apply_filters('wp_travel_trip_discounts', array(), $cart_items);
-	
+		$terms    = array();
+		$discount = apply_filters( 'wp_travel_trip_discounts', array(), $cart_items );
+
 		// End Discount Implementation
 		$cart = array();
-		foreach ($cart_items as $cart_id => $item) {
-			$trip_data = isset($item['trip_id']) ? WP_Travel_Helpers_Trips::get_trip(absint($item['trip_id'])) : '';
+		foreach ( $cart_items as $cart_id => $item ) {
+			$trip_data     = WP_Travel_Helpers_Trips::get_trip( absint( $item['trip_id'] ) );
 			$is_item_valid = true;
-	
-			if (!is_wp_error($trip_data) && 'WP_TRAVEL_TRIP_INFO' === $trip_data['code']) {
-				// Temporary fixes for multiple currencies
+			if ( ! is_wp_error( $trip_data ) && 'WP_TRAVEL_TRIP_INFO' === $trip_data['code'] ) {
+
+				// Temporary fixes for multiple currency.
 				$temp_pricings = $trip_data['trip']['pricings'];
-				foreach ($temp_pricings as $temp_pricing_index => $temp_pricing) {
-					// Group Price
-					if ($temp_pricing['has_group_price'] && count($temp_pricing['group_prices']) > 0) {
-						foreach ($temp_pricing['group_prices'] as $gpi => $gp) {
+				foreach ( $temp_pricings as $temp_pricing_index => $temp_pricing ) {
+					// Group Price.
+					if ( $temp_pricing['has_group_price'] && count( $temp_pricing['group_prices'] ) > 0 ) {
+						foreach ( $temp_pricing['group_prices'] as $gpi => $gp ) {
 							$group_price = $gp['price'];
 							// $trip_data['trip']['pricings']['group_prices'][ $gpi ]['price'] = $group_price;
 						}
 					}
-					foreach ($temp_pricing['categories'] as $temp_pricing_cat_index => $temp_pricing_cat) {
+					foreach ( $temp_pricing['categories'] as $temp_pricing_cat_index => $temp_pricing_cat ) {
 						$temp_regular_price = $temp_pricing_cat['regular_price'];
-						$temp_sale_price = $temp_pricing_cat['sale_price'];
-	
-						$trip_data['trip']['pricings'][$temp_pricing_index]['categories'][$temp_pricing_cat_index]['regular_price'] = $temp_regular_price;
-						$trip_data['trip']['pricings'][$temp_pricing_index]['categories'][$temp_pricing_cat_index]['sale_price'] = $temp_sale_price;
-	
-						// Group Price
-						if ($temp_pricing_cat['has_group_price'] && count($temp_pricing_cat['group_prices']) > 0) {
-							foreach ($temp_pricing_cat['group_prices'] as $gpi => $gp) {
+						$temp_sale_price    = $temp_pricing_cat['sale_price'];
+
+						$trip_data['trip']['pricings'][ $temp_pricing_index ]['categories'][ $temp_pricing_cat_index ]['regular_price'] = $temp_regular_price;
+						$trip_data['trip']['pricings'][ $temp_pricing_index ]['categories'][ $temp_pricing_cat_index ]['sale_price']    = $temp_sale_price;
+
+						// Group Price.
+						if ( $temp_pricing_cat['has_group_price'] && count( $temp_pricing_cat['group_prices'] ) > 0 ) {
+							foreach ( $temp_pricing_cat['group_prices'] as $gpi => $gp ) {
 								$group_price2 = $gp['price'];
-								$trip_data['trip']['pricings'][$temp_pricing_index]['categories'][$temp_pricing_cat_index]['group_prices'][$gpi]['price'] = $group_price2;
+								$trip_data['trip']['pricings'][ $temp_pricing_index ]['categories'][ $temp_pricing_cat_index ]['group_prices'][ $gpi ]['price'] = $group_price2;
 							}
 						}
 					}
 				}
-				// End of Temporary fixes for multiple currencies
-	
-				$trip_items = !empty($item['trip']) ? $item['trip'] : array();
-				if (is_array($trip_items) && count($trip_items) > 0) {
-					foreach ($trip_items as $cat_id => $cat_value) {
-						unset($item['trip'][$cat_id]['price'], $item['trip'][$cat_id]['price_partial'], $item['trip'][$cat_id]['custom_label']);
+				// End of Temporary fixes for multiple currency.
+
+				$trip_items = ! empty( $item['trip'] ) ? $item['trip'] : array();
+				if ( is_array( $trip_items ) && count( $trip_items ) > 0 ) {
+					foreach ( $trip_items as $cat_id => $cat_value ) {
+						unset( $item['trip'][ $cat_id ]['price'], $item['trip'][ $cat_id ]['price_partial'], $item['trip'][ $cat_id ]['custom_label'] );
 					}
 				}
-				$cart[$cart_id]['trip_id'] = $item['trip_id']; // To loop cart items with trip id. like in discount.
-				$cart[$cart_id]['pricing_id'] = $item['pricing_id'];
-				$cart[$cart_id]['price_key'] = isset($item['price_key']) ? $item['price_key'] : '';
-				$cart[$cart_id]['trip_price'] = (float)number_format($item['trip_price'], 2, '.', '');
-	
-				// Calculation of individual trip total along with extras
-				$cart[$cart_id]['trip_total'] = $wt_cart->get_item_total($cart_id); // Gross individual trip total including extras. It helps to apply discount.
-				$cart[$cart_id]['trip_total_partial'] = $wt_cart->get_item_total($cart_id, true); // Gross individual trip total including extras. It helps to apply discount.
-				$cart[$cart_id]['payout_percent'] = WP_Travel_Helpers_Pricings::get_payout_percent($item['trip_id']); // Gross individual trip total including extras. It helps to apply discount.
-	
-				if (isset($item['discount'])) {
-					$cart[$cart_id]['discount'] = $item['discount']; // Discount amount applied to individual trip total.
+				$cart[ $cart_id ]['trip_id']    = $item['trip_id']; // To loop cart items with trip id. like in discount.
+				$cart[ $cart_id ]['pricing_id'] = $item['pricing_id'];
+				$cart[ $cart_id ]['price_key']  = isset( $item['price_key'] ) ? $item['price_key'] : '';
+				$cart[ $cart_id ]['trip_price'] = (float) number_format( $item['trip_price'], 2, '.', '' );
+
+				// Calculation of individual trip total along with extras.
+				$cart[ $cart_id ]['trip_total']         = $wt_cart->get_item_total( $cart_id ); // Gross individual trip total including extras. It helps to apply discount.
+				$cart[ $cart_id ]['trip_total_partial'] = $wt_cart->get_item_total( $cart_id, true ); // Gross individual trip total including extras. It helps to apply discount.
+				$cart[ $cart_id ]['payout_percent']     = WP_Travel_Helpers_Pricings::get_payout_percent( $item['trip_id'] ); // Gross individual trip total including extras. It helps to apply discount.
+
+				if ( isset( $item['discount'] ) ) {
+					$cart[ $cart_id ]['discount'] = $item['discount']; // Discount amount applied to individual trip total.
 				}
-	
-				if (!empty($discount) && isset($discount['coupon']) && !$discount['coupon']) {
-					$trip_price = (float)$item['trip_price'] * (100 - (float)$discount['value']) / 100;
-					$cart[$cart_id]['trip_price'] = number_format($trip_price, 2, '.', '');
+
+				if ( ! empty( $discount ) && isset( $discount['coupon'] ) && ! $discount['coupon'] ) {
+					$trip_price = (float) $item['trip_price'] * ( 100 - (float) $discount['value'] ) / 100;
+
+					$cart[ $cart_id ]['trip_price'] = number_format( $trip_price, 2, '.', '' );
 				}
-	
-				$cart[$cart_id]['trip_price_regular'] = (float)number_format($item['trip_price'], 2, '.', '');
-				$cart[$cart_id]['extras'] = $item['trip_extras'];
-				$cart[$cart_id]['trip'] = $item['trip'];
-				$cart[$cart_id]['trip_data'] = $trip_data['trip'];
-				$cart[$cart_id]['arrival_date'] = wptravel_format_date($item['arrival_date']);
-				$cart[$cart_id]['date_id'] = $item['date_id'];
-				if (isset($item['trip_time'])) {
-					$cart[$cart_id]['trip_time'] = $item['trip_time'];
+
+				$cart[ $cart_id ]['trip_price_regular'] = (float) number_format( $item['trip_price'], 2, '.', '' );
+				$cart[ $cart_id ]['extras']             = $item['trip_extras'];
+				$cart[ $cart_id ]['trip']               = $item['trip'];
+				$cart[ $cart_id ]['trip_data']          = $trip_data['trip'];
+				$cart[ $cart_id ]['arrival_date']       = wptravel_format_date( $item['arrival_date'] );
+				$cart[ $cart_id ]['date_id']       		= $item['date_id'];
+				if ( isset( $item['trip_time'] ) ) {
+					$cart[ $cart_id ]['trip_time'] = $item['trip_time'];
 				}
 			} else {
-				self::remove_cart_item($cart_id);
+				self::remove_cart_item( $cart_id );
 			}
 		}
-	
-		// Store the result in the cache
-		$cache = array(
-			'code' => 'WP_TRAVEL_CART_ITEMS',
+
+
+		return array(
+			'code'       => 'WP_TRAVEL_CART_ITEMS',
 			'cart_items' => $cart,
-			'total' => $wt_cart->get_total(),
-			'discount' => $wt_cart->get_discounts(), // Coupon Implementation
+			'total'      => $wt_cart->get_total(),
+			'discount'   => $wt_cart->get_discounts(), // Coupon Implementation.
 		);
-	
-		return $cache;
 	}
 	
 

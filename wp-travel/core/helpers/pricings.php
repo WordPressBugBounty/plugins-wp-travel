@@ -36,92 +36,76 @@ class WpTravel_Helpers_Pricings {
 	 */
 	public static function get_pricings( $trip_id = false, $pricing_id = null ) {
 
-		static $cache = array();  // Static variable to store cache
-
-		if (empty($trip_id)) {
-			return;
+		if ( empty( $trip_id ) ) {
+			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
-
-		// Create a unique cache key based on input parameters
-		$cache_key = md5($trip_id . '-' . $pricing_id);
-
-		// Check if the result is already in the cache
-		if (isset($cache[$cache_key])) {
-			return $cache[$cache_key];
-		}
-
 		global $wpdb;
-		$results = $wpdb->get_results($wpdb->prepare("SELECT * FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d ORDER BY sort_order ASC", $trip_id));
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d order by sort_order asc", $trip_id ) );
 
-		if (empty($results)) {
-			$cache[$cache_key] = WP_Travel_Helpers_Error_Codes::get_error('WP_TRAVEL_NO_PRICINGS');
-			return $cache[$cache_key];
+		if ( empty( $results ) ) {
+			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_PRICINGS' );
 		}
-
 		$pricings = array();
-		$index = 0;
+		$index    = 0;
 
 		$selected_pricing = array();
-		foreach ($results as $price) {
-			$pricings[$index]['id'] = absint($price->id);
-			$pricings[$index]['title'] = $price->title;
-			$pricings[$index]['max_pax'] = absint($price->max_pax);
-			$pricings[$index]['min_pax'] = absint($price->min_pax);
-			$pricings[$index]['has_group_price'] = !empty($price->has_group_price);
-			$pricings[$index]['group_prices'] = !empty($price->group_prices) ? maybe_unserialize($price->group_prices) : array();
+		foreach ( $results as $price ) {
+			$pricings[ $index ]['id']              = absint( $price->id );
+			$pricings[ $index ]['title']           = $price->title;
+			$pricings[ $index ]['max_pax']         = absint( $price->max_pax );
+			$pricings[ $index ]['min_pax']         = absint( $price->min_pax );
+			$pricings[ $index ]['has_group_price'] = ! empty( $price->has_group_price );
+			$pricings[ $index ]['group_prices']    = ! empty( $price->group_prices ) ? maybe_unserialize( $price->group_prices ) : array();
 
-			if (!function_exists('wp_travel_group_discount_price')) {
-				$pricings[$index]['has_group_price'] = false;
-				$pricings[$index]['group_prices'] = array();
+			if ( ! function_exists( 'wp_travel_group_discount_price' ) ) {
+				$pricings[ $index ]['has_group_price'] = false;
+				$pricings[ $index ]['group_prices']    = array();
 			}
 
 			// Inventory.
 			$inventory_data = array(
-				'max_pax' => absint($price->max_pax),
-				'min_pax' => absint($price->min_pax),
-				'available_pax' => absint($price->max_pax),
+				'max_pax'        => absint( $price->max_pax ),
+				'min_pax'        => absint( $price->min_pax ),
+				'available_pax'  => absint( $price->max_pax ),
 				'status_message' => '',
-				'sold_out' => false,
-				'booked_pax' => 0,
-				'pax_limit' => absint($price->max_pax),
+				'sold_out'       => false,
+				'booked_pax'     => 0,
+				'pax_limit'      => absint( $price->max_pax ),
 			);
 			// End Inventory.
 
-			$pricings[$index]['categories'] = array();
-			$categories = WP_Travel_Helpers_Trip_Pricing_Categories::get_trip_pricing_categories(absint($price->id));
-			if (!is_wp_error($categories) && 'WP_TRAVEL_TRIP_PRICING_CATEGORIES' === $categories['code']) {
-				$pricings[$index]['categories'] = $categories['categories'];
+			$pricings[ $index ]['categories'] = array();
+			$categories                       = WP_Travel_Helpers_Trip_Pricing_Categories::get_trip_pricing_categories( absint( $price->id ) );
+			if ( ! is_wp_error( $categories ) && 'WP_TRAVEL_TRIP_PRICING_CATEGORIES' === $categories['code'] ) {
+				$pricings[ $index ]['categories'] = $categories['categories'];
 			}
-			$pricings[$index]['trip_extras'] = array();
-			if (!empty($price->trip_extras)) {
+			$pricings[ $index ]['trip_extras'] = array();
+			if ( ! empty( $price->trip_extras ) ) {
 				// Temp fixes for extras for admin trip edit section.
-				if (is_admin()) {
+				if ( is_admin() ) {
+
 					$trip_extras = WP_Travel_Helpers_Trip_Extras::get_trip_extras(
 						array(
-							'post__in' => explode(',', trim($price->trip_extras)),
+							'post__in' => explode( ',', trim( $price->trip_extras ) ),
 						)
 					);
-					if (!is_wp_error($trip_extras) && 'WP_TRAVEL_TRIP_EXTRAS' === $trip_extras['code']) {
-						$pricings[$index]['trip_extras'] = $trip_extras['trip_extras'];
+					if ( ! is_wp_error( $trip_extras ) && 'WP_TRAVEL_TRIP_EXTRAS' === $trip_extras['code'] ) {
+						$pricings[ $index ]['trip_extras'] = $trip_extras['trip_extras'];
 					}
 				} else {
-					$pricings[$index]['trip_extras'] = explode(',', trim($price->trip_extras));
+					$pricings[ $index ]['trip_extras'] = explode( ',', trim( $price->trip_extras ) );
 				}
 			}
 
-			if (absint($price->id) === absint($pricing_id)) {
-				$selected_pricing = $pricings[$index];
+			if ( absint( $price->id ) === absint( $pricing_id ) ) {
+				$selected_pricing = $pricings[ $index ];
 			}
 			$index++;
 		}
-
-		// Store the result in the cache
-		$cache[$cache_key] = array(
-			'code' => 'WP_TRAVEL_TRIP_PRICINGS',
-			'pricings' => $pricing_id && count($selected_pricing) > 0 ? $selected_pricing : $pricings,
+		return array(
+			'code'     => 'WP_TRAVEL_TRIP_PRICINGS',
+			'pricings' => $pricing_id && count( $selected_pricing ) > 0 ? $selected_pricing : $pricings,
 		);
-
-		return $cache[$cache_key];
 	}
 
 	/**

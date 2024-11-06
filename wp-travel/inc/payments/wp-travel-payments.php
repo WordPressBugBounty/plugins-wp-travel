@@ -263,8 +263,7 @@ function wptravel_enabled_payment_gateways() {
 }
 
 /** Return true if Payment checked */
-function wptravel_is_payment_enabled( $trip_id = '' ) {
-
+function wptravel_is_payment_enabled() {
 	$enabled_payment_gateways = wptravel_enabled_payment_gateways();
 
 	$enabled = ! empty( $enabled_payment_gateways ) ? true : false;
@@ -274,13 +273,6 @@ function wptravel_is_payment_enabled( $trip_id = '' ) {
 	 * @since 5.3.1
 	 */
 	$enabled = apply_filters( 'wptravel_is_payment_enabled', $enabled );
-
-	if( count( apply_filters( 'wptravel_disable_payment_option_for_specific_trips', array() ) ) > 0  ){
-		if (in_array($trip_id, apply_filters( 'wptravel_disable_payment_option_for_specific_trips', array() ))) {
-			$enabled = false;
-		} 
-	}
-
 	return $enabled;
 }
 
@@ -520,54 +512,51 @@ function wptravel_send_email_payment( $booking_id ) {
 	$email          = new WP_Travel_Emails();
 	$reply_to_email = isset( $settings['wp_travel_from_email'] ) ? $settings['wp_travel_from_email'] : $site_admin_email;
 
-	if( apply_filters( 'wp_travel_send_payment_emails', true ) == true ){
+	// Send mail to admin if booking email is set to yes.
+	if ( 'yes' == $send_booking_email_to_admin ) {
+		// Admin Payment Email Vars.
+		$admin_payment_template = $email->wptravel_get_email_template( 'payments', 'admin' );
 
-		// Send mail to admin if booking email is set to yes.
-		if ( 'yes' == $send_booking_email_to_admin ) {
-			// Admin Payment Email Vars.
-			$admin_payment_template = $email->wptravel_get_email_template( 'payments', 'admin' );
+		$admin_message_data  = $admin_payment_template['mail_header'];
+		$admin_message_data .= $admin_payment_template['mail_content'];
+		$admin_message_data .= $admin_payment_template['mail_footer'];
+		$admin_message_data  = apply_filters( 'wp_travel_admin_payment_email', $admin_message_data, $booking_id );
 
-			$admin_message_data  = $admin_payment_template['mail_header'];
-			$admin_message_data .= $admin_payment_template['mail_content'];
-			$admin_message_data .= $admin_payment_template['mail_footer'];
-			$admin_message_data  = apply_filters( 'wp_travel_admin_payment_email', $admin_message_data, $booking_id );
-
-			// Admin message.
-			$admin_payment_message = str_replace( array_keys( $email_tags ), $email_tags, $admin_message_data );
-			// Admin Subject.
-			$admin_payment_subject = str_replace( array_keys( $email_tags ), $email_tags, $admin_payment_template['subject'] );
-
-			// To send HTML mail, the Content-type header must be set.
-			$headers = $email->email_headers( $reply_to_email, $client_email );
-			$payment_admin_mail = apply_filters( 'wp_travel_payment_admin_mail', true );
-			if ( $payment_admin_mail == true ) {
-				if ( ! wp_mail( $admin_email, $admin_payment_subject, $admin_payment_message, $headers ) ) {
-					WPTravel()->notices->add( __( 'Your Payment has been received but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
-				}
-			}
-		}
-
-		// Send email to client.
-		// Client Payment Email Vars.
-		$client_payment_template = $email->wptravel_get_email_template( 'payments', 'client' );
-
-		$client_message_data  = $client_payment_template['mail_header'];
-		$client_message_data .= $client_payment_template['mail_content'];
-		$client_message_data .= $client_payment_template['mail_footer'];
-		$client_message_data  = apply_filters( 'wp_travel_client_payment_email', $client_message_data, $booking_id );
-
-		// Client Payment message.
-		$client_payment_message = str_replace( array_keys( $email_tags ), $email_tags, $client_message_data );
-		// Client Payment Subject.
-		$client_payment_subject = str_replace( array_keys( $email_tags ), $email_tags, $client_payment_template['subject'] );
+		// Admin message.
+		$admin_payment_message = str_replace( array_keys( $email_tags ), $email_tags, $admin_message_data );
+		// Admin Subject.
+		$admin_payment_subject = str_replace( array_keys( $email_tags ), $email_tags, $admin_payment_template['subject'] );
 
 		// To send HTML mail, the Content-type header must be set.
-		$headers = $email->email_headers( $reply_to_email, $reply_to_email );
-		$payment_client_mail = apply_filters( 'wp_travel_payment_admin_mail', true );
-		if ( $payment_client_mail == true ) {
-			if ( ! wp_mail( $client_email, $client_payment_subject, $client_payment_message, $headers ) ) {
+		$headers = $email->email_headers( $reply_to_email, $client_email );
+		$payment_admin_mail = apply_filters( 'wp_travel_payment_admin_mail', true );
+		if ( $payment_admin_mail == true ) {
+			if ( ! wp_mail( $admin_email, $admin_payment_subject, $admin_payment_message, $headers ) ) {
 				WPTravel()->notices->add( __( 'Your Payment has been received but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
 			}
+		}
+	}
+
+	// Send email to client.
+	// Client Payment Email Vars.
+	$client_payment_template = $email->wptravel_get_email_template( 'payments', 'client' );
+
+	$client_message_data  = $client_payment_template['mail_header'];
+	$client_message_data .= $client_payment_template['mail_content'];
+	$client_message_data .= $client_payment_template['mail_footer'];
+	$client_message_data  = apply_filters( 'wp_travel_client_payment_email', $client_message_data, $booking_id );
+
+	// Client Payment message.
+	$client_payment_message = str_replace( array_keys( $email_tags ), $email_tags, $client_message_data );
+	// Client Payment Subject.
+	$client_payment_subject = str_replace( array_keys( $email_tags ), $email_tags, $client_payment_template['subject'] );
+
+	// To send HTML mail, the Content-type header must be set.
+	$headers = $email->email_headers( $reply_to_email, $reply_to_email );
+	$payment_client_mail = apply_filters( 'wp_travel_payment_admin_mail', true );
+	if ( $payment_client_mail == true ) {
+		if ( ! wp_mail( $client_email, $client_payment_subject, $client_payment_message, $headers ) ) {
+			WPTravel()->notices->add( __( 'Your Payment has been received but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
 		}
 	}
 

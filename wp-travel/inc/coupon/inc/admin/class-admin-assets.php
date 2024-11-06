@@ -14,9 +14,6 @@ if ( ! class_exists( 'WP_Travel_Coupons_Pro_Admin_Assets' ) ) :
 		/**
 		 * Constructor.
 		 */
-
-		public $assets_path;
-
 		public function __construct() {
 			$this->assets_path = plugin_dir_url( WP_TRAVEL_COUPON_PRO_PLUGIN_FILE );
 			add_action( 'admin_enqueue_scripts', array( $this, 'styles' ) );

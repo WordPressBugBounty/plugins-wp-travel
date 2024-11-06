@@ -24,6 +24,7 @@ $wptravel_all_travelers_fields_require = apply_filters( 'wp_travel_require_all_t
 $wptravel_form_fw                      = new WP_Travel_FW_Form();
 $wptravel_form_field                   = new WP_Travel_FW_Field();
 $wptravel_trips                        = $trips;
+
 $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 ?>
 <form method="POST" action="<?php echo esc_url( $_SERVER['REQUEST_URI'] ); ?>" class="wp-travel-booking" id="wp-travel-booking" enctype="multipart/form-data">
@@ -125,7 +126,8 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 													if ( $i > 0 ) {
 														$wptravel_field['default'] = ''; // make empty default if other than lead traveler.
 													}
-													if( isset($wptravel_settings['enable_multiple_checkout']) && $wptravel_settings['enable_multiple_checkout'] == 'no' && isset( $wptravel_field['validations']['specific_trip'] ) && $wptravel_field['validations']['specific_trip'] == '1'  ){
+													if( isset( $wptravel_field['validations']['specific_trip'] ) && $wptravel_field['validations']['specific_trip'] == '1'  ){
+			
 														if( isset( $wptravel_field['trip_ids'] ) && in_array( $wptravel_trip_id, explode( ',', $wptravel_field['trip_ids'] ) ) ){
 															if ( ! $wptravel_all_travelers_fields_require && $wptravel_field['validations']['specific_trip'] !== '1' ) {
 																// Added to control over required fields for travellers @since 3.1.3.
@@ -176,7 +178,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 														if ( $i > 0 ) {
 															$wptravel_field['default'] = ''; // make empty default if other than lead traveler.
 														}
-														if( isset($wptravel_settings['enable_multiple_checkout']) && $wptravel_settings['enable_multiple_checkout'] == 'no' && isset( $wptravel_field['validations']['specific_trip'] ) && $wptravel_field['validations']['specific_trip'] == '1'  ){
+														if( isset( $wptravel_field['validations']['specific_trip'] ) && $wptravel_field['validations']['specific_trip'] == '1'  ){
 															if( in_array( $wptravel_trip_id, explode( ',', $wptravel_field['trip_ids'] ) ) ){
 																if ( ! $wptravel_all_travelers_fields_require && $wptravel_field['validations']['specific_trip'] !== '1' ) {
 																	// Added to control over required fields for travellers @since 3.1.3.

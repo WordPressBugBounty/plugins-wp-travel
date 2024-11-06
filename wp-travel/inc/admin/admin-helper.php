@@ -22,48 +22,6 @@ function wptravel_marketplace_page() {
 
 	// Hardcoded themes data.
 	$themes_data = array(
-		'trovity'     => array(
-			'name'       => __( 'Trovity', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/trovity/1.0.2/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/trovity/',
-			'detail_url' => 'https://wensolutions.com/themes/trovity/',
-		),
-		'triphub'     => array(
-			'name'       => __( 'Triphub', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/triphub/1.0.2/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/triphub/',
-			'detail_url' => 'https://wensolutions.com/themes/triphub/',
-		),
-		'travel-elemento'     => array(
-			'name'       => __( 'Travel Elemento', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/travel-elemento/1.0.2/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/travel-elemento/',
-			'detail_url' => 'https://wensolutions.com/themes/travel-elemento/',
-		),
-		'travel-mates'     => array(
-			'name'       => __( 'Travel Mates', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/travel-mates/1.0.2/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/travel-mates/',
-			'detail_url' => 'https://wensolutions.com/themes/travel-mates/',
-		),
-		'travelyo'     => array(
-			'name'       => __( 'Travelyo', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/travelyo/1.0.3/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/travelyo/',
-			'detail_url' => 'https://wensolutions.com/themes/travelyo/',
-		),
-		'travelsolution'     => array(
-			'name'       => __( 'Travelsolution', 'wp-travel' ),
-			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/travelsolution/1.0.7/screenshot.png?w=post-thumbnail&strip=all',
-			'demo_url'   => 'https://wpdemo.wensolutions.com/travelsolution/',
-			'detail_url' => 'https://wensolutions.com/themes/travel-solution/',
-		),
 		'travel-knock'     => array(
 			'name'       => __( 'Travel Knock', 'wp-travel' ),
 			'type'       => 'free',
@@ -81,7 +39,7 @@ function wptravel_marketplace_page() {
 		'travelin'     => array(
 			'name'       => __( 'Travelin', 'wp-travel' ),
 			'type'       => 'free',
-			'img_url'    => 'https://i0.wp.com/themes.svn.wordpress.org/travelin/1.0.2/screenshot.png?w=post-thumbnail&strip=all',
+			'img_url'    => 'http://wpdemo.wensolutions.com/travelin/wp-content/uploads/sites/17/2023/11/screenshot-1-min-1.png',
 			'demo_url'   => 'https://wpdemo.wensolutions.com/travelin/',
 			'detail_url' => 'https://wensolutions.com/themes/travelin/',
 		),
@@ -631,7 +589,7 @@ function wptravel_get_travel_guide_upsell(){
 		?>	
 		<div class="components-notice is-warning">
 			<div class="components-notice__content">
-				<p><?php esc_html_e( 'Travel Guides is currently disabled please go to Modules Settings to enable it and reload the page.', 'wp-travel' ); ?></p>
+				<p>Travel Guides is currently disabled please go to Modules Settings to enable it and reload the page. </p>
 				<div class="components-notice__actions">
 
 				</div>
@@ -664,7 +622,7 @@ function wptravel_get_download_upsell() {
 				$active = 'yes' === $modules['show_wp_travel_downloads'];
 				if ( ! $active ) {
 					?>
-					<p><?php esc_html_e( 'Downloads is currently disabled please go to Modules Settings to enable it and reload the page.', 'wp-travel' ); ?></p>
+					<p>Downloads is currently disabled please go to Modules Settings to enable it and reload the page.</p>
 					<?php
 				}
 			}
@@ -695,7 +653,7 @@ function wptravel_custom_filters_upsell() {
 				$active = 'yes' === $modules['show_wp_travel_custom_filters'];
 				if ( ! $active ) {
 					?>
-					<p><?php esc_html_e( 'Custom Filters is currently disabled please go to Modules Settings to enable it and reload the page.', 'wp-travel' ); ?></p>
+					<p>Custom Filters is currently disabled please go to Modules Settings to enable it and reload the page.</p>
 					<?php
 				}
 			}
@@ -1304,7 +1262,7 @@ function wptravel_extras_pro_option_fields() {
 			$active = 'yes' === $modules['show_wp_travel_tour_extras'];
 			if ( ! $active ) {
 				?>
-				<tr class="pro-options-note"><td colspan="2"><p><?php esc_html_e( 'Trip Extras is currently disabled please go to Modules Settings to enable it and reload the page.', 'wp-travel' ); ?></p></td></tr>
+				<tr class="pro-options-note"><td colspan="2"><p>Trip Extras is currently disabled please go to Modules Settings to enable it and reload the page.</p></td></tr>
 				<?php
 			}
 		}

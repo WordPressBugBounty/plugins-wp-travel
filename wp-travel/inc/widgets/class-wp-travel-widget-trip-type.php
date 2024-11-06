@@ -71,9 +71,9 @@ class WP_Travel_Widget_Trip_Type extends WP_Widget {
 				),
 			);
 		}
-		$itineraries = new WP_Query( $args );
+		$itineraries = new WP_Query( $args ); ?>
 
-		if ( $itineraries->have_posts() ) : ?>
+		<?php if ( $itineraries->have_posts() ) : ?>
 
 		<div class="wp-travel-itinerary-items">
 			<?php if ( 'grid' == $view_mode ) : ?> 
@@ -84,9 +84,9 @@ class WP_Travel_Widget_Trip_Type extends WP_Widget {
 
 				<div class="wp-travel-itinerary-list">
 
-			<?php endif;
+			<?php endif; ?>
 
-				
+				<?php
 				while ( $itineraries->have_posts() ) :
 					$itineraries->the_post();
 
@@ -103,9 +103,9 @@ class WP_Travel_Widget_Trip_Type extends WP_Widget {
 
 				endwhile;
 				wp_reset_postdata();
-			
+				?>
 
-			if ( 'grid' == $view_mode ) : ?> 
+			<?php if ( 'grid' == $view_mode ) : ?> 
 							
 				</ul>
 

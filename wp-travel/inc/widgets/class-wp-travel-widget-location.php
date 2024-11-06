@@ -84,8 +84,9 @@ class WP_Travel_Widget_Location extends WP_Widget {
 
 				<div class="wp-travel-itinerary-list">
 
-			<?php endif;
+			<?php endif; ?>
 
+				<?php
 				while ( $itineraries->have_posts() ) :
 					$itineraries->the_post();
 
@@ -101,9 +102,10 @@ class WP_Travel_Widget_Location extends WP_Widget {
 					endif;
 
 				endwhile;
-				wp_reset_postdata();				
+				wp_reset_postdata();
+				?>
 
-			if ( 'grid' == $view_mode ) : ?> 
+			<?php if ( 'grid' == $view_mode ) : ?> 
 							
 				</ul>
 

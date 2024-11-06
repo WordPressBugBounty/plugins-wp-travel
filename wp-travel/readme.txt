@@ -1,10 +1,10 @@
  === WP Travel - Ultimate Travel Booking System, Tour Management Engine ===
-Contributors: wptravel
+Contributors: wptravel, suascat_wp
 Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 9.7.0
+Stable tag: 9.8.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -400,6 +400,24 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 9.8.0 =
+Release Date: 6th November 2024
+
+Fixes:
+* Fixed the issue with coupon code on onpage booking
+* Fixed datepicker issue ( unable to select year and month )
+* Fixed the date format issue on checkout page
+* Fixed booking link issue on admin booking email
+
+Enhancements:
+* Added code to show trip end date on checkout page ( incase of trip duration ( days ) is set )
+* Added wp_rest nonce in import/export route for proper authentication
+* Sanitized the import/export data before importing settings data
+* Added permission callback on import/export rest route
+
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v9-7-0-update-release-note).**
 
 = 9.7.0 =
 Release Date: 16th October 2024

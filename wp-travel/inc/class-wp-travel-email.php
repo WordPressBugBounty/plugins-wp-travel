@@ -345,7 +345,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				'{itinerary_link}'         => get_permalink( $trip_id ),
 				'{itinerary_title}'        => wptravel_get_trip_pricing_name( $trip_id, $price_key ),
 				'{booking_id}'             => $booking_id,
-				'{booking_edit_link}'      => get_edit_post_link( $booking_id ),
+				'{booking_edit_link}'      => admin_url( 'post.php?post='.$booking_id.'&action=edit' ),
 				'{booking_no_of_pax}'      => $pax,
 				'{booking_scheduled_date}' => esc_html__( 'N/A', 'wp-travel' ), // always N/A. Need to remove this in future.
 				'{booking_arrival_date}'   => wptravel_format_date( $arrival_date ),
@@ -508,7 +508,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				'{currency}'               => wptravel_get_currency_symbol(),
 				'{booking_id}'             => $booking_id,
 				'{booking_no_of_pax}'      => $total_pax,
-				'{booking_edit_link}'      => get_edit_post_link( $booking_id ),
+				'{booking_edit_link}'      => admin_url( 'post.php?post='.$booking_id.'&action=edit' ),
 				'{booking_coupon_code}'    => $coupon_code,
 				'{customer_note}'          => $customer_note,
 				'{bank_deposit_table}'     => $bank_deposit_table,

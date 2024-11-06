@@ -142,10 +142,8 @@ class WP_Travel_FW_Field {
 		?>
 			<div class="wp-travel-form-field <?php echo esc_attr( $classes ); ?>">
 				<label for="<?php echo esc_attr( $field['id'] ); ?>">
-					<?php 
-						echo esc_attr( $field['label'] );
-						if ( isset( $field['validations']['required'] ) ) { 
-					?>
+					<?php echo esc_attr( $field['label'] ); ?>
+					<?php if ( isset( $field['validations']['required'] ) ) { ?>
 						<span class="required-label">*</span>
 					<?php } ?>
 				</label>
@@ -182,17 +180,22 @@ class WP_Travel_FW_Field {
 			'value' => true,
 			'rows' => true,
 			'cols' => true,
+			'required' => true,
+			'data-parsley-required' => true,
 		);
 		$allow_html[ 'select' ] = array(
 			'id' => true,
 			'class' => true,
-			'data-parsley-required' => true,
 			'name' => true,
+			'required' => true,
+			'data-parsley-required' => true,
 		);
 		$allow_html[ 'option' ] = array(
 			'class' => true,
 			'value' => true,
-			'selected' => true
+			'selected' => true,
+			'required' => true,
+			'data-parsley-required' => true,
 		);
 		$allow_html[ 'label' ] = array(
 			'class' => true,
@@ -224,36 +227,6 @@ class WP_Travel_FW_Field {
 		$allow_html[ 'tr' ] = array();
 		$allow_html[ 'td' ] = array();
 		$allow_html[ 'h1' ] = array(
-			'class' => true,
-			'id' => true,
-			'style' => true
-		);
-
-		$allow_html[ 'h2' ] = array(
-			'class' => true,
-			'id' => true,
-			'style' => true
-		);
-
-		$allow_html[ 'h3' ] = array(
-			'class' => true,
-			'id' => true,
-			'style' => true
-		);
-
-		$allow_html[ 'h4' ] = array(
-			'class' => true,
-			'id' => true,
-			'style' => true
-		);
-
-		$allow_html[ 'h5' ] = array(
-			'class' => true,
-			'id' => true,
-			'style' => true
-		);
-
-		$allow_html[ 'h6' ] = array(
 			'class' => true,
 			'id' => true,
 			'style' => true
@@ -306,11 +279,6 @@ class WP_Travel_FW_Field {
 			'placeholder' => true,
 			'required' => true,
 			'data-parsley-required' => true,
-			'maxlength' => true,
-			'data-parsley-maxlength' => true,
-			'pattern' => true,
-			'data-parsley-pattern' => true,
-			'data-parsley-errors-container' => true
 		);
 		$allow_html[ 'textarea' ] = array(
 			'type' => true,
@@ -320,12 +288,15 @@ class WP_Travel_FW_Field {
 			'value' => true,
 			'rows' => true,
 			'cols' => true,
+			'required' => true,
+			'data-parsley-required' => true,
 		);
 		$allow_html[ 'select' ] = array(
 			'id' => true,
 			'class' => true,
-			'data-parsley-required' => true,
 			'name' => true,
+			'required' => true,
+			'data-parsley-required' => true,
 		);
 		$allow_html[ 'option' ] = array(
 			'class' => true,

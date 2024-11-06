@@ -81,8 +81,8 @@ if ( ! class_exists( 'Wptravel_Term_Meta' ) ) {
 				<input type="hidden" id="category-image-id" name="wp_travel_trip_type_image_id" class="custom_media_url" value="">
 				<div id="category-image-wrapper"></div>
 				<p>
-				<input type="button" class="button button-secondary wp_travel_tax_media_button" id="wp_travel_tax_media_button" name="wp_travel_tax_media_button" value="<?php echo esc_attr__( 'Add Image', 'wp-travel' ); ?>" />
-				<input type="button" class="button button-secondary wp_travel_tax_media_remove" id="wp_travel_tax_media_remove" name="wp_travel_tax_media_remove" value="<?php echo esc_attr__( 'Remove Image', 'wp-travel' ); ?>" />
+				<input type="button" class="button button-secondary wp_travel_tax_media_button" id="wp_travel_tax_media_button" name="wp_travel_tax_media_button" value="<?php echo esc_html__( 'Add Image', 'wp-travel' ); ?>" />
+				<input type="button" class="button button-secondary wp_travel_tax_media_remove" id="wp_travel_tax_media_remove" name="wp_travel_tax_media_remove" value="<?php echo esc_html__( 'Remove Image', 'wp-travel' ); ?>" />
 				</p>
 			</div>
 			<?php
