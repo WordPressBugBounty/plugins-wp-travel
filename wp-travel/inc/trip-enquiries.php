@@ -126,7 +126,7 @@ function wptravel_get_enquiries_form( $trips_dropdown = false ) {
 		);
 	}
 	$policy_link = wptravel_privacy_link();
-	if ( ! empty( $gdpr_msg ) && $policy_link ) {
+	if ( ! empty( $gdpr_msg ) && $policy_link && apply_filters( 'wptravel_enable_privarcy_policy_checkout_box_enquiry_form', true ) == true ) {
 		// GDPR Compatibility for enquiry.
 		$fields['wp_travel_enquiry_gdpr'] = array(
 			'type'              => 'checkbox',

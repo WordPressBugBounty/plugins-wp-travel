@@ -315,7 +315,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 
 			if( apply_filters( 'wptravel_traveller_salutation', true ) ==  true ){
 				if( $customer_gender == 'male' ){
-					$salutation = __( 'Mrss ', 'wp-travel' );
+					$salutation = __( 'Mr ', 'wp-travel' );
 				}elseif( $customer_gender == 'female' ){
 					$salutation = __( 'Ms ', 'wp-travel' );
 				}else{
@@ -323,6 +323,10 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				}
 			}else{
 				$salutation = '';
+			}
+
+			if( isset( $requests[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ){
+				$salutation = $requests[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ][$first_key][0] . ' ';
 			}
 
 			$customer_name    = $salutation.$first_name . ' ' . $last_name;
@@ -444,9 +448,10 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 			reset( $first_name );
 			$first_key = key( $first_name );
 
-			if( isset( $request_data[ apply_filters( 'wptravel_salutation_input_field_name', 'salutation' ) ] ) ){
-				$salutation = $request_data[ apply_filters( 'wptravel_salutation_input_field_name', 'salutation' ) ][$first_key][0] . ' ';
+			if( isset( $request_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ){
+				$salutation = $request_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ][$first_key][0] . ' ';
 			}
+			
 
 			$first_name = isset( $first_name[ $first_key ] ) && isset( $first_name[ $first_key ][0] ) ? $first_name[ $first_key ][0] : '';
 			$last_name  = isset( $last_name[ $first_key ] ) && isset( $last_name[ $first_key ][0] ) ? $last_name[ $first_key ][0] : '';
