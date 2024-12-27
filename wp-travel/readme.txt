@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 9.9.0
+Stable tag: 10.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -401,6 +401,21 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 10.0.0 =
+Release Date: 27th December 2024
+
+Fixes:
+* Fixed the issue of salutation on booking conformation emails
+* Fixed the issue with standard paypal payment module -  ( payment details not saved on booking table )
+* Fixed issue with partial payment on standard paypal payment module
+* Fixed conflict issue with bank deposit payment module and partial payment
+
+Enhancements:
+* Set privacy policy checkbox unchecked by default on Onpage booking
+* Slight change on price and date setting of trip – modified code so that trip duration available for fixed departure
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-0-0-update-release-note).**
+
 = 9.9.0 =
 Release Date: 3rd December 2024
 
@@ -408,7 +423,7 @@ Fixes:
 * Fixed an issue where the booking table displayed an empty input field from the checkout form.
 * Fixed the problem of non-selected trip extras appearing on the checkout page.
 
-Enhancements:
+
 * Added HTML rendering support for "trip checkout info."
 * Added support for displaying the trip return date in different booking formats.
 

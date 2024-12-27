@@ -11,7 +11,7 @@
  * @since 1.7.5
  */
 function wptravel_book_now() {
-	
+
 	$settings = wptravel_get_settings();
 	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
 		if( !isset( $_REQUEST['key']) ){
@@ -351,9 +351,15 @@ function wptravel_book_now() {
 	 *
 	 * @since 1.0.5 // For Payment.
 	 */
+	
 	do_action( 'wp_travel_after_frontend_booking_save', $booking_id, $first_key ); // phpcs:ignore
 	do_action( 'wptravel_after_frontend_booking_save', $booking_id, $first_key );
-
+	
+	if( $_POST['wp_travel_payment_gateway'] == 'paypal' ){
+	
+		do_action( 'wp_travel_standard_paypal_payment_process', $booking_id, $_POST['complete_partial_payment'] );
+	}
+	
 	// Temp fixes [add payment id in case of booking only].
 
 	$payment_id = get_post_meta( $booking_id, 'wp_travel_payment_id', true );

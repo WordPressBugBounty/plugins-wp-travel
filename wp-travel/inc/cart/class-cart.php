@@ -306,9 +306,12 @@ class WP_Travel_Cart {
 
 		$cart_items = WPTravel()->session->set( $this->cart_id, $cart );
 		// Cookie data to enable data info in js.
-		ob_start();
-		setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
-		ob_end_flush();
+		if( !is_admin() ){
+			ob_start();
+				setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
+			ob_end_flush();
+		}
+		
 		
 	}
 	/**

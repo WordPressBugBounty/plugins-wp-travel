@@ -29,7 +29,7 @@ add_action( 'wp_travel_after_frontend_booking_save', 'wptravel_booking_bank_depo
 
 function wptravel_submit_bank_deposit_slip() {
 
-	if ( isset( $_POST['complete_partial_payment'] ) ) { 
+	if ( isset( $_POST['complete_partial_payment'] ) && isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'bank_deposit' ) { 
 		$payment_gateway = 'bank_deposit';
 
 		$booking_id      = sanitize_text_field( wp_unslash( $_POST['wp_travel_booking_id'] ) );

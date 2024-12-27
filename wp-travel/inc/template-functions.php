@@ -2198,7 +2198,7 @@ function wptravel_archive_listing_sidebar() {
  */
 function wptravel_posts_filter( $query ) {
 
-	if ( ! WP_Travel::verify_nonce( true ) ) {	
+	if ( ! WP_Travel::verify_nonce( true ) && !is_admin()) {	
 
 		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		
@@ -2209,10 +2209,13 @@ function wptravel_posts_filter( $query ) {
 				$query->set( 'order', apply_filters( 'wp_travel_list_tour_extras_orders', '' ) );
 			}
 		} else {
-			if ( is_archive() && !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {
+			if ( !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {
+			// if ( is_archive() && !is_admin() && apply_filters( 'wp_travel_list_trips_orders', '' ) != '' ) {
+			
 				$query->set( 'orderby', 'post_title' );
 				$query->set( 'order', apply_filters( 'wp_travel_list_trips_orders', '' ) );
 			}
+			
 		}
 			
 		return $query;
