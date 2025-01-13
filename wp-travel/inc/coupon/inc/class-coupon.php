@@ -53,7 +53,7 @@ class WP_Travel_Coupon {
 			AND meta_value = %s
 		",
 			$meta_key,
-			esc_sql( $string )
+			$string
 		);
 
 		$results = $wpdb->get_results( $sql );

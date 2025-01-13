@@ -31,6 +31,7 @@ function wptravel_get_booking_data() {
 	 * We are checking nonce using WP_Travel::verify_nonce(); method.
 	 */
 	$submission_request = isset( $_REQUEST ) ? wptravel_sanitize_array( wp_unslash( $_REQUEST ) ) : array(); // @phpcs:ignore
+	
 
 	if( !isset( $submission_request['booking_stat_from'] ) ){
 		return;
@@ -38,20 +39,20 @@ function wptravel_get_booking_data() {
 
 	$from_date = '';
 	if ( isset( $submission_request['booking_stat_from'] ) && '' !== $submission_request['booking_stat_from'] ) {
-		$from_date = $submission_request['booking_stat_from'];
+		$from_date = sanitize_text_field( $submission_request['booking_stat_from'] );
 	}
 	$to_date = '';
 	if ( isset( $submission_request['booking_stat_to'] ) && '' !== $submission_request['booking_stat_to'] ) {
-		$to_date = $submission_request['booking_stat_to'] . ' 23:59:59';
+		$to_date = sanitize_text_field( $submission_request['booking_stat_to'] ). ' 23:59:59';
 	}
 	$country = '';
 	if ( isset( $submission_request['booking_country'] ) && '' !== $submission_request['booking_country'] ) {
-		$country = $submission_request['booking_country'];
+		$country = sanitize_text_field( $submission_request['booking_country'] );
 	}
 
 	$itinerary = '';
 	if ( isset( $submission_request['booking_itinerary'] ) && '' !== $submission_request['booking_itinerary'] ) {
-		$itinerary = $submission_request['booking_itinerary'];
+		$itinerary = absint( $submission_request['booking_itinerary'] );
 	}
 
 	// Stat Data Array
@@ -61,14 +62,14 @@ function wptravel_get_booking_data() {
 		$initial_load = false;
 
 		if ( '' !== $itinerary ) {
-			$where             .= " and itinerary_id={$itinerary} ";
+			$where .= $wpdb->prepare( " AND itinerary_id = %d", $itinerary );
 			$top_country_where .= $where;
-			$groupby           .= ' itinerary_id,';
+			$groupby .= ' itinerary_id,';
 		}
 		if ( '' !== $country ) {
-			$where               .= " and country='{$country}'";
-			$top_itinerary_where .= " and country='{$country}'";
-			$groupby             .= ' country,';
+			$where .= $wpdb->prepare( " AND country = %s", $country );
+			$top_itinerary_where .= $wpdb->prepare( " AND country = %s", $country );
+			$groupby .= ' country,';
 		}
 
 		if ( '' !== $from_date && '' !== $to_date ) {
@@ -78,9 +79,9 @@ function wptravel_get_booking_data() {
 			$booking_from = gmdate( $date_format, strtotime( $from_date ) );
 			$booking_to   = gmdate( $date_format, strtotime( $to_date ) );
 
-			$where               .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
-			$top_country_where   .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
-			$top_itinerary_where .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
+			$where .= $wpdb->prepare( " AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to );
+			$top_country_where .= $wpdb->prepare( " AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to );
+			$top_itinerary_where .= $wpdb->prepare( " AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to );
 		}
 		$limit       = '';
 		$query_limit = null;
@@ -278,20 +279,20 @@ function wptravel_get_booking_data() {
 
 		$compare_from_date = '';
 		if ( isset( $submission_request['compare_stat_from'] ) && '' !== $submission_request['compare_stat_from'] ) {
-			$compare_from_date = $submission_request['compare_stat_from'];
+			$compare_from_date = sanitize_text_field( $submission_request['compare_stat_from'] );
 		}
 		$compare_to_date = '';
 		if ( isset( $submission_request['compare_stat_to'] ) && '' !== $submission_request['compare_stat_to'] ) {
-			$compare_to_date = $submission_request['compare_stat_to'] . ' 23:59:59';
+			$compare_to_date = sanitize_text_field( $submission_request['compare_stat_to'] ) . ' 23:59:59';
 		}
 		$compare_country = '';
 		if ( isset( $submission_request['compare_country'] ) && '' !== $submission_request['compare_country'] ) {
-			$compare_country = $submission_request['compare_country'];
+			$compare_country = sanitize_text_field( $submission_request['compare_country'] );
 		}
 
 		$compare_itinerary = '';
 		if ( isset( $submission_request['compare_itinerary'] ) && '' !== $submission_request['compare_itinerary'] ) {
-			$compare_itinerary = $submission_request['compare_itinerary'];
+			$compare_itinerary = sanitize_text_field( $submission_request['compare_itinerary'] );
 		}
 
 		// Setting conditions.
@@ -300,13 +301,13 @@ function wptravel_get_booking_data() {
 			$initial_load = false;
 
 			if ( '' !== $compare_itinerary ) {
-				$where             .= " and itinerary_id={$compare_itinerary} ";
+				$where             .= $wpdb->prepare(" AND itinerary_id = %d", $compare_itinerary);
 				$top_country_where .= $where;
 				$groupby           .= ' itinerary_id,';
 			}
 			if ( '' !== $compare_country ) {
-				$where               .= " and country='{$compare_country}'";
-				$top_itinerary_where .= " and country='{$compare_country}'";
+				$where               .= $wpdb->prepare(" AND country = %s", $compare_country);
+				$top_itinerary_where .= $wpdb->prepare(" AND country = %s", $compare_country);
 				$groupby             .= ' country,';
 			}
 
@@ -314,12 +315,12 @@ function wptravel_get_booking_data() {
 
 				$date_format = 'Y-m-d H:i:s';
 
-				$booking_from = date( $date_format, strtotime( $compare_from_date ) );
-				$booking_to   = date( $date_format, strtotime( $compare_to_date ) );
+				$booking_from = gmdate( $date_format, strtotime( $compare_from_date ) );
+				$booking_to   = gmdate( $date_format, strtotime( $compare_to_date ) );
 
-				$where               .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
-				$top_country_where   .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
-				$top_itinerary_where .= " and post_date >= '{$booking_from}' and post_date <= '{$booking_to}' ";
+				$where .= $wpdb->prepare(" AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to);
+				$top_country_where .= $wpdb->prepare(" AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to);
+				$top_itinerary_where .= $wpdb->prepare(" AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to);
 			}
 			$limit = '';
 		}
@@ -387,7 +388,7 @@ function wptravel_get_booking_data() {
 		if ( is_array( $results ) && count( $results ) > 0 ) {
 			foreach ( $results as $result ) {
 				$label_date                               = $result->wt_year . '-' . $result->wt_month . '-' . $result->wt_day;
-				$label_date                               = date( $date_format, strtotime( $label_date ) );
+				$label_date                               = gmdate( $date_format, strtotime( $label_date ) );
 				$temp_compare_data['data'][ $label_date ] = $result->wt_total;
 
 				$max_bookings += (int) $result->wt_total;
@@ -457,11 +458,11 @@ function wptravel_get_booking_data() {
 		}
 		// Compare Calculation ends here.
 		if ( '' !== $compare_from_date ) {
-			$compare_from_date = date( 'm/d/Y', strtotime( $compare_from_date ) );
+			$compare_from_date = gmdate( 'm/d/Y', strtotime( $compare_from_date ) );
 		}
 
 		if ( '' !== $compare_to_date ) {
-			$compare_to_date = date( 'm/d/Y', strtotime( $compare_to_date ) );
+			$compare_to_date = gmdate( 'm/d/Y', strtotime( $compare_to_date ) );
 		}
 
 		$compare_additional_data = array(

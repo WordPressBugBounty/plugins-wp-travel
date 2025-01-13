@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 10.0.0
+Stable tag: 10.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -401,6 +401,15 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 10.0.1 =
+Release Date: 09th January 2025
+
+Fixes:
+* Added missing text domains for translatable strings
+* Escaped all output data to prevent potential XSS vulnerabilities in areas where escaping was previously missing
+* Ensured all SQL queries use $wpdb->prepare() to prevent SQL injection risks
+* Replaced date() by gmdate()
+
 = 10.0.0 =
 Release Date: 27th December 2024
 
@@ -415,6 +424,7 @@ Enhancements:
 * Slight change on price and date setting of trip – modified code so that trip duration available for fixed departure
 
 **For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-0-0-update-release-note).**
+
 
 = 9.9.0 =
 Release Date: 3rd December 2024

@@ -248,7 +248,7 @@ class IpnListener
 
         // date and POST url
         for ($i=0; $i<80; $i++) { $r .= '-'; }
-        $r .= "\n[".date('m/d/Y g:i A').'] - '.$this->getPostUri();
+        $r .= "\n[".gmdate('m/d/Y g:i A').'] - '.$this->getPostUri();
         if ($this->use_curl) {
             $r .= " (curl)\n";
         } else {

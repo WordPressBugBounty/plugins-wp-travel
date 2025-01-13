@@ -44,6 +44,8 @@ function wptravel_book_now() {
 
 	// Start Booking Process.
 	$items = $wt_cart->getItems();
+
+
 	if ( ! count( $items ) ) {
 		return;
 	}
@@ -165,6 +167,10 @@ function wptravel_book_now() {
 			}
 		}
 	}
+
+	if( isset( $_POST['wp_travel_checkout_gdpr_msg'] ) ){
+		$sanitized_data['privacy_policy'] = true;
+	}
 	
 
 	if( class_exists( 'WP_Travel_Pro' ) && isset( $settings['selected_booking_option'] ) && count( $settings['selected_booking_option'] ) == 1 && $settings['selected_booking_option'][0] = 'booking-with-payment' ){
@@ -216,7 +222,7 @@ function wptravel_book_now() {
 			);
 
 			if( ! empty( $upload[ 'error' ] ) ) {
-				wp_die( $upload[ 'error' ] );
+				wp_die( esc_html( $upload[ 'error' ] ) );
 			}
 
 			// it is time to add our uploaded image into WordPress media library

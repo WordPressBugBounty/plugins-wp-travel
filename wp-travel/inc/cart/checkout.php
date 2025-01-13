@@ -78,7 +78,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 					
 					for ( $i = 0; $i < $wptravel_repeator_count; $i++ ) : // @phpcs:ignore
 						?>
-						<div class="panel panel-default" data-child="<?php echo $i+1;?>">
+						<div class="panel panel-default" data-child="<?php echo absint( $i )+1;?>">
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<a class="accordion-toggle" data-toggle="collapse" data-parent="#checkout-accordion-<?php echo esc_attr( $wptravel_cart_id ); ?>" href="#collapse-<?php echo esc_attr( $wptravel_cart_id . '-' . $i ); ?>" aria-expanded="true">
@@ -261,7 +261,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 				if( apply_filters( 'wptravel_checkout_enable_media_input', false ) == true ): ?>
 					<div class="wp-travel-form-field ">
 						<label for="media_field">
-							<?php echo esc_html( apply_filters( 'wptravel_checkout_media_input_label', __( 'Upload Media' ) ) );?>									
+							<?php echo esc_html( apply_filters( 'wptravel_checkout_media_input_label', __( 'Upload Media', 'wp-travel' ) ) );?>									
 						</label>
 						<input type="file" id="wptravel_media_field" name="wptravel_checkout_media_field" value="" maxlength="60" data-parsley-maxlength="60" required>			
 					</div>

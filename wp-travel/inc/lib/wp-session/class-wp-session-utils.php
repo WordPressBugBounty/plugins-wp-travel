@@ -51,7 +51,7 @@ class WP_Session_Utils {
 			if ( false === $time ) {
 				$date = null;
 			} else {
-				$expires = date( 'U', strtotime( $date ) );
+				$expires = gmdate( 'U', strtotime( $date ) );
 			}
 		}
 

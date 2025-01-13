@@ -309,10 +309,11 @@ class Wp_Travel_Shortcodes {
 						$pagination_args = array(
 							'total'   => $query->max_num_pages,
 							'current' => $paged,
-							'prev_text' => __('&laquo;'),
-							'next_text' => __('&raquo;'),
+							'prev_text' => '&laquo;',
+							'next_text' => '&raquo;',
 						);
-						echo paginate_links($pagination_args);
+						$pagination = paginate_links($pagination_args);
+						echo wp_kses_post($pagination);
 						echo '</div>';
 					}
 				?>

@@ -186,7 +186,7 @@ class WpTravel_Helpers_Booking {
 												$date_format = $date['twentyfour_time_format'];
 											}
 										}
-										echo wp_travel_get_converted_time_format( $trip['trip_time'], $date_format );
+										echo esc_html( wp_travel_get_converted_time_format( $trip['trip_time'], $date_format ) );
 									?>										
 										
 									<?php endif; ?>
@@ -468,7 +468,7 @@ class WpTravel_Helpers_Booking {
 						?>
 						<thead>
 							<tr>
-								<th colspan="<?php echo $conspan; ?>"><?php esc_html_e( 'Trip : ', 'wp-travel' ); ?> <strong><?php echo esc_html( $title ); ?></strong> / <span class="my-order-pricing"><?php echo esc_html( $pricing_title ); ?></span></th>
+								<th colspan="<?php echo absint( $conspan ); ?>"><?php esc_html_e( 'Trip : ', 'wp-travel' ); ?> <strong><?php echo esc_html( $title ); ?></strong> / <span class="my-order-pricing"><?php echo esc_html( $pricing_title ); ?></span></th>
 							</tr>
 							<tr>
 								<th><?php esc_html_e( 'Traveler Name', 'wp-travel' ); ?></th>

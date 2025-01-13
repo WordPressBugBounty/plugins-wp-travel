@@ -1005,7 +1005,7 @@ function wptravel_single_keywords( $trip_id ) {
 	?>
 	<div id="wp-travel-trip-pickup-location">
 
-		<span><?php echo esc_html__( 'Pickup Locations: ', 'wp-travel' ) . get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )[0]; ?></span>
+		<span><?php echo esc_html__( 'Pickup Locations: ', 'wp-travel' ) . esc_html( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )[0] ); ?></span>
 		<ul class="location-lists">
 			<?php foreach( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true ) as $location ): ?>
 				<li class="location">
@@ -2272,7 +2272,7 @@ function wptravel_posts_filter( $query ) {
 					$date_format = get_option( 'date_format' );
 					// Convert to timestamp.
 					if ( ! $trip_start ) {
-						$trip_start = date( 'Y-m-d' );
+						$trip_start = gmdate( 'Y-m-d' );
 					}
 
 					$custom_meta = array(
