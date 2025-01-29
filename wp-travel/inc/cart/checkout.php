@@ -14,12 +14,13 @@ global $wt_cart;
 $wptravel_checkout_fields              = wptravel_get_checkout_form_fields();
 
 $wptravel_traveller_fields             = isset( $wptravel_checkout_fields['traveller_fields'] ) ? $wptravel_checkout_fields['traveller_fields'] : array();
-
+$wptravel_settings                     = wptravel_get_settings();
 
 $wptravel_billing_fields               = isset( $wptravel_checkout_fields['billing_fields'] ) ? $wptravel_checkout_fields['billing_fields'] : array();
 $wptravel_payment_fields               = isset( $wptravel_checkout_fields['payment_fields'] ) ? $wptravel_checkout_fields['payment_fields'] : array();
-$wptravel_settings                     = wptravel_get_settings();
+
 $wptravel_enable_multiple_travellers   = isset( $wptravel_settings['enable_multiple_travellers'] ) && $wptravel_settings['enable_multiple_travellers'] ? esc_html( $wptravel_settings['enable_multiple_travellers'] ) : 'no';
+$wptravel_enable_multiple_checkout   = isset( $wptravel_settings['enable_multiple_checkout'] ) && $wptravel_settings['enable_multiple_checkout'] ? esc_html( $wptravel_settings['enable_multiple_checkout'] ) : 'no';
 $wptravel_all_travelers_fields_require = apply_filters( 'wp_travel_require_all_travelers_fields', false ); // @phpcs:ignore
 $wptravel_form_fw                      = new WP_Travel_FW_Form();
 $wptravel_form_field                   = new WP_Travel_FW_Field();
@@ -59,7 +60,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 		}
 		?>
 		<div class="wp-travel-trip-details">
-			<?php if ( 'yes' === $wptravel_enable_multiple_travellers ) : ?>
+			<?php if ( 'yes' === $wptravel_enable_multiple_checkout ) : ?>
 				<div class="section-title text-left">
 					<h3><?php echo esc_html( $wptravel_pricing_name ); ?><!-- <small> / 8 days 7 nights</small> --></h3>
 				</div>

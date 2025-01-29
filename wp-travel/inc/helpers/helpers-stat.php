@@ -13,6 +13,7 @@
  */
 function wptravel_get_booking_data() {
 
+
 	global $wpdb;
 	$data = array();
 
@@ -120,6 +121,7 @@ function wptravel_get_booking_data() {
 				set_site_transient( '_transient_wt_booking_stat_data', $results );
 			}
 		}
+		
 
 		$temp_stat_data['data_label'] = __( 'Bookings', 'wp-travel' );
 		if ( isset( $submission_request['compare_stat'] ) && 'yes' === $submission_request['compare_stat'] ) {
@@ -157,6 +159,8 @@ function wptravel_get_booking_data() {
 		$temp_stat_data['data_bg_color']     = __( '#1DFE0E', 'wp-travel' );
 		$temp_stat_data['data_border_color'] = __( '#1DFE0E', 'wp-travel' );
 	}
+
+	
 
 	if ( is_array( $results ) && count( $results ) > 0 ) {
 		foreach ( $results as $result ) {

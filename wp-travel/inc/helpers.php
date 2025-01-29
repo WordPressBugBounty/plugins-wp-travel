@@ -756,7 +756,7 @@ function wptravel_search_form( $args = array() ) {
 						$taxonomy = 'itinerary_types';
 						$args     = array(
 							'show_option_all' => __( 'All', 'wp-travel' ),
-							'hide_empty'      => 0,
+							'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 							'selected'        => 1,
 							'hierarchical'    => 1,
 							'name'            => $taxonomy,
@@ -781,7 +781,7 @@ function wptravel_search_form( $args = array() ) {
 						$taxonomy = 'travel_locations';
 						$args     = array(
 							'show_option_all' => __( 'All', 'wp-travel' ),
-							'hide_empty'      => 0,
+							'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 							'selected'        => 1,
 							'hierarchical'    => 1,
 							'name'            => $taxonomy,
@@ -803,7 +803,7 @@ function wptravel_search_form( $args = array() ) {
 					$taxonomy = 'activity';
 					$args     = array(
 						'show_option_all' => __( 'All', 'wp-travel' ),
-						'hide_empty'      => 0,
+						'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 						'selected'        => 1,
 						'hierarchical'    => 1,
 						'name'            => $taxonomy,
@@ -4889,3 +4889,45 @@ function wp_travel_get_converted_time_format($trip_time, $trip_format )
 	echo " " , esc_html( $Meridien );
 
 }
+
+// function wptravel_custom_email_template_content(){
+
+// 	$custom_email_contents = array( 
+// 		'en-US' => array(
+// 			'email_template_powered_by_text' => '{sitename} - Powessssssssssred By: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none">WP Travel.</a>',
+// 			'booking_email_client_subject'   => 'test dasasdasdsad',
+// 			'booking_email_client_content' => '<table class="wp-travel-wrapper" style="color: #5d5d5d; font-family: Roboto, sans-serif; margin: auto;" width="100%" cellspacing="0" cellpadding="0">
+// 												<tbody>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td class="wp-travel-content-top" style="background: #fff; margin: 0; padding: 20px 25px;" colspan="2" align="left">
+// 												<p style="line-height: 1.55; font-size: 14px;">Hello eng tt {customer_name},</p>
+// 												<p style="line-height: 1.55; font-size: 14px;">Your bookddddddd dding has been received and is now being processed. Your order details are shown below for your reference:</p>
+// 												<p style="line-height: 1.55; font-size: 14px;"><b>Booking ID: <a style="color: #5a418b; text-decoration: none;" href="{booking_edit_link}" target="_blank" rel="noopener">#{booking_id}</a> ({booking_arrival_date})</b></p>
+// 												</td>
+// 												</tr>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{booking_details}</td>
+// 												</tr>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{traveler_details}</td>
+// 												</tr>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left"><b>Note</b></td>
+// 												</tr>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" align="left"><b>Customer Note</b></td>
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" align="left">{customer_note}</td>
+// 												</tr>
+// 												<tr class="wp-travel-content" style="background: #fff;">
+// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{bank_deposit_table}</td>
+// 												</tr>
+// 												</tbody>
+// 												</table>'
+// 		),
+// 		'chisese' => array(
+			
+// 		)
+// 	);
+
+// 	return $custom_email_contents;
+// }

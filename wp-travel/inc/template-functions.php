@@ -1224,7 +1224,7 @@ function wptravel_frontend_trip_facts( $trip_id ) {
 											echo esc_html( $val );
 										}
 										if ( $count > 1 && $i !== $count ) {
-											esc_html_e( ',', 'wp-travel' );
+											esc_html_e( ', ', 'wp-travel' );
 										}
 										$i++;
 									}
@@ -2037,7 +2037,9 @@ function wptravel_archive_filter_by( $submission_get = array() ) {
 			</div>
 		<?php endif; ?>
 		<div class="wp-toolbar-filter-field wt-filter-by-itinerary-types">
+			
 			<?php
+	
 			wp_dropdown_categories(
 				array(
 					'taxonomy'          => 'itinerary_types',
@@ -2045,6 +2047,7 @@ function wptravel_archive_filter_by( $submission_get = array() ) {
 					'class'             => 'wp_travel_input_filters type',
 					'show_option_none'  => esc_html( $trip_type_text ),
 					'option_none_value' => '',
+					'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 					'selected'          => $type,
 					'value_field'       => 'slug',
 				)
@@ -2060,6 +2063,7 @@ function wptravel_archive_filter_by( $submission_get = array() ) {
 					'class'             => 'wp_travel_input_filters location',
 					'show_option_none'  => esc_html( $location_text ),
 					'option_none_value' => '',
+					'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 					'selected'          => $location,
 					'value_field'       => 'slug',
 				)

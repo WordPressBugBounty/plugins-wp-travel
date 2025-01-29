@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 10.0.1
+Stable tag: 10.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -400,6 +400,22 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 10.1.0 =
+Release Date: 28th January 2025
+
+Fixes:
+* Fixed issue with Standard PayPal payment module on OnPage booking
+
+Enhancements:
+* Updated language file
+* Added support hook for implement custom payment options on OnPage booking
+* Added default text for Privacy Policy checkbox
+* Added a 'privacy_policy' key on 'order_data' post meta of booking post type 
+* Included Privacy Policy accepted text on the booking table in case if privacy policy is accepted on checkout process  
+
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-1-0-update-release-note).**
 
 = 10.0.1 =
 Release Date: 09th January 2025
