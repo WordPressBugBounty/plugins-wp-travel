@@ -61,6 +61,7 @@ class WpTravel_Helpers_Localize {
 			$_wp_travel['rdp_locale']         = $rdp_locale;
 			$_wp_travel['time_format']        = get_option( 'time_format' );
 			$_wp_travel['date_format']        = get_option( 'date_format' );
+			$_wp_travel['bank_description']   = $settings['wp_travel_bank_deposit_description'] ? $settings['wp_travel_bank_deposit_description'] : '';
 			$_wp_travel['currency']           = $settings['currency'];
 			$_wp_travel['currency_position']  = $settings['currency_position'];
 			$_wp_travel['decimal_separator']  = $settings['decimal_separator'] ? $settings['decimal_separator'] : '.';
@@ -282,6 +283,11 @@ class WpTravel_Helpers_Localize {
 				'compare_stat'      => false,
 			);
 			if ( isset( $_REQUEST['compare_stat'] ) && 'yes' === $_REQUEST['compare_stat'] ) { // phpcs:ignore
+				$permission =  WP_Travel::verify_nonce( true );
+				if ( ! $permission ) {
+					return;
+				}
+
 				$compare_stat_from = isset( $booking_data['compare_stat_from'] ) ? $booking_data['compare_stat_from'] : '';
 				$compare_stat_to   = isset( $booking_data['compare_stat_to'] ) ? $booking_data['compare_stat_to'] : '';
 

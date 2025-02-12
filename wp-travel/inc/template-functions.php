@@ -1521,6 +1521,8 @@ function wptravel_get_review_count( $trip_id = null ) {
 	}
 	// No meta data? Do the calculation.
 	if ( ! metadata_exists( 'post', $trip_id, '_wpt_review_count' ) ) {
+
+		$trip_id = intval($trip_id);
 		$count = $wpdb->get_var(
 			$wpdb->prepare(
 				"

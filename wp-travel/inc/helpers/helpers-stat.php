@@ -22,6 +22,7 @@ function wptravel_get_booking_data() {
 	// Default variables.
 	$query_limit         = apply_filters( 'wp_travel_stat_default_query_limit', 10 ); // @phpcs:ignore
 	$query_limit         = apply_filters( 'wptravel_stat_default_query_limit', $query_limit );
+	$query_limit 		 = max(1, intval($query_limit));
 	$limit               = "limit {$query_limit}";
 	$where               = '';
 	$top_country_where   = '';
@@ -33,22 +34,44 @@ function wptravel_get_booking_data() {
 	 */
 	$submission_request = isset( $_REQUEST ) ? wptravel_sanitize_array( wp_unslash( $_REQUEST ) ) : array(); // @phpcs:ignore
 	
+	
+	if( !isset( $submission_request['booking_stat_from'] ) ){	
+		return;
+	}
 
-	if( !isset( $submission_request['booking_stat_from'] ) ){
+	$permission =  WP_Travel::verify_nonce( true );
+	if ( ! $permission ) {
 		return;
 	}
 
 	$from_date = '';
 	if ( isset( $submission_request['booking_stat_from'] ) && '' !== $submission_request['booking_stat_from'] ) {
 		$from_date = sanitize_text_field( $submission_request['booking_stat_from'] );
+		
+		$date_obj = DateTime::createFromFormat('d/m/Y', $from_date);
+		if ( ! $date_obj || $date_obj->format('d/m/Y') !== $from_date ) {
+			$from_date = '';
+		}
 	}
 	$to_date = '';
 	if ( isset( $submission_request['booking_stat_to'] ) && '' !== $submission_request['booking_stat_to'] ) {
-		$to_date = sanitize_text_field( $submission_request['booking_stat_to'] ). ' 23:59:59';
+		$to_date = sanitize_text_field( $submission_request['booking_stat_to'] );
+		$date_obj = DateTime::createFromFormat('d/m/Y', $to_date);
+
+		if ( $date_obj && $date_obj->format('d/m/Y') == $to_date ) {
+			$to_date = $to_date . ' 23:59:59';
+		}else{
+			$to_date = '';
+		}
 	}
+
 	$country = '';
 	if ( isset( $submission_request['booking_country'] ) && '' !== $submission_request['booking_country'] ) {
 		$country = sanitize_text_field( $submission_request['booking_country'] );
+	
+		if ( ! preg_match( "/^[a-zA-Z ]+$/", $country ) ) {
+			$country = '';
+		}
 	}
 
 	$itinerary = '';
@@ -95,6 +118,7 @@ function wptravel_get_booking_data() {
 	$temp_stat_data    = array();
 	$max_bookings      = 0;
 	$max_pax           = 0;
+
 
 	if ( ! isset( $submission_request['chart_type'] ) || ( isset( $submission_request['chart_type'] ) && 'booking' === $submission_request['chart_type'] ) ) {
 		// Booking Data Default Query.
@@ -284,19 +308,34 @@ function wptravel_get_booking_data() {
 		$compare_from_date = '';
 		if ( isset( $submission_request['compare_stat_from'] ) && '' !== $submission_request['compare_stat_from'] ) {
 			$compare_from_date = sanitize_text_field( $submission_request['compare_stat_from'] );
+
+			$date_obj = DateTime::createFromFormat('d/m/Y', $compare_from_date);
+			if ( ! $date_obj || $date_obj->format('d/m/Y') !== $compare_from_date ) {
+				$compare_from_date = '';
+			}
 		}
 		$compare_to_date = '';
 		if ( isset( $submission_request['compare_stat_to'] ) && '' !== $submission_request['compare_stat_to'] ) {
-			$compare_to_date = sanitize_text_field( $submission_request['compare_stat_to'] ) . ' 23:59:59';
+			$compare_to_date = sanitize_text_field( $submission_request['compare_stat_to'] );
+			$date_obj = DateTime::createFromFormat('d/m/Y', $compare_to_date);
+
+			if ( $date_obj && $date_obj->format('d/m/Y') == $compare_to_date ) {
+				$compare_to_date = $compare_to_date . ' 23:59:59';
+			}else{
+				$compare_to_date = '';
+			}
 		}
 		$compare_country = '';
 		if ( isset( $submission_request['compare_country'] ) && '' !== $submission_request['compare_country'] ) {
 			$compare_country = sanitize_text_field( $submission_request['compare_country'] );
+			if ( ! preg_match( "/^[a-zA-Z ]+$/", $compare_country ) ) {
+				$compare_country = '';
+			}
 		}
 
 		$compare_itinerary = '';
 		if ( isset( $submission_request['compare_itinerary'] ) && '' !== $submission_request['compare_itinerary'] ) {
-			$compare_itinerary = sanitize_text_field( $submission_request['compare_itinerary'] );
+			$compare_itinerary = absint( $submission_request['compare_itinerary'] );
 		}
 
 		// Setting conditions.

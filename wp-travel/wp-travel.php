@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 10.1.0
+ * Version: 10.1.1
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -39,7 +39,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '10.1.0';
+		public $version = '10.1.1';
 
 		/**
 		 * WP Travel API version.
@@ -997,3 +997,19 @@ function wptravel() {
 
 // // Start WP Travel.
 wptravel();
+
+
+function custom_password_form($output) {
+    global $post;
+    
+    $label = 'pwbox-' . (empty($post->ID) ? rand() : $post->ID);
+    $output = '<form action="' . esc_url(site_url('wp-login.php?action=postpass', 'login_post')) . '" method="post">
+        <label for="' . $label . '">' . __("This content is password prossssssstected. To view it, please enter your password below:") . '</label>
+        <input name="post_password" id="' . $label . '" type="password" size="20" />
+        <button>asdasds</button>
+    </form>';
+    
+    return $output;
+}
+
+add_filter('the_password_form', 'custom_password_form');

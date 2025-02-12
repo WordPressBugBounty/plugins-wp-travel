@@ -35,6 +35,8 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 		}
 		global $wpdb;
 
+		$trip_id = intval($trip_id);
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_excluded_dates_times WHERE `trip_id` = %d", $trip_id ) );
 		if ( empty( $results ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_EXCLUDED_DATE_TIME' );

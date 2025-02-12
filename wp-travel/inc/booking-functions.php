@@ -462,12 +462,14 @@ function wptravel_book_now() {
 	}
 	update_option('wp_travel_reserve_date', $reserved_booking_dates);
 
+	if( apply_filters( 'wp_travel_disable_default_thankyoupage', false ) == false ){
+		$thankyou_page_url = add_query_arg( 'booked', true, $thankyou_page_url );
+		$thankyou_page_url = add_query_arg( '_nonce', WP_Travel::create_nonce(), $thankyou_page_url );
+		$thankyou_page_url = add_query_arg( 'order_id', $booking_id, $thankyou_page_url );
+		header( 'Location: ' . $thankyou_page_url );
+		exit;
+	}
 
-	$thankyou_page_url = add_query_arg( 'booked', true, $thankyou_page_url );
-	$thankyou_page_url = add_query_arg( '_nonce', WP_Travel::create_nonce(), $thankyou_page_url );
-	$thankyou_page_url = add_query_arg( 'order_id', $booking_id, $thankyou_page_url );
-	header( 'Location: ' . $thankyou_page_url );
-	exit;
 }
 
 /**

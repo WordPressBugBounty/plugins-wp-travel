@@ -40,6 +40,9 @@ class WpTravel_Helpers_Pricings {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
 		global $wpdb;
+		
+		$trip_id = intval( $trip_id );
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d order by sort_order asc", $trip_id ) );
 
 		if ( empty( $results ) ) {
@@ -235,6 +238,8 @@ class WpTravel_Helpers_Pricings {
 		}
 		global $wpdb;
 		$table = $wpdb->prefix . 'wt_pricings';
+
+		$trip_id = intval($trip_id);
 
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE trip_id=%d AND title=%s", $trip_id, $pricing_data['title'] ) );
 

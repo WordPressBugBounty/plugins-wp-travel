@@ -44,6 +44,8 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 			$table   = $wpdb->base_prefix . $blog_id . '_' . self::$table_name;
 		}
 
+		$pricing_id = intval( $pricing_id );
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d", $pricing_id ) );
 
 		if ( empty( $results ) ) {
@@ -172,6 +174,10 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 		}
 
 		global $wpdb;
+
+		$pricing_id = intval( $pricing_id );
+
+		$category_id = intval( $category_id );
 
 		$result = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d AND `pricing_category_id` = %d", $pricing_id, $category_id ) );
 		if ( empty( $result ) ) {

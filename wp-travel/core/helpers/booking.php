@@ -69,7 +69,14 @@ class WpTravel_Helpers_Booking {
 					$arrival_date   = isset( $trip['departure_date'] ) && ! empty( $trip['departure_date'] ) ? wptravel_format_date( $trip['departure_date'] ) : '';
 					
 					$start_date   = isset( $trip['arrival_date'] ) && ! empty( $trip['arrival_date'] ) ? wptravel_format_date( $trip['arrival_date'] ) : '';
-					$end_date = isset( $trip['departure_date'] ) && ! empty( $trip['departure_date'] ) ? wptravel_format_date( $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wt_dates WHERE id=%s;", isset( $trip['date_id'] ) ? $trip['date_id'] : ''  ) )->end_date ) : '';
+					$date_id = isset($trip['date_id']) ? intval($trip['date_id']) : 0;
+
+					$end_date = isset( $trip['departure_date'] ) && ! empty( $trip['departure_date'] ) 
+						? wptravel_format_date( $wpdb->get_var( 
+							$wpdb->prepare("SELECT end_date FROM {$wpdb->prefix}wt_dates WHERE id=%d;", $date_id ) 
+						)) 
+						: '';
+
 					
 					/**
 					 * Fix for active date format that skips character.
@@ -194,7 +201,18 @@ class WpTravel_Helpers_Booking {
 								
 								<?php if( isset( $trip_data['dates'] ) && $trip_data['dates'][0]['is_recurring'] == false ): ?>
 									<!-- <td><?php echo esc_html( wptravel_format_date( $end_date ) ); ?></td> -->
-									<td><?php echo esc_html( wptravel_format_date( $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wt_dates WHERE id=%s;", isset( $trip['date_id'] ) ? $trip['date_id'] : ''  ) )->end_date ) ); ?></td>
+									<td>
+										<?php 
+										
+											$date_id = isset($trip['date_id']) ? intval($trip['date_id']) : 0;
+
+											$end_date = $wpdb->get_var(
+												$wpdb->prepare("SELECT end_date FROM {$wpdb->prefix}wt_dates WHERE id = %d;", $date_id)
+											);
+										
+											echo esc_html( wptravel_format_date( $end_date ) );
+										?>
+									</td>
 									<?php else: ?>
 									<td>
 										<?php 

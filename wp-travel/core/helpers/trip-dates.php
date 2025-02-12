@@ -36,6 +36,8 @@ class WpTravel_Helpers_Trip_Dates {
 
 		global $wpdb;
 
+		$trip_id = intval($trip_id);
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_dates WHERE `trip_id` = %d", $trip_id ) );
 		if ( empty( $results ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_DATES' );
@@ -276,6 +278,9 @@ class WpTravel_Helpers_Trip_Dates {
 		/**
 		 * @since 6.1.0
 		 */
+
+		$trip_id = intval($trip_id);
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table WHERE `trip_id` = %d", $trip_id ) );
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $date_result ) {

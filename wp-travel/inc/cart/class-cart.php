@@ -186,7 +186,8 @@ class WP_Travel_Cart {
 		}
 
 		$arrival_date            = isset( $attrs['arrival_date'] ) ? $attrs['arrival_date'] : '';
-		$departure_date          = ! empty( $wpdb->get_col( " SELECT end_date FROM $table WHERE trip_id = $trip_id AND pricing_ids = $price_ids " ) ) ? ( $wpdb->get_col( " SELECT end_date FROM $table WHERE trip_id = $trip_id  AND pricing_ids = $price_ids " ) ) : '';
+		$departure_date = ! empty( $wpdb->get_col( $wpdb->prepare( "SELECT end_date FROM $table WHERE trip_id = %d AND pricing_ids = %d", $trip_id, $price_ids ) ) ) ? $wpdb->get_col( $wpdb->prepare( "SELECT end_date FROM $table WHERE trip_id = %d AND pricing_ids = %d", $trip_id, $price_ids ) ) : '';
+
 		$attrs['departure_date'] = isset(  $departure_date[0] ) && $departure_date[0] != '0000-00-00' ? maybe_unserialize( $departure_date[0] ) : '';
 		
 		$item_id_args = array(

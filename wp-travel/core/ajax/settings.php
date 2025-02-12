@@ -120,8 +120,11 @@ class WP_Travel_Ajax_Settings {
 				while ( $posts->have_posts() ) {
 					$posts->the_post();
 					$trip_data  = WpTravel_Helpers_Trips::get_trip( get_the_ID() );
-					$trip_id    = get_the_ID();
-					$date       = $wpdb->get_results( "select * from {$date_table} where trip_id={$trip_id}" );
+					$trip_id    = intval( get_the_ID() );
+					$date       = $wpdb->get_results($wpdb->prepare(
+						"SELECT * FROM {$date_table} WHERE trip_id = %d",
+						$trip_id
+					));
 					$trips      = isset( $trip_data['trip'] ) ? $trip_data['trip'] : array();
 					$trip_price = ! empty( $trips ) && isset( $trips['pricings'] ) ? $trips['pricings'] : array();
 					$res        = update_post_meta( $trip_id, 'wp_travel_trip_price_categorys', $trip_price );

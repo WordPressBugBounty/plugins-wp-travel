@@ -209,19 +209,18 @@ if ( wptravel_is_react_version_enabled() ) {
 											?>
 										</span>
 										<?php
-										// This will only for displaying purpose. Need to change this in update method[wp_travel_group_discount_price] of cart class also to update cart data.
-										$total_pricing_pax = 0; // Total Pax for group discount in Pricing need total pax from the pricing.
-										foreach ( $cart_pax as $category_id => $detail ) {
-											$category           = isset( $categories[ $category_id ] ) ? $categories[ $category_id ] : array(); // undefined offset fixes.
-											$ctitle             = isset( $category['term_info']['title'] ) ? esc_html( $category['term_info']['title'] ) : '';
-											$pax                = (int) $detail['pax'];
-											$total_pricing_pax += $pax;
-											if ( $pax < 1 ) {
-												continue;
-											}
-											echo '<span><span data-wpt-category-count="' . esc_attr( $category_id ) . '">' . esc_html( $pax ) . ' x ' . esc_html( $ctitle ) . '</span></span>';
+											$total_pricing_pax = 0;
+											foreach ( $cart_pax as $category_id => $detail ) {
+												$category           = isset( $categories[ $category_id ] ) ? $categories[ $category_id ] : array();
+												$ctitle             = isset( $category['term_info']['title'] ) ? esc_html( $category['term_info']['title'] ) : '';
+												$pax                = (int) $detail['pax'];
+												$total_pricing_pax += $pax;
+												if ( $pax < 1 ) {
+													continue;
+												}
+												echo '<span><span data-wpt-category-count="' . esc_attr( $category_id ) . '">' . esc_html( $pax ) . ' x ' . esc_html( $ctitle ) . '</span></span>';
 
-										}
+											}
 										?>
 									</div>
 								</div>
