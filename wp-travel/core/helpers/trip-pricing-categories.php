@@ -48,6 +48,14 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d", $pricing_id ) );
 
+		$cache_key = 'wp_travel_pricing_categories_' . $pricing_id;
+		$results = wp_cache_get( $cache_key );
+
+		if ( false === $results ) {
+			$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d", $pricing_id ) );
+			wp_cache_set( $cache_key, $results );
+		}
+
 		if ( empty( $results ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_PRICING_CATEGORIES' );
 		}

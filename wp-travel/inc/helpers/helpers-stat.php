@@ -37,6 +37,10 @@ function wptravel_get_booking_data() {
 	
 	if( !isset( $submission_request['booking_stat_from'] ) ){	
 		return;
+	}else{
+		if (!current_user_can('manage_options')) {
+			wp_die("You do not have permission to access this page.");
+		}
 	}
 
 	$permission =  WP_Travel::verify_nonce( true );
@@ -48,20 +52,25 @@ function wptravel_get_booking_data() {
 	if ( isset( $submission_request['booking_stat_from'] ) && '' !== $submission_request['booking_stat_from'] ) {
 		$from_date = sanitize_text_field( $submission_request['booking_stat_from'] );
 		
-		$date_obj = DateTime::createFromFormat('d/m/Y', $from_date);
-		if ( ! $date_obj || $date_obj->format('d/m/Y') !== $from_date ) {
-			$from_date = '';
+		$date_obj = DateTime::createFromFormat('m/d/Y', $from_date);
+
+		if ( $date_obj && $date_obj->format('m/d/Y') === $from_date ) {
+			$from_date = $date_obj->format('m/d/Y');
+		}else{
+			wp_die("Invalid 'booking_stat_from' parameter");
 		}
 	}
+
+	
 	$to_date = '';
 	if ( isset( $submission_request['booking_stat_to'] ) && '' !== $submission_request['booking_stat_to'] ) {
 		$to_date = sanitize_text_field( $submission_request['booking_stat_to'] );
-		$date_obj = DateTime::createFromFormat('d/m/Y', $to_date);
+		$date_obj = DateTime::createFromFormat('m/d/Y', $to_date);
 
-		if ( $date_obj && $date_obj->format('d/m/Y') == $to_date ) {
+		if ( $date_obj && $date_obj->format('m/d/Y') === $to_date ) {
 			$to_date = $to_date . ' 23:59:59';
 		}else{
-			$to_date = '';
+			wp_die("Invalid 'booking_stat_to' parameter");
 		}
 	}
 
@@ -69,8 +78,12 @@ function wptravel_get_booking_data() {
 	if ( isset( $submission_request['booking_country'] ) && '' !== $submission_request['booking_country'] ) {
 		$country = sanitize_text_field( $submission_request['booking_country'] );
 	
-		if ( ! preg_match( "/^[a-zA-Z ]+$/", $country ) ) {
-			$country = '';
+		if ( ! preg_match( "/^[a-zA-Z]+$/", $country ) ) {
+			wp_die("Invalid 'booking_country' parameter");
+		}
+
+		if(!ctype_alpha($country)){
+			wp_die("Invalid 'booking_country' parameter");
 		}
 	}
 
@@ -90,6 +103,7 @@ function wptravel_get_booking_data() {
 			$top_country_where .= $where;
 			$groupby .= ' itinerary_id,';
 		}
+
 		if ( '' !== $country ) {
 			$where .= $wpdb->prepare( " AND country = %s", $country );
 			$top_itinerary_where .= $wpdb->prepare( " AND country = %s", $country );
@@ -102,6 +116,8 @@ function wptravel_get_booking_data() {
 
 			$booking_from = gmdate( $date_format, strtotime( $from_date ) );
 			$booking_to   = gmdate( $date_format, strtotime( $to_date ) );
+			
+			
 
 			$where .= $wpdb->prepare( " AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to );
 			$top_country_where .= $wpdb->prepare( " AND post_date >= %s AND post_date <= %s", $booking_from, $booking_to );
@@ -309,27 +325,38 @@ function wptravel_get_booking_data() {
 		if ( isset( $submission_request['compare_stat_from'] ) && '' !== $submission_request['compare_stat_from'] ) {
 			$compare_from_date = sanitize_text_field( $submission_request['compare_stat_from'] );
 
-			$date_obj = DateTime::createFromFormat('d/m/Y', $compare_from_date);
-			if ( ! $date_obj || $date_obj->format('d/m/Y') !== $compare_from_date ) {
-				$compare_from_date = '';
+			$date_obj = DateTime::createFromFormat('m/d/Y', $compare_from_date);
+			if ( $date_obj && $date_obj->format('m/d/Y') === $compare_from_date ) {
+				$compare_from_date = $date_obj->format('m/d/Y');
+			}else{
+				wp_die("Invalid 'compare_stat' parameter");
 			}
 		}
+
 		$compare_to_date = '';
 		if ( isset( $submission_request['compare_stat_to'] ) && '' !== $submission_request['compare_stat_to'] ) {
 			$compare_to_date = sanitize_text_field( $submission_request['compare_stat_to'] );
-			$date_obj = DateTime::createFromFormat('d/m/Y', $compare_to_date);
+			$date_obj = DateTime::createFromFormat('m/d/Y', $compare_to_date);
 
-			if ( $date_obj && $date_obj->format('d/m/Y') == $compare_to_date ) {
-				$compare_to_date = $compare_to_date . ' 23:59:59';
+			if ( $date_obj && $date_obj->format('m/d/Y') == $compare_to_date ) {
+				$compare_to_date = $date_obj->format('m/d/Y') . ' 23:59:59';
 			}else{
-				$compare_to_date = '';
+				wp_die("Invalid 'compare_stat_to' parameter");
 			}
 		}
+
 		$compare_country = '';
 		if ( isset( $submission_request['compare_country'] ) && '' !== $submission_request['compare_country'] ) {
 			$compare_country = sanitize_text_field( $submission_request['compare_country'] );
-			if ( ! preg_match( "/^[a-zA-Z ]+$/", $compare_country ) ) {
-				$compare_country = '';
+
+			// Ensure $compare_country only contains letters (no special characters)
+			if ( ! preg_match( "/^[a-zA-Z]+$/", $compare_country ) ) {
+				wp_die("Invalid 'compare_country' parameter");
+			}
+
+			// Ensure $compare_country doesnot contain space
+			if(!ctype_alpha($compare_country)){
+				wp_die("Invalid 'compare_country' parameter");
 			}
 		}
 

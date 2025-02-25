@@ -295,6 +295,8 @@ class WP_Travel_Cart {
 		$cart_attributes_session_name = $this->cart_id . '_attributes';
 		$items                        = array();
 
+
+
 		foreach ( $this->items as $id => $item ) {
 			if ( ! $id ) {
 				continue;
@@ -303,17 +305,13 @@ class WP_Travel_Cart {
 		}
 
 		$cart['cart_items'] = $items;
-		$cart['discounts']  = $this->discounts;
+		$cart['discounts']  = $this->discounts;		
 
 		$cart_items = WPTravel()->session->set( $this->cart_id, $cart );
-		// Cookie data to enable data info in js.
-		if( !is_admin() ){
-			ob_start();
-				setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
-			ob_end_flush();
-		}
 		
-		
+		ob_start();
+			setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
+		ob_end_flush();	
 	}
 	/**
 	 * Read items from cart session.
