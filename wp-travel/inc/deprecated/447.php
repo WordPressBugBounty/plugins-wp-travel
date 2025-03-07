@@ -146,10 +146,10 @@ function wp_travel_get_countries() { // @phpcs:ignore
 	return wptravel_get_countries();
 }
 
-function wp_travel_get_booking_chart() { // @phpcs:ignore
-	wptravel_deprecated_function( 'wp_travel_get_booking_chart', '4.4.7', 'wptravel_get_booking_chart' );
-	return wptravel_get_booking_chart();
-}
+// function wp_travel_get_booking_chart() { // @phpcs:ignore
+// 	wptravel_deprecated_function( 'wp_travel_get_booking_chart', '4.4.7', 'wptravel_get_booking_chart' );
+// 	return wptravel_get_booking_chart();
+// }
 
 function wp_travel_book_now() { // @phpcs:ignore
 	wptravel_deprecated_function( 'wp_travel_book_now', '4.4.7', 'wptravel_book_now' );
@@ -784,20 +784,20 @@ function wp_travel_get_price_per_fields() { // @phpcs:ignore
 	return wptravel_get_price_per_fields();
 }
 
-function wp_travel_make_stat_data( $stat_datas, $show_empty = '' ) { // @phpcs:ignore
-	wptravel_deprecated_function( 'wp_travel_make_stat_data', '4.4.7', 'wptravel_make_stat_data' );
-	return wptravel_make_stat_data( $stat_datas, $show_empty );
-}
+// function wp_travel_make_stat_data( $stat_datas, $show_empty = '' ) { // @phpcs:ignore
+// 	wptravel_deprecated_function( 'wp_travel_make_stat_data', '4.4.7', 'wptravel_make_stat_data' );
+// 	return wptravel_make_stat_data( $stat_datas, $show_empty );
+// }
 
 function wp_travel_get_booking_status() { // @phpcs:ignore
 	wptravel_deprecated_function( 'wp_travel_get_booking_status', '4.4.7', 'wptravel_get_booking_status' );
 	return wptravel_get_booking_status();
 }
 
-function wp_travel_get_booking_data() { // @phpcs:ignore
-	wptravel_deprecated_function( 'wp_travel_get_booking_data', '4.4.7', 'wptravel_get_booking_data' );
-	return wptravel_get_booking_data();
-}
+// function wp_travel_get_booking_data() { // @phpcs:ignore
+// 	wptravel_deprecated_function( 'wp_travel_get_booking_data', '4.4.7', 'wptravel_get_booking_data' );
+// 	return wptravel_get_booking_data();
+// }
 
 function wp_travel_fa_icons() { // @phpcs:ignore
 	wptravel_deprecated_function( 'wp_travel_fa_icons', '4.4.7', 'wptravel_fa_icons' );

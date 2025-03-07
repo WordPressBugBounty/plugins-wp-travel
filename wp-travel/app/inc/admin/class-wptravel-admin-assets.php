@@ -29,7 +29,9 @@ class WpTravel_Admin_Assets {
 		$registered_scripts = $wp_scripts->registered;
 
 		$all_localized                = WpTravel_Helpers_Localize::get();
-		$wp_travel_chart_data         = isset( $all_localized['wp_travel_chart_data'] ) ? $all_localized['wp_travel_chart_data'] : array();
+		// $wp_travel_chart_data         = isset( $all_localized['wp_travel_chart_data'] ) ? $all_localized['wp_travel_chart_data'] : array();
+
+
 		$wp_travel_drag_drop_uploader = isset( $all_localized['wp_travel_drag_drop_uploader'] ) ? $all_localized['wp_travel_drag_drop_uploader'] : array();
 		$_wp_travel_admin             = isset( $all_localized['_wp_travel_admin'] ) ? $all_localized['_wp_travel_admin'] : array();
 
@@ -62,10 +64,10 @@ class WpTravel_Admin_Assets {
 			wp_enqueue_style( 'wp-travel-setup-page' );
 		}
 
-		if ( WP_Travel::is_page( 'reports', true ) ) {
-			wp_localize_script( 'jquery-chart-custom', 'wp_travel_chart_data', $wp_travel_chart_data );
-			wp_enqueue_script( 'jquery-chart-custom' );
-		}
+		// if ( WP_Travel::is_page( 'reports', true ) ) {
+		// 	wp_localize_script( 'jquery-chart-custom', 'wp_travel_chart_data', $wp_travel_chart_data );
+		// 	wp_enqueue_script( 'jquery-chart-custom' );
+		// }
 
 		if ( WP_Travel::is_page( 'itineraries', true ) || WP_Travel::is_page( 'enquiry', true ) || WP_Travel::is_page( 'templates', true ) ) {
 			$backend_depencency = array( 'jquery', 'jquery-ui-tabs', 'jquery-datepicker-lib', 'jquery-datepicker-lib-eng', 'wp-travel-media-upload', 'jquery-ui-sortable', 'jquery-ui-accordion', 'moment' );

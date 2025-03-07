@@ -3493,13 +3493,13 @@ function wptravel_get_submenu() {
 				'menu_slug'  => 'sysinfo',
 				'callback'   => array( 'WP_Travel_Admin_Settings', 'get_system_info' ),
 			),
-			'reports'        => array(
-				'priority'   => '120',
-				'page_title' => __( 'Reports', 'wp-travel' ),
-				'menu_title' => __( 'Reports', 'wp-travel' ),
-				'menu_slug'  => 'booking_chart',
-				'callback'   => 'wptravel_get_booking_chart',
-			),
+			// 'reports'        => array(
+			// 	'priority'   => '120',
+			// 	'page_title' => __( 'Reports', 'wp-travel' ),
+			// 	'menu_title' => __( 'Reports', 'wp-travel' ),
+			// 	'menu_slug'  => 'booking_chart',
+			// 	'callback'   => 'wptravel_get_booking_chart',
+			// ),
 			'custom_filters' => array(
 				'priority'   => '125',
 				'page_title' => __( 'Custom Filters', 'wp-travel' ),

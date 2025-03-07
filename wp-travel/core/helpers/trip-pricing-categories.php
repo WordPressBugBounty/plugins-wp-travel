@@ -149,6 +149,8 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_PRICING_CATEGORIES' );
 		}
 
+		wp_cache_delete( 'wp_travel_pricing_categories_' . $pricing_id );
+
 		$result           = self::remove_trip_pricing_categories( $pricing_id );
 		$saved_categories = array();
 		foreach ( $categories as $category ) {

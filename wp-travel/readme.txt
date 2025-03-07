@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 10.1.2
+Stable tag: 10.1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -400,6 +400,11 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 10.1.3 =
+Release Date: 3rd March 2025
+
+* Temporary Exclude Booking Report admin page for security reason
 
 = 10.1.2 =
 Release Date: 25th February 2025

@@ -123,6 +123,15 @@ class WpTravel_Helpers_Localize {
 			$_wp_travel['is_pro_enable']  = class_exists( 'WP_Travel_Pro' ) ? 'yes' : 'no';
 			if ( isset( $settings['mailchimp'] ) && isset( $settings['mailchimp']['enable_subscription'] ) && ( in_array( 'all', $settings['mailchimp']['enable_subscription'], true ) ) ) {
 				$_wp_travel['enable_subscription'] =  'yes';
+
+				if (isset($settings['mailchimp']['api_key'])) {
+					unset($settings['mailchimp']['api_key']);
+				}
+
+				if (isset($settings['mailchimp']['list_id'])) {
+					unset($settings['mailchimp']['list_id']);
+				}
+				
 				$_wp_travel['subscription_data'] =  $settings['mailchimp'];
 			}
 
@@ -235,81 +244,83 @@ class WpTravel_Helpers_Localize {
 
 		if ( self::is_request( 'admin' ) ) {
 			// Booking Chart Data. Need to merge in wp_travel or _wp_travel.
-			$booking_data      = wptravel_get_booking_data();
-			$stat_data         = isset( $booking_data['stat_data'] ) ? $booking_data['stat_data'] : array();
-			$labels            = isset( $stat_data['stat_label'] ) ? $stat_data['stat_label'] : array();
-			$datas             = isset( $stat_data['data'] ) ? $stat_data['data'] : array();
-			$data_label        = isset( $stat_data['data_label'] ) ? $stat_data['data_label'] : array();
-			$data_bg_color     = isset( $stat_data['data_bg_color'] ) ? $stat_data['data_bg_color'] : array();
-			$data_border_color = isset( $stat_data['data_border_color'] ) ? $stat_data['data_border_color'] : array();
+			// $booking_data      = wptravel_get_booking_data();
+			// $stat_data         = isset( $booking_data['stat_data'] ) ? $booking_data['stat_data'] : array();
+			// $labels            = isset( $stat_data['stat_label'] ) ? $stat_data['stat_label'] : array();
+			// $datas             = isset( $stat_data['data'] ) ? $stat_data['data'] : array();
+			// $data_label        = isset( $stat_data['data_label'] ) ? $stat_data['data_label'] : array();
+			// $data_bg_color     = isset( $stat_data['data_bg_color'] ) ? $stat_data['data_bg_color'] : array();
+			// $data_border_color = isset( $stat_data['data_border_color'] ) ? $stat_data['data_border_color'] : array();
 
-			$max_bookings  = isset( $booking_data['max_bookings'] ) ? $booking_data['max_bookings'] : 0;
-			$max_pax       = isset( $booking_data['max_pax'] ) ? $booking_data['max_pax'] : 0;
-			$top_countries = ( isset( $booking_data['top_countries'] ) && count( $booking_data['top_countries'] ) > 0 ) ? $booking_data['top_countries'] : array( 'N/A' );
-			$top_itinerary = ( isset( $booking_data['top_itinerary'] ) && count( $booking_data['top_itinerary'] ) > 0 ) ? $booking_data['top_itinerary'] : array(
-				'name' => esc_html__( 'N/A', 'wp-travel' ),
-				'url'  => '',
-			);
+			// $max_bookings  = isset( $booking_data['max_bookings'] ) ? $booking_data['max_bookings'] : 0;
+			// $max_pax       = isset( $booking_data['max_pax'] ) ? $booking_data['max_pax'] : 0;
+			// $top_countries = ( isset( $booking_data['top_countries'] ) && count( $booking_data['top_countries'] ) > 0 ) ? $booking_data['top_countries'] : array( 'N/A' );
+			// $top_itinerary = ( isset( $booking_data['top_itinerary'] ) && count( $booking_data['top_itinerary'] ) > 0 ) ? $booking_data['top_itinerary'] : array(
+			// 	'name' => esc_html__( 'N/A', 'wp-travel' ),
+			// 	'url'  => '',
+			// );
 
-			$booking_stat_from = isset( $booking_data['booking_stat_from'] ) ? $booking_data['booking_stat_from'] : '';
-			$booking_stat_to   = isset( $booking_data['booking_stat_to'] ) ? $booking_data['booking_stat_to'] : '';
+			// $booking_stat_from = isset( $booking_data['booking_stat_from'] ) ? $booking_data['booking_stat_from'] : '';
+			// $booking_stat_to   = isset( $booking_data['booking_stat_to'] ) ? $booking_data['booking_stat_to'] : '';
 
-			$wp_travel_stat_data = array();
-			foreach ( $datas as $key => $data ) {
-				$wp_travel_stat_data[] = array(
-					'label'           => $data_label[ $key ],
-					'backgroundColor' => $data_bg_color[ $key ],
-					'borderColor'     => $data_border_color[ $key ],
-					'data'            => $data,
-					'fill'            => false,
-				);
-			}
-			$wp_travel_chart_data = array(
-				'ajax_url'          => 'admin-ajax.php',
-				'chart_title'       => esc_html__( 'Chart Stat', 'wp-travel' ),
-				'labels'            => wp_json_encode( $labels ),
-				'datasets'          => wp_json_encode( $wp_travel_stat_data ),
-				'max_bookings'      => $max_bookings,
-				'max_pax'           => $max_pax,
-				'top_countries'     => implode( ', ', $top_countries ),
-				'top_itinerary'     => $top_itinerary,
-				// Show more / less top countries.
-				'show_more_text'    => __( 'More', 'wp-travel' ),
-				'show_less_text'    => __( 'Less', 'wp-travel' ),
-				'show_char'         => 18,
+			// $wp_travel_stat_data = array();
+			// foreach ( $datas as $key => $data ) {
+			// 	$wp_travel_stat_data[] = array(
+			// 		'label'           => $data_label[ $key ],
+			// 		'backgroundColor' => $data_bg_color[ $key ],
+			// 		'borderColor'     => $data_border_color[ $key ],
+			// 		'data'            => $data,
+			// 		'fill'            => false,
+			// 	);
+			// }
+			// $wp_travel_chart_data = array(
+			// 	'ajax_url'          => 'admin-ajax.php',
+			// 	'chart_title'       => esc_html__( 'Chart Stat', 'wp-travel' ),
+			// 	'labels'            => wp_json_encode( $labels ),
+			// 	'datasets'          => wp_json_encode( $wp_travel_stat_data ),
+			// 	'max_bookings'      => $max_bookings,
+			// 	'max_pax'           => $max_pax,
+			// 	'top_countries'     => implode( ', ', $top_countries ),
+			// 	'top_itinerary'     => $top_itinerary,
+			// 	// Show more / less top countries.
+			// 	'show_more_text'    => __( 'More', 'wp-travel' ),
+			// 	'show_less_text'    => __( 'Less', 'wp-travel' ),
+			// 	'show_char'         => 18,
 
-				'booking_stat_from' => $booking_stat_from,
-				'booking_stat_to'   => $booking_stat_to,
-				'compare_stat'      => false,
-			);
-			if ( isset( $_REQUEST['compare_stat'] ) && 'yes' === $_REQUEST['compare_stat'] ) { // phpcs:ignore
-				$permission =  WP_Travel::verify_nonce( true );
-				if ( ! $permission ) {
-					return;
-				}
+			// 	'booking_stat_from' => $booking_stat_from,
+			// 	'booking_stat_to'   => $booking_stat_to,
+			// 	'compare_stat'      => false,
+			// );
+			// if ( isset( $_REQUEST['compare_stat'] ) && 'yes' === $_REQUEST['compare_stat'] ) { // phpcs:ignore
+			// 	$permission =  WP_Travel::verify_nonce( true );
+			// 	if ( ! $permission ) {
+			// 		return;
+			// 	}
 
-				$compare_stat_from = isset( $booking_data['compare_stat_from'] ) ? $booking_data['compare_stat_from'] : '';
-				$compare_stat_to   = isset( $booking_data['compare_stat_to'] ) ? $booking_data['compare_stat_to'] : '';
+			// 	$compare_stat_from = isset( $booking_data['compare_stat_from'] ) ? $booking_data['compare_stat_from'] : '';
+			// 	$compare_stat_to   = isset( $booking_data['compare_stat_to'] ) ? $booking_data['compare_stat_to'] : '';
 
-				$compare_max_bookings  = isset( $booking_data['compare_max_bookings'] ) ? $booking_data['compare_max_bookings'] : 0;
-				$compare_max_pax       = isset( $booking_data['compare_max_pax'] ) ? $booking_data['compare_max_pax'] : 0;
-				$compare_top_countries = ( isset( $booking_data['compare_top_countries'] ) && count( $booking_data['compare_top_countries'] ) > 0 ) ? $booking_data['compare_top_countries'] : array( 'N/A' );
-				$compare_top_itinerary = ( isset( $booking_data['compare_top_itinerary'] ) && count( $booking_data['compare_top_itinerary'] ) > 0 ) ? $booking_data['compare_top_itinerary'] : array(
-					'name' => esc_html__( 'N/A', 'wp-travel' ),
-					'url'  => '',
-				);
+			// 	$compare_max_bookings  = isset( $booking_data['compare_max_bookings'] ) ? $booking_data['compare_max_bookings'] : 0;
+			// 	$compare_max_pax       = isset( $booking_data['compare_max_pax'] ) ? $booking_data['compare_max_pax'] : 0;
+			// 	$compare_top_countries = ( isset( $booking_data['compare_top_countries'] ) && count( $booking_data['compare_top_countries'] ) > 0 ) ? $booking_data['compare_top_countries'] : array( 'N/A' );
+			// 	$compare_top_itinerary = ( isset( $booking_data['compare_top_itinerary'] ) && count( $booking_data['compare_top_itinerary'] ) > 0 ) ? $booking_data['compare_top_itinerary'] : array(
+			// 		'name' => esc_html__( 'N/A', 'wp-travel' ),
+			// 		'url'  => '',
+			// 	);
 
-				$wp_travel_chart_data['compare_stat_from']     = $compare_stat_from;
-				$wp_travel_chart_data['compare_stat_to']       = $compare_stat_to;
-				$wp_travel_chart_data['compare_max_bookings']  = $compare_max_bookings;
-				$wp_travel_chart_data['compare_max_pax']       = $compare_max_pax;
-				$wp_travel_chart_data['compare_top_countries'] = implode( ', ', $compare_top_countries );
-				$wp_travel_chart_data['compare_top_itinerary'] = $compare_top_itinerary;
-				$wp_travel_chart_data['compare_stat']          = true;
-				$wp_travel_chart_data['total_sales_compare']   = $booking_data['total_sales_compare'];
-			}
-			$wp_travel_chart_data                   = apply_filters( 'wptravel_chart_data', $wp_travel_chart_data );
-			$localized_data['wp_travel_chart_data'] = $wp_travel_chart_data;
+			// 	$wp_travel_chart_data['compare_stat_from']     = $compare_stat_from;
+			// 	$wp_travel_chart_data['compare_stat_to']       = $compare_stat_to;
+			// 	$wp_travel_chart_data['compare_max_bookings']  = $compare_max_bookings;
+			// 	$wp_travel_chart_data['compare_max_pax']       = $compare_max_pax;
+			// 	$wp_travel_chart_data['compare_top_countries'] = implode( ', ', $compare_top_countries );
+			// 	$wp_travel_chart_data['compare_top_itinerary'] = $compare_top_itinerary;
+			// 	$wp_travel_chart_data['compare_stat']          = true;
+			// 	$wp_travel_chart_data['total_sales_compare']   = $booking_data['total_sales_compare'];
+			// }
+			// $wp_travel_chart_data                   = apply_filters( 'wptravel_chart_data', $wp_travel_chart_data );
+			// $localized_data['wp_travel_chart_data'] = $wp_travel_chart_data;
+
+
 			// End of Booking Chart Data.
 
 			// Map & Gallery Data. Need to merge in wp_travel or _wp_travel.
