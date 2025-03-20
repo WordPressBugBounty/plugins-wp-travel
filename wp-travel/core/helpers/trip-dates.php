@@ -133,6 +133,7 @@ class WpTravel_Helpers_Trip_Dates {
 	 */
 	public static function add_individual_date( $trip_id, $date, $parent_date_id = "" ) {
 
+		
 		if ( empty( $trip_id ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
@@ -143,7 +144,8 @@ class WpTravel_Helpers_Trip_Dates {
 		global $wpdb;
 		$table       = $wpdb->prefix . self::$table_name;
 		$date_id     = ! empty( $date['id'] ) ? $date['id'] : '';
-		$pricing_ids = ! empty( $date['pricing_ids'] ) ? $date['pricing_ids'] : '';
+		$pricing_ids = ! empty( $date['pricing_ids'] ) ? (int)$date['pricing_ids'] : '';
+		
 		if ( $pricing_ids ) { // Need to sort pricing id in dates table to display pricing as per sorted.
 			$result      = $wpdb->get_row( $wpdb->prepare( "SELECT GROUP_CONCAT( id ORDER BY sort_order ASC ) AS pricing_ids FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d AND id IN( $pricing_ids )", $trip_id ) ); // @phpcs:ignore
 			$pricing_ids = $result->pricing_ids;

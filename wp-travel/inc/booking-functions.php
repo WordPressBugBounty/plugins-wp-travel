@@ -12,6 +12,12 @@
  */
 function wptravel_book_now() {
 
+	global $wt_cart;
+	$items = $wt_cart->getItems();
+
+	$discount_coupon_data = $wt_cart->get_discounts();
+
+
 	$settings = wptravel_get_settings();
 	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
 		if( !isset( $_REQUEST['key']) ){
@@ -21,17 +27,18 @@ function wptravel_book_now() {
 		$order_data = wc_get_order(wc_get_order_id_by_order_key($_REQUEST['key']))->data;
 
 	}else{
+		
 		if ( ! WP_Travel::verify_nonce( true ) || ! isset( $_POST['wp_travel_book_now'] ) ) {
 			return;
 		}
-
-		if( $_POST['wp_travel_booking_option'] == 'booking_with_payment' && !isset( $_POST['wp_travel_payment_gateway'] ) ){
-			return;
+		
+		if( $discount_coupon_data['type'] !== 'percentage' && $discount_coupon_data['value'] !== '100' ){
+			if( $_POST['wp_travel_booking_option'] == 'booking_with_payment' && !isset( $_POST['wp_travel_payment_gateway'] ) ){
+				return;
+			}
 		}
+		
 	}
-
-
-	global $wt_cart;
 
 	/**
 	 * Trigger any action before Booking Process.
@@ -40,19 +47,12 @@ function wptravel_book_now() {
 	 * @since 4.4.2
 	 */
 	do_action( 'wp_travel_action_before_booking_process' ); // phpcs:ignore
-	do_action( 'wptravel_action_before_booking_process' );
-
-	// Start Booking Process.
-	$items = $wt_cart->getItems();
+	do_action( 'wptravel_action_before_booking_process' );	
 
 
 	if ( ! count( $items ) ) {
 		return;
 	}
-
-	
-	$discount_coupon_data = $wt_cart->get_discounts();
-
 
 	$price_key            = false;
 	$pax                  = 1;
@@ -421,6 +421,11 @@ function wptravel_book_now() {
 	$payment_paid   = get_post_meta( $payment_id, 'wp_travel_payment_status', true );
 	$booking_paid   = get_post_meta( $booking_id, 'wp_travel_payment_status', true );
 	$partial_enable = get_post_meta( $payment_id, 'wp_travel_is_partial_payment', true );
+
+	if( $discount_coupon_data['type'] == 'percentage' && $discount_coupon_data['value'] == '100' ){
+		update_post_meta( $payment_id, 'wp_travel_payment_status', 'full_discount' );
+		update_post_meta( $payment_id, 'wp_travel_payment_mode', 'full' );
+	}
 
 	if ( $booking_paid == 'paid' && $payment_paid == 'paid' && $partial_enable == 'no' && $total_price > 0 ) {
 		update_post_meta( $payment_id, 'wp_travel_payment_mode', 'full' );

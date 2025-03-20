@@ -116,6 +116,7 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 		if ( empty( $date ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_EXCLUDED_DATE' );
 		}
+		
 		global $wpdb;
 		$table = $wpdb->prefix . self::$table_name;
 		$wpdb->insert(

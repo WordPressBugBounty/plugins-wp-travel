@@ -937,6 +937,10 @@ function wp_travel_get_trip_durations( $trip_id ) {
  */
 function wptravel_get_payment_status() {
 	$status = array(
+		'full_discount'          => array(
+			'color' => '#008600',
+			'text'  => __( 'Full Discount', 'wp-travel' ),
+		),
 		'pending'          => array(
 			'color' => '#FF9800',
 			'text'  => __( 'Pending', 'wp-travel' ),
@@ -4743,6 +4747,7 @@ function wp_travel_search_where( $where ) {
 
 	
     if ( is_search() ) {
+
         $where = preg_replace(
             "/\(\s*".$wpdb->posts.".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
             "(".$wpdb->posts.".post_title LIKE $1) OR (".$wpdb->postmeta.".meta_value LIKE $1)", $where ?? '' );
@@ -4890,44 +4895,41 @@ function wp_travel_get_converted_time_format($trip_time, $trip_format )
 
 }
 
-// function wptravel_custom_email_template_content(){
+function wp_travel_verify_recaptcha_response($commentdata) {
 
-// 	$custom_email_contents = array( 
-// 		'en-US' => array(
-// 			'email_template_powered_by_text' => '{sitename} - Powessssssssssred By: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none">WP Travel.</a>',
-// 			'booking_email_client_subject'   => 'test dasasdasdsad',
-// 			'booking_email_client_content' => '<table class="wp-travel-wrapper" style="color: #5d5d5d; font-family: Roboto, sans-serif; margin: auto;" width="100%" cellspacing="0" cellpadding="0">
-// 												<tbody>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td class="wp-travel-content-top" style="background: #fff; margin: 0; padding: 20px 25px;" colspan="2" align="left">
-// 												<p style="line-height: 1.55; font-size: 14px;">Hello eng tt {customer_name},</p>
-// 												<p style="line-height: 1.55; font-size: 14px;">Your bookddddddd dding has been received and is now being processed. Your order details are shown below for your reference:</p>
-// 												<p style="line-height: 1.55; font-size: 14px;"><b>Booking ID: <a style="color: #5a418b; text-decoration: none;" href="{booking_edit_link}" target="_blank" rel="noopener">#{booking_id}</a> ({booking_arrival_date})</b></p>
-// 												</td>
-// 												</tr>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{booking_details}</td>
-// 												</tr>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{traveler_details}</td>
-// 												</tr>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left"><b>Note</b></td>
-// 												</tr>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" align="left"><b>Customer Note</b></td>
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" align="left">{customer_note}</td>
-// 												</tr>
-// 												<tr class="wp-travel-content" style="background: #fff;">
-// 												<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{bank_deposit_table}</td>
-// 												</tr>
-// 												</tbody>
-// 												</table>'
-// 		),
-// 		'chisese' => array(
-			
-// 		)
-// 	);
+	$settings = wptravel_get_settings();
 
-// 	return $custom_email_contents;
-// }
+	$secret_key = !empty($settings['recaptcha_v2_secret_key']) ? esc_attr($settings['recaptcha_v2_secret_key']) : '';
+
+	if( $secret_key && class_exists( 'wp_travel_pro' ) ){
+		$recaptcha_response = $_POST['g-recaptcha-response'];
+
+		// If reCAPTCHA is not filled out, stop submission
+		if (empty($recaptcha_response)) {
+			wp_die(__('Error: reCAPTCHA is required.'));
+		}
+
+		// Verify the response
+		$verify_url = 'https://www.google.com/recaptcha/api/siteverify';
+		$response = wp_remote_post($verify_url, array(
+			'method'    => 'POST',
+			'body'      => array(
+				'secret'   => $secret_key,
+				'response' => $recaptcha_response
+			)
+		));
+
+		$body = wp_remote_retrieve_body($response);
+		$result = json_decode($body);
+
+		// Check if the verification was successful
+		if (!$result->success) {
+			wp_die(__('Error: reCAPTCHA verification failed.'));
+		}
+
+	}
+
+	
+    return $commentdata;
+}
+add_filter('preprocess_comment', 'wp_travel_verify_recaptcha_response');

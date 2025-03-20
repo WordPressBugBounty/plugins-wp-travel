@@ -516,12 +516,12 @@ class WpTravel_Helpers_Booking {
 									$country  = wptravel_get_countries()[ array_search($country, wptravel_get_countries()) ];
 								}
 								
-                                if(!$country){
+                                if(!$country && wptravel_get_countries()[$countries[ $key ]] !==1 ){
                                     $country = wptravel_get_countries()[$countries[ $key ]];
                                 }
 
 								if( apply_filters( 'wptravel_show_full_country_name', false ) == true ){
-									$country = wptravel_get_countries()[$country];
+									$country = isset( wptravel_get_countries()[$country] ) ? wptravel_get_countries()[$country] : '';
 								}
 
 								$phone     = isset( $phones[ $key ] ) ? $phones[ $key ] : '';

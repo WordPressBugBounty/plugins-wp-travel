@@ -174,13 +174,13 @@ class WP_Travel_Cart {
 		$table = $wpdb->prefix . 'wt_dates';
 
 		if ( is_array( $args ) ) { // add to cart args. $args since WP Travel 4.4.2.
-			$trip_id            = isset( $args['trip_id'] ) ? $args['trip_id'] : 0;
+			$trip_id            = isset( $args['trip_id'] ) ? intval($args['trip_id']) : 0;
 			$trip_price         = isset( $args['trip_price'] ) ? $args['trip_price'] : 0;
 			$trip_price_partial = isset( $args['trip_price_partial'] ) ? $args['trip_price_partial'] : 0;
 			$pax                = isset( $args['pax'] ) ? $args['pax'] : array();
 			$price_key          = isset( $args['price_key'] ) ? $args['price_key'] : '';
 			$attrs              = isset( $args['attrs'] ) ? $args['attrs'] : array();
-			$price_ids          = isset( $attrs['pricing_id'] ) ? $attrs['pricing_id'] : 0;
+			$price_ids          = isset( $attrs['pricing_id'] ) ? intval( $attrs['pricing_id'] ) : 0;
 		} else {
 			$trip_id = $args;
 		}
