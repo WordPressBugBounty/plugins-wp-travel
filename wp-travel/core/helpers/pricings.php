@@ -242,6 +242,8 @@ class WpTravel_Helpers_Pricings {
 
 		$trip_id = intval($trip_id);
 		$pricing_data['title'] = preg_replace('/[^a-zA-Z0-9\s]/', '', $pricing_data['title']);
+		
+
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE trip_id=%d AND title=%s", $trip_id, $pricing_data['title'] ) );
 
 		if ( $results ) {

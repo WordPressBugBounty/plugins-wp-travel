@@ -3497,13 +3497,13 @@ function wptravel_get_submenu() {
 				'menu_slug'  => 'sysinfo',
 				'callback'   => array( 'WP_Travel_Admin_Settings', 'get_system_info' ),
 			),
-			// 'reports'        => array(
-			// 	'priority'   => '120',
-			// 	'page_title' => __( 'Reports', 'wp-travel' ),
-			// 	'menu_title' => __( 'Reports', 'wp-travel' ),
-			// 	'menu_slug'  => 'booking_chart',
-			// 	'callback'   => 'wptravel_get_booking_chart',
-			// ),
+			'reports'        => array(
+				'priority'   => '120',
+				'page_title' => __( 'Reports', 'wp-travel' ),
+				'menu_title' => __( 'Reports', 'wp-travel' ),
+				'menu_slug'  => 'booking_chart',
+				'callback'   => 'wptravel_get_booking_chart',
+			),
 			'custom_filters' => array(
 				'priority'   => '125',
 				'page_title' => __( 'Custom Filters', 'wp-travel' ),
@@ -4906,7 +4906,7 @@ function wp_travel_verify_recaptcha_response($commentdata) {
 
 		// If reCAPTCHA is not filled out, stop submission
 		if (empty($recaptcha_response)) {
-			wp_die(__('Error: reCAPTCHA is required.'));
+			wp_die(__('Error: reCAPTCHA is required.', 'wp-travel'));
 		}
 
 		// Verify the response
@@ -4924,7 +4924,7 @@ function wp_travel_verify_recaptcha_response($commentdata) {
 
 		// Check if the verification was successful
 		if (!$result->success) {
-			wp_die(__('Error: reCAPTCHA verification failed.'));
+			wp_die(__('Error: reCAPTCHA verification failed.', 'wp-travel'));
 		}
 
 	}

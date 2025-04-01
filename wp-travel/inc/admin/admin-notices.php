@@ -46,7 +46,7 @@ function wptravel_display_general_admin_notices() {
 	$notice_pages = array(
 		'itinerary-booking_page_settings',
 		'itineraries_page_booking_chart', // may be not reqd
-		// 'itinerary-booking_page_booking_chart',
+		'itinerary-booking_page_booking_chart',
 		'edit-itinerary-booking',
 		'edit-travel_keywords',
 		'edit-travel_locations',

@@ -876,7 +876,7 @@ class Wp_Travel_Shortcodes {
 														<?php endif; ?>
 														
 													</span>
-													<span class="pricing-per"><?php echo sprintf( "%s %s", __( 'per' ), $pricing_results->price_per ); ?></span>
+													<span class="pricing-per"><?php echo sprintf( "%s %s", __( 'per', 'wp-travel' ), $pricing_results->price_per ); ?></span>
 													
 													<?php if(!empty($inventory_args)): ?>
 														<?php if($booking_full): ?>

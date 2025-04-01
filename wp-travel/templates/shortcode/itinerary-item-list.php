@@ -19,36 +19,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-die;
-
 if ( post_password_required() ) {
 
-	// $allow_html =  wp_kses_allowed_html();
-	// $allow_html[ 'form' ] = array(
-	// 	'class' => true,
-	// 	'action' => true,
-	// 	'method' => true
-	// );
-	// $allow_html[ 'input' ] = array(
-	// 	'type' => true,
-	// 	'class' => true,
-	// 	'name' => true,
-	// 	'id' => true,
-	// 	'value' => true,
-	// 	'spellcheck' => true,
-	// 	'size' => true,
-	// );
-	// $allow_html[ 'label' ] = array(
-	// 	'class' => true,
-	// 	'for' => true
-	// );
-	// $allow_html[ 'p' ] = array(
-	// 	'class' => true
-	// );
+	$allow_html =  wp_kses_allowed_html();
+	$allow_html[ 'form' ] = array(
+		'class' => true,
+		'action' => true,
+		'method' => true
+	);
+	$allow_html[ 'input' ] = array(
+		'type' => true,
+		'class' => true,
+		'name' => true,
+		'id' => true,
+		'value' => true,
+		'spellcheck' => true,
+		'size' => true,
+	);
+	$allow_html[ 'label' ] = array(
+		'class' => true,
+		'for' => true
+	);
+	$allow_html[ 'p' ] = array(
+		'class' => true
+	);
 
-	// echo wp_kses( get_the_password_form(), $allow_html );
+	echo wp_kses( get_the_password_form(), $allow_html );
 
-	echo get_the_password_form();
 	return;
 }
 

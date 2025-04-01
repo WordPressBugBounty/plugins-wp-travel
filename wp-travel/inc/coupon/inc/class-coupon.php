@@ -44,6 +44,7 @@ class WP_Travel_Coupon {
 
 		global $wpdb;
 		$string = preg_replace('/[^a-zA-Z0-9\s]/', '', $string);
+
 		$meta_key = 'wp_travel_coupon_code';
 
 		$sql = $wpdb->prepare(
