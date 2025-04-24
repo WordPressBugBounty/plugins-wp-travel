@@ -27,11 +27,11 @@ function wptravel_book_now() {
 		$order_data = wc_get_order(wc_get_order_id_by_order_key($_REQUEST['key']))->data;
 
 	}else{
-		
+	
 		if ( ! WP_Travel::verify_nonce( true ) || ! isset( $_POST['wp_travel_book_now'] ) ) {
 			return;
 		}
-		
+	
 		if( $discount_coupon_data['type'] !== 'percentage' && $discount_coupon_data['value'] !== '100' ){
 			if( $_POST['wp_travel_booking_option'] == 'booking_with_payment' && !isset( $_POST['wp_travel_payment_gateway'] ) ){
 				return;

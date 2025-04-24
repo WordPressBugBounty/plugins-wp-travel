@@ -47,6 +47,7 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 		foreach ( $results as $result ) {
 			$dates[ $index ]['id']                      = absint( $result->id );
 			$dates[ $index ]['title']                   = $result->title;
+			$dates[ $index ]['custom_link']  			= $result->custom_link;
 			$dates[ $index ]['years']                   = empty( $result->years ) ? 'every_year' : $result->years;
 			$dates[ $index ]['months']                  = empty( $result->months ) ? 'every_month' : $result->months;
 			$dates[ $index ]['days']                    = empty( $result->days ) ? '' : $result->days;

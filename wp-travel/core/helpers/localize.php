@@ -169,6 +169,7 @@ class WpTravel_Helpers_Localize {
 				'thousand_separator' => $settings['thousand_separator'],
 				'decimal_separator'  => $settings['decimal_separator'],
 				'number_of_decimals' => $settings['number_of_decimals'],
+				'currency_code'      => $settings['currency'],
 
 				'prices'             => wptravel_get_itinereries_prices_array(), // Used to get min and max price to use it in range slider filter widget.
 				'locale'             => $locale,
@@ -181,8 +182,6 @@ class WpTravel_Helpers_Localize {
 				'checkoutUrl'        => $settings['enable_woo_checkout'] == 'no' ? wptravel_get_checkout_url() : wc_get_checkout_url(), // @since 4.3.2
 				'isEnabledCartPage'  => WP_Travel_Helpers_Cart::is_enabled_cart_page(), // @since 4.3.2
 			);
-
-			
 
 			if ( wptravel_can_load_payment_scripts() ) {
 

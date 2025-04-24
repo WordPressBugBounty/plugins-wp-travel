@@ -294,6 +294,7 @@ class WP_Travel_Ajax_Trips {
 	 */
 	public static function wp_travel_inventory_checking() {
 
+	
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {

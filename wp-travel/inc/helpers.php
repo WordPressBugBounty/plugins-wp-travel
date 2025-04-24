@@ -4933,3 +4933,36 @@ function wp_travel_verify_recaptcha_response($commentdata) {
     return $commentdata;
 }
 add_filter('preprocess_comment', 'wp_travel_verify_recaptcha_response');
+
+function my_ajax_handler() {
+    if (isset($_POST['data_id'])) {
+        $data_id = sanitize_text_field($_POST['data_id']);
+		$trip     = WP_Travel_Helpers_Trips::get_trip( $data_id );
+		$trip_data = $trip['trip'];
+
+		wp_send_json_success( $trip_data );
+    }
+    wp_die();
+}
+add_action('wp_ajax_my_ajax_action', 'my_ajax_handler'); 
+add_action('wp_ajax_nopriv_my_ajax_action', 'my_ajax_handler');
+
+function wt_add_custom_link_column() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'wt_dates';
+
+    // Check if the column already exists
+    $column_exists = $wpdb->get_results(
+        $wpdb->prepare(
+            "SHOW COLUMNS FROM $table_name LIKE %s",
+            'custom_link'
+        )
+    );
+
+    if (empty($column_exists)) {
+        $wpdb->query("ALTER TABLE $table_name ADD custom_link VARCHAR(255) DEFAULT NULL;");
+    }
+}
+
+wt_add_custom_link_column();

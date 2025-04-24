@@ -136,8 +136,11 @@ $trp_title = apply_filters( 'wp_travel_trip_title_enable_disable', true );
 						<?php endif; ?>
 					</div>
 				</div>
-			
+				
 				<a class="wp-block-button__link explore-btn" href="<?php the_permalink(); ?>"><span><?php echo esc_html( apply_filters( 'wp_travel_archives_page_trip_explore_btn', __( 'Explore', 'wp-travel' ), $trip_id ) ); ?></span></a>
+				<?php if( apply_filters( 'wp_travel_enable_quick_book', false ) == true ): ?>
+					<p><a class="trip-quick-book" data-id="<?php echo esc_attr( get_the_id() ); ?>"><span><?php echo esc_html( apply_filters( 'wp_travel_archives_page_trip_book_btn', __( 'Quick Book', 'wp-travel' ), $trip_id ) ); ?></span></a></p>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

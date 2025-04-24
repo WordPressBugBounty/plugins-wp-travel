@@ -48,6 +48,7 @@ class WpTravel_Helpers_Trip_Dates {
 		foreach ( $results as $result ) {
 			$dates[ $index ]['id']           = absint( $result->id );
 			$dates[ $index ]['title']        = $result->title;
+			$dates[ $index ]['custom_link']  = $result->custom_link;
 			$dates[ $index ]['years']        = empty( $result->years ) ? 'every_year' : $result->years;
 			$dates[ $index ]['months']       = empty( $result->months ) ? 'every_month' : $result->months;
 			$dates[ $index ]['days']         = empty( $result->days ) ? '' : $result->days;
@@ -153,6 +154,7 @@ class WpTravel_Helpers_Trip_Dates {
 		$dates_data = array(
 			'trip_id'     => $trip_id,
 			'title'       => ! empty( $date['title'] ) ? $date['title'] : '',
+			'custom_link'       => ! empty( $date['custom_link'] ) ? $date['custom_link'] : '',
 			'recurring'   => ! empty( $date['is_recurring'] ) ? absint( $date['is_recurring'] ) : 0,
 			'years'       => ! empty( $date['years'] ) ? $date['years'] : '',
 			'months'      => ! empty( $date['months'] ) ? $date['months'] : '',
@@ -182,6 +184,7 @@ class WpTravel_Helpers_Trip_Dates {
 					'%s',
 					'%s',
 					'%s',
+					'%s',
 				),
 				array( '%d' )
 			);
@@ -196,6 +199,7 @@ class WpTravel_Helpers_Trip_Dates {
 				$dates_data,
 				array(
 					'%d',
+					'%s',
 					'%s',
 					'%s',
 					'%s',

@@ -90,3 +90,23 @@ do_action( 'wp_travel_before_content_start' );
 
 <?php do_action( 'wp_travel_after_single_itinerary', get_the_ID() ); ?>
 </div>
+
+<?php if( apply_filters( 'wp_travel_enable_quick_book', false ) == true ): ?>
+	<div id="wp-travel-quick-book-modal" class="wp-travel-calendar-view">
+		<span class="close-modal"><i class="fas fa-window-close"></i></span>
+		<div id="wp-travel-quick-book-modal-content">
+			<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" 
+				style="shape-rendering: auto; display: block; background: transparent;">
+				<g>
+					<circle stroke-dasharray="61.26105674500097 22.420352248333657" r="13" stroke-width="5" 
+						stroke="#0099e5" fill="none" cy="50" cx="50">
+						<animateTransform keyTimes="0;1" values="0 50 50;360 50 50" dur="1s" 
+							repeatCount="indefinite" type="rotate" attributeName="transform">
+						</animateTransform>
+					</circle>
+				</g>
+			</svg>
+		</div>
+	</div>
+<?php
+endif; 

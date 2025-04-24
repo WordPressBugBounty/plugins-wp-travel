@@ -2,9 +2,9 @@
 Contributors: wptravel, suascat_wp
 Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 10.2.0
+Stable tag: 10.2.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -20,11 +20,11 @@ Powering **6000+ travel websites around the world**, WP Travel is becoming very 
 
 Its powerful free travel engine (also available in a [Pro version](https://wptravel.io/wp-travel-pro/) with additional features) will help you create a fully functional tour management and booking system.
 
-**WP Travel plugin delivers what it promises and has the best support!**
+<strong><em>WP Travel plugin delivers what it promises and has the best support!</strong></em>
 
-"After a VERY BAD experience with another plugin we are very happy to have found the solution with you and were able to put our website online very quickly thanks to your support."
+<em>"After a VERY BAD experience with another plugin we are very happy to have found the solution with you and were able to put our website online very quickly thanks to your support."</em>
 
-**[~ Justine Speissegger](https://wordpress.org/support/topic/wp-travel-plugin-delivers-what-it-promises-and-having-the-best-support/)**
+**[~ *Justine Speissegger*](https://wordpress.org/support/topic/wp-travel-plugin-delivers-what-it-promises-and-having-the-best-support/)**
 
 View: [Demo of Best Travel & Tour plugin ](https://wpdemo.wensolutions.com/travel-joy-pro/) | [Modules](https://wptravel.io/modules/) | [Best Travel & Tour Themes](https://wptravel.io/travel-agency-wordpress-themes/) | [Documentations](https://wptravel.io/wp-travel-documentations/) | [Video Tutorials](https://wptravel.io/docs/youtube-video-tutorials/)
 
@@ -44,11 +44,11 @@ View: [Demo of Best Travel & Tour plugin ](https://wpdemo.wensolutions.com/trave
 > **WP Travel Pro**
 > With [WP Travel Pro](https://wptravel.io/wp-travel-pro/) you can get all the premium features of WP Travel in a single package. No more headaches with the addon setup.
 
-**Great value for money, awesome support (using pro since 2 years)**
+<strong><em>Great value for money, awesome support (using pro since 2 years)</strong></em>
 
-"We are using the WP Travel Pro plugin since two years and it provides great functionality for its price. There are more extensive and likely even more suitable solutions for our business on the market but you pay 100x more money for them."
+<em>"We are using the WP Travel Pro plugin since two years and it provides great functionality for its price. There are more extensive and likely even more suitable solutions for our business on the market but you pay 100x more money for them."</em>
 
-**[~ carnizero](https://wordpress.org/support/topic/great-value-for-money-awesome-support-using-pro-since-2-years/)**
+**[~ *carnizero*](https://wordpress.org/support/topic/great-value-for-money-awesome-support-using-pro-since-2-years/)**
 
 
 == 🌟 CORE FEATURES ==
@@ -90,11 +90,11 @@ View: [Demo of Best Travel & Tour plugin ](https://wpdemo.wensolutions.com/trave
 
 * **[Customer Dashboard](https://wptravel.io/docs/wp-travel-customer-dashboard/):** You will have a feature to set up a customer dashboard.
 
-**Best travel plugin for tour operators**
+<strong><em>Best travel plugin for tour operators</strong></em>
 
-"The plugin is absolutely awesome. I have used it in both free and PRO version for two of my clients. Works perfectly for small tour operators and is simple a great value for money. Definitely recommended for using the WP Travel plugin. The guys from support are super helpful, friendly and patient in solving the problems step by step. 10 out of 10 points for the service."
+<em>"The plugin is absolutely awesome. I have used it in both free and PRO version for two of my clients. Works perfectly for small tour operators and is simple a great value for money. Definitely recommended for using the WP Travel plugin. The guys from support are super helpful, friendly and patient in solving the problems step by step. 10 out of 10 points for the service."</em>
 
-**[~ viatordigital](https://wordpress.org/support/topic/best-travel-plugin-for-tour-operators/)**
+**[~ *viatordigital*](https://wordpress.org/support/topic/best-travel-plugin-for-tour-operators/)**
 
 == 🔥 ADDITIONAL FEATURES ==
 * Custom Trip Code
@@ -142,11 +142,11 @@ View: [Demo of Best Travel & Tour plugin ](https://wpdemo.wensolutions.com/trave
 == ⏰ CUSTOMIZATION and EXTENSIONS ==
 WP Travel offers powerful customization tools for developers and non-developers to tailor their travel websites. With a wide array of hooks, filters, and modules, users can easily add advanced features and create a dynamic booking system. The plugin's drag-and-drop editors and developer-friendly hooks enable effortless transformation into feature-rich platforms.
 
-**Unparalleled Support and Versatile Functionality**
+<strong><em>Unparalleled Support and Versatile Functionality</strong></em>
 
-"The plugin itself is robust and versatile, offering features that cater perfectly to our specific requirements. The customization options are extensive, allowing us to tailor the booking system to reflect the unique luxury experience we provide at Lux Diving."
+<em>"The plugin itself is robust and versatile, offering features that cater perfectly to our specific requirements. The customization options are extensive, allowing us to tailor the booking system to reflect the unique luxury experience we provide at Lux Diving."</em>
 
-**[~ tappedoutasia, Lux Diving](https://wordpress.org/support/topic/unparalleled-support-and-versatile-functionality/)**
+**[~ *tappedoutasia, Lux Diving*](https://wordpress.org/support/topic/unparalleled-support-and-versatile-functionality/)**
 
 
 == 🧩 EXTENSIONS ==
@@ -426,6 +426,12 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 10.2.1 =
+Release Date: 24th April 2025
+
+Fixes:
+* Fixed booking buttom design issue
 
 = 10.2.0 =
 Release Date: 1st April 2025
