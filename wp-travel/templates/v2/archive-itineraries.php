@@ -50,7 +50,9 @@ if( !wp_is_block_theme() ){
 		if( apply_filters( 'wp_travel_enable_quick_book', false ) == true ):
 		?>
 		<div id="wp-travel-quick-book-modal" class="wp-travel-calendar-view">
-			<span class="close-modal"><i class="fas fa-window-close"></i></span>
+			<div class="wp-travel-quick-view-modal-header">
+				<span class="close-modal"><i class="fas fa-times"></i></span>
+			</div>
 			<div id="wp-travel-quick-book-modal-content">
 				<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" 
 					style="shape-rendering: auto; display: block; background: transparent;">
@@ -155,7 +157,9 @@ if( !wp_is_block_theme() ){
 						if( apply_filters( 'wp_travel_enable_quick_book', false ) == true ):
 						?>
 						<div id="wp-travel-quick-book-modal" class="wp-travel-calendar-view">
-							<span class="close-modal"><i class="fas fa-window-close"></i></span>
+							<div class="wp-travel-quick-view-modal-header">
+								<span class="close-modal"><i class="fas fa-times"></i></span>
+							</div>
 							<div id="wp-travel-quick-book-modal-content">
 								<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" 
 									style="shape-rendering: auto; display: block; background: transparent;">

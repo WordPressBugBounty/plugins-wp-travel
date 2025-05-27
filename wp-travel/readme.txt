@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 10.2.1
+Stable tag: 10.3.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,20 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 10.3.0 =
+Release Date: 27th May 2025
+
+Fixes:
+* Fixed the issue with Booking with payment on OnPage (condition: only booking with payment is enable as a booking options)
+* Fixed issue with required message of Privacy Policy checkbox
+
+Enhancements:
+* Wrapped 'pricing title' parameter with 'preg_replace' to exclude special characters from string
+* Added shortcode to shows trip lists in monthly tabular form
+* Added code to hide comment reply button when "Enable threaded (nested) comments" is unchecked
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-3-0-update-release-note).**
 
 = 10.2.1 =
 Release Date: 24th April 2025

@@ -371,7 +371,28 @@ jQuery(function($) {
         $('.wp-travel-quick-view .tab-list-content').hide();
         $('.wp-travel-quick-view #gallery').show();
     });
+
+    $(document).on('click', '.custom-link-enable input', function(event) {
+        if ($(this).is(':checked')) {
+            var url = $(this).data('url');
+
+            $('button.wp-travel-book').attr('data-url', url);
+            $('button.wp-travel-book').addClass('custom-booking-link');
+            // $('button.wp-travel-book').removeClass('wp-travel-book');
+        }
+    });
+
+    $(document).on('click', '.wp-travel-book.custom-booking-link', function(event) {
+        var url = $(this).data('url');
+
+        if (!url) {
+            return; 
+        }
+    
+        window.open(url, '_blank')
+    });
 });
+
 
 
 // PWA

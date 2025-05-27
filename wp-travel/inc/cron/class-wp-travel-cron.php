@@ -122,7 +122,7 @@ if ( ! class_exists( 'WP_Travel_Cron' ) ) {
 							foreach ( $trip_dates as $trip_date ) {
 
 								$start_date = strtotime( $trip_date['start_date'] );
-								$start_date = dagmdatete( 'Y-m-d', $start_date );
+								$start_date = gmdate( 'Y-m-d', $start_date );
 
 								$end_date = strtotime( $trip_date['end_date'] );
 								$end_date = gmdate( 'Y-m-d', $end_date );

@@ -701,8 +701,13 @@ function wptravel_booking_info_table( $booking_id ) {
 	$items            = get_post_meta( $booking_id, 'order_items_data', true );
 	$order_items_data = get_post_meta( $booking_id, 'order_data', true ); // includes travelers info.
 
-	$fnames = $order_items_data['wp_travel_fname_traveller'];
-	$lnames = $order_items_data['wp_travel_lname_traveller'];
+	$fnames = '';
+	$lnames = '';
+
+	if ( is_array( $order_items_data ) ) {
+		$fnames = isset( $order_items_data['wp_travel_fname_traveller'] ) ? $order_items_data['wp_travel_fname_traveller'] : '';
+		$lnames = isset( $order_items_data['wp_travel_lname_traveller'] ) ? $order_items_data['wp_travel_lname_traveller'] : '';
+	}
 
 	ob_start();
 	if ( is_array( $items ) && count( $items ) > 0 ) { ?>

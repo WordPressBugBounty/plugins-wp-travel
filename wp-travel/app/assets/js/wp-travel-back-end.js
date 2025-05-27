@@ -1,4 +1,34 @@
 (function ($) {
+    
+    $(document).on('click', '.wp-travel-filter .fse-classic button', function () {
+        $('.wp-travel-filter .fse-classic button' ).removeClass( 'active' );
+        $(this).addClass( 'active' );
+        $('.marketplace-module' ).css( 'display', 'none' );
+        var dataId = $(this).data('id');
+        if( dataId == 'fse' ){
+            $('.marketplace-module.fse-theme' ).css( 'display', 'block' );
+            $('.classic-pro-free' ).css( 'display', 'none' );
+
+        }else{
+            $('.marketplace-module.classic-theme' ).css( 'display', 'block' );
+            $('.classic-pro-free' ).css( 'display', 'block' );
+        }    
+    });
+
+    $(document).on('click', '.wp-travel-filter .classic-pro-free button', function () {
+        $('.wp-travel-filter .classic-pro-free button' ).removeClass( 'active' );
+        $(this).addClass( 'active' );
+        $('.classic-theme .single-module' ).css( 'display', 'none' );
+        var dataId = $(this).data('id');
+        if( dataId == 'free' ){ 
+            $('.classic-theme .single-module.free' ).css( 'display', 'block' );
+            $('.classic-theme .single-module.pro' ).css( 'display', 'none' );
+        }else{
+            $('.classic-theme .single-module.pro' ).css( 'display', 'block' );
+            $('.classic-theme .single-module.free' ).css( 'display', 'none' );
+        }
+    });
+
     if ('undefined' != typeof (GMaps) && $('#gmap').length > 0) {
         var map = new GMaps({
             div: '#gmap',
@@ -917,5 +947,6 @@
         fetch( wp_travel.ajaxUrl + "?action=wptravel_review_now&_nonce="+wp_travel._nonce ).then(response => location.reload());
     });
 
-}(jQuery));
+   
 
+}(jQuery));

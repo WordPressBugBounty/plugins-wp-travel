@@ -128,11 +128,12 @@ class Wp_Travel_Shortcodes {
 			'limit'        => 20,
 			'col'          => apply_filters( 'wp_travel_itineraries_col_per_row', '3' ),
 			'order'        => 'asc',
+			'orderby'	   => 'post_title'
 		);
 
 		$atts = shortcode_atts( $default, $shortcode_atts, 'WP_TRAVEL_ITINERARIES' );
 		
-
+		
 		$type      = $atts['type'];
 		$iti_id    = $atts['itinerary_id'];
 		$view_mode = $atts['view_mode'];
@@ -140,7 +141,7 @@ class Wp_Travel_Shortcodes {
 		$slug      = $atts['slug'];
 		$limit     = absint( $atts['limit'] );
 		$order     = $atts['order'];
-
+		
 		$args = array(
 			'post_type'      => WP_TRAVEL_POST_TYPE,
 			'posts_per_page' => $limit,
@@ -274,6 +275,9 @@ class Wp_Travel_Shortcodes {
 			$args['paged'] = $paged;
 		}
 
+		if( isset( $shortcode_atts['ordertype'] ) && $shortcode_atts['ordertype'] == 'post__in' ){
+			$args['orderby'] = 'post__in';
+		}
 	
 		$query          = new WP_Query( $args );
 		

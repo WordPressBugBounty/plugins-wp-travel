@@ -284,7 +284,13 @@ class WpTravel_Helpers_Booking {
 		}
 
 		// Consist of traveler, billing details.
-		$checkout_form_data = get_post_meta( $booking_id, 'order_data', true );
+		// $checkout_form_data = get_post_meta( $booking_id, 'order_data', true );
+		if( apply_filters( 'wp_travel_get_travelers_info_from_checkout_form', false ) == true ){
+			$checkout_form_data = $_POST;
+		}else{
+			$checkout_form_data = get_post_meta( $booking_id, 'order_data', true );
+		}
+
 
 		ob_start();
 		?>
