@@ -18,9 +18,9 @@ function wptravel_booking_admin_default_email_content() {
 		<table class="wp-travel-wrapper" width="100%" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;">
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'You have received bookings from', 'wp-travel' ); ?> {customer_name}:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received bookings from'; ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
@@ -31,7 +31,7 @@ function wptravel_booking_admin_default_email_content() {
 			</tr>
 
 			<tr class="wp-travel-content" style="background: #fff;">
-				<td colspan="2" align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Note', 'wp-travel' ); ?></b></td>
+				<td colspan="2" align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Note'; ?></b></td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">{customer_note}</td>
@@ -39,7 +39,7 @@ function wptravel_booking_admin_default_email_content() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="center">				
-					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php esc_html_e( 'View details on site', 'wp-travel' ); ?></a>
+					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php echo 'View details on site'; ?></a>
 				</td>
 			</tr>
 		</table>	
@@ -62,9 +62,9 @@ function wptravel_booking_client_default_email_content() {
 	<table class="wp-travel-wrapper" width="100%" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;">
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {customer_name},</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Your booking has been received and is now being processed. Your order details are shown below for your reference', 'wp-travel' ); ?>:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {customer_name},</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Your booking has been received and is now being processed. Your order details are shown below for your reference'; ?>:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
@@ -74,11 +74,11 @@ function wptravel_booking_client_default_email_content() {
 				<td style="font-size: 14px; background: #fff; margin: 0; padding: 0px 0px 8px 25px;" colspan="2" align="left">{traveler_details}</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
-				<td colspan="2" align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Note', 'wp-travel' ); ?></b></td>
+				<td colspan="2" align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Note'; ?></b></td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
-					<b><?php esc_html_e( 'Customer Note', 'wp-travel' ); ?></b>
+					<b><?php echo 'Customer Note'; ?></b>
 				</td>
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">{customer_note}</td>
 			</tr>
@@ -105,7 +105,7 @@ function wptravel_enquiries_admin_default_email_content() {
 	if ( class_exists( 'WpTravel_Helpers_Strings' ) ) {
 		$string = WpTravel_Helpers_Strings::get(); 
 	}
-	$strings = isset( $string['enquiry'] ) ? $string['enquiry'] : apply_filters( 'wp_travel_trip_enquiry_label', __( 'Enquiry', 'wp-travel' ) ) ;
+	$strings = isset( $string['enquiry'] ) ? $string['enquiry'] : apply_filters( 'wp_travel_trip_enquiry_label', 'Enquiry' ) ;
 
 	ob_start();
 
@@ -113,18 +113,18 @@ function wptravel_enquiries_admin_default_email_content() {
 	<table class="wp-travel-wrapper" width="100%" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;">
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php echo esc_html__( 'You have received trip ', 'wp-travel' ) . esc_html( strtolower( $strings ) ) . esc_html__( ' from', 'wp-travel' ); ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received trip ' . esc_html( strtolower( $strings ) ) . ' from'; ?> {customer_name}:</p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo esc_html( $strings ) . esc_html__( ' Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo esc_html( $strings ) . ' Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
-					<b><?php esc_html_e( 'Itinerary', 'wp-travel' ); ?></b>
+					<b><?php echo 'Itinerary'; ?></b>
 
 				</td>
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
@@ -134,7 +134,7 @@ function wptravel_enquiries_admin_default_email_content() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
-					<b><?php esc_html_e( 'Name', 'wp-travel' ); ?></b>
+					<b><?php echo 'Name'; ?></b>
 
 				</td>
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
@@ -144,7 +144,7 @@ function wptravel_enquiries_admin_default_email_content() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
-					<b><?php esc_html_e( 'E-mail', 'wp-travel' ); ?></b>
+					<b><?php echo 'E-mail'; ?></b>
 
 				</td>
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
@@ -154,7 +154,7 @@ function wptravel_enquiries_admin_default_email_content() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
-					<b><?php echo  esc_html( $strings ) . esc_html__( ' Message', 'wp-travel' ); ?></b>
+					<b><?php echo  esc_html( $strings ) . ' Message'; ?></b>
 
 				</td>
 				<td align="left" style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">
@@ -164,7 +164,7 @@ function wptravel_enquiries_admin_default_email_content() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="center">			
-					<a href="{enquery_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php esc_html_e( 'View details on site', 'wp-travel' ); ?>
+					<a href="{enquery_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php echo 'View details on site'; ?>
 				</td>
 			</tr>
 		</table>
@@ -191,9 +191,9 @@ function wptravel_payment_admin_default_email_content() {
 	<table class="wp-travel-wrapper" width="100%" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;">
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'You have received payment from', 'wp-travel' ); ?> {customer_name}:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received payment from'; ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
@@ -210,7 +210,7 @@ function wptravel_payment_admin_default_email_content() {
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="center">				
-					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php esc_html_e( 'View details on site', 'wp-travel' ); ?></a>
+					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;height: 30px;line-height: 30px;width: 200px;"><?php echo 'View details on site'; ?></a>
 				</td>
 			</tr>
 		</table>
@@ -237,9 +237,9 @@ function wptravel_payment_client_default_email_content() {
 	<table class="wp-travel-wrapper" width="100%" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;">
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td colspan="2" align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-				<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {customer_name},</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Your payment has been received.', 'wp-travel' ); ?></p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+				<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {customer_name},</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Your payment has been received.'; ?></p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
@@ -280,7 +280,7 @@ function wptravel_admin_email_template() {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo esc_html( 'To admin', 'wp-travel' ); ?></title>
+		<title><?php echo 'To admin'; ?></title>
 		<style type="text/css">
 			body{
 				background: #fcfcfc ;
@@ -377,27 +377,27 @@ function wptravel_admin_email_template() {
 		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;"> 
 			<tr class="wp-travel-header" style="background: #fff;">			
 				<td align="left" style="background: #dd402e;box-sizing: border-box;margin: 0;padding: 20px 25px;"> <!-- Header -->
-					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php esc_html_e( 'New Bookings', 'wp-travel' ); ?></h2>
+					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php echo 'New Bookings'; ?></h2>
 				</td> <!-- /Header -->
 			</tr>
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'You have received bookings from', 'wp-travel' ); ?> {customer_name}:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received bookings from'; ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Booking Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Booking Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Itinerary', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Itinerary'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -413,7 +413,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : esc_html__( 'Pax', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : 'Pax'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -427,7 +427,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Scheduled Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Scheduled Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -441,7 +441,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Arrival Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Arrival Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -455,7 +455,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Departure Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Departure Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -468,14 +468,14 @@ function wptravel_admin_email_template() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Customer Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Customer Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Name', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Name'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -489,7 +489,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Country', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Country'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -503,7 +503,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Address', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Address'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -517,7 +517,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Phone', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Phone'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -531,7 +531,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Email', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Email'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -545,7 +545,7 @@ function wptravel_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Note', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Note'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
@@ -557,12 +557,12 @@ function wptravel_admin_email_template() {
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="center">				
-					<p style="display:inline-block;margin:0 auto;width:100%"><a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php esc_html_e( 'View details on site', 'wp-travel' ); ?></a></p>
+					<p style="display:inline-block;margin:0 auto;width:100%"><a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php echo 'View details on site'; ?></a></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-footer" style="background: #fff;">
 				<td align="center" style="background: #eaebed;box-sizing: border-box;font-size: 14px;padding: 10px 25px;">
-					<p>{sitename} - <?php esc_html_e( 'Powered By', 'wp-travel' ); ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
+					<p>{sitename} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php echo 'WP Travel'; ?></a></p>
 				</td>
 			</tr>
 		</table><!-- /Wrapper -->
@@ -590,7 +590,7 @@ function wptravel_customer_email_template() {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo esc_html( 'To admin', 'wp-travel' ); ?></title>
+		<title><?php echo 'To admin'; ?></title>
 		<style type="text/css">
 			body{
 				background: #fcfcfc ;
@@ -687,26 +687,26 @@ function wptravel_customer_email_template() {
 		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;"> 
 			<tr class="wp-travel-header" style="background: #fff;">			
 				<td align="left" style="background: #dd402e;box-sizing: border-box;margin: 0;padding: 20px 25px;"> <!-- Header -->
-					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php esc_html_e( 'Thank you for your booking.', 'wp-travel' ); ?></h2>
+					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php echo 'Thank you for your booking.'; ?></h2>
 				</td> <!-- /Header -->
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {customer_name},</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Your booking has been received and is now being processed. Your order details are shown below for your reference', 'wp-travel' ); ?>:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: #{booking_id} ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {customer_name},</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Your booking has been received and is now being processed. Your order details are shown below for your reference'; ?>:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: #{booking_id} ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Booking Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Booking Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Itinerary', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Itinerary'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -722,7 +722,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : esc_html__( 'Pax', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : 'Pax'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -736,7 +736,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Scheduled Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Scheduled Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -750,7 +750,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Arrival Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Arrival Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -764,7 +764,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Departure Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Departure Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -777,14 +777,14 @@ function wptravel_customer_email_template() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Your Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Your Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Name', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Name'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -798,7 +798,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Country', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Country'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -812,7 +812,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Address', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Address'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -826,7 +826,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Phone', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Phone'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -840,7 +840,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Email', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Email'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -854,7 +854,7 @@ function wptravel_customer_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Note', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Note'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
@@ -866,7 +866,7 @@ function wptravel_customer_email_template() {
 			</tr>			
 			<tr class="wp-travel-footer" style="background: #fff;">
 				<td align="center" style="background: #eaebed;box-sizing: border-box;font-size: 14px;padding: 10px 25px;">
-					<p>{sitename} - <?php esc_html_e( 'Powered By', 'wp-travel' ); ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
+					<p>{sitename} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php echo 'WP Travel'; ?></a></p>
 				</td>
 			</tr>
 		</table><!-- /Wrapper -->
@@ -889,7 +889,7 @@ function wptravel_enqueries_admin_email_template() {
 	if ( class_exists( 'WpTravel_Helpers_Strings' ) ) {
 		$string = WpTravel_Helpers_Strings::get(); 
 	}
-	$strings = isset( $string['enquiry'] ) ? $string['enquiry'] : apply_filters( 'wp_travel_trip_enquiry_label', __( 'Enquiry', 'wp-travel' ) ) ;
+	$strings = isset( $string['enquiry'] ) ? $string['enquiry'] : apply_filters( 'wp_travel_trip_enquiry_label', 'Enquiry' ) ;
 
 	ob_start();
 	?>
@@ -897,7 +897,7 @@ function wptravel_enqueries_admin_email_template() {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo esc_html( 'To admin', 'wp-travel' ); ?></title>
+		<title><?php echo 'To admin'; ?></title>
 		<style type="text/css">
 			body{
 				background: #fcfcfc ;
@@ -994,25 +994,25 @@ function wptravel_enqueries_admin_email_template() {
 		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;"> 
 			<tr class="wp-travel-header" style="background: #fff;">			
 				<td align="left" style="background: #dd402e;box-sizing: border-box;margin: 0;padding: 20px 25px;"> <!-- Header -->
-					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php esc_html_e( 'New Trip Enquiry', 'wp-travel' ); ?></h2>
+					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php echo 'New Trip Enquiry'; ?></h2>
 				</td> <!-- /Header -->
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php echo esc_html__( 'You have received trip ', 'wp-travel' ) . esc_html( strtolower( $strings ) ). esc_html__( ' from', 'wp-travel' ); ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received trip ' . esc_html( strtolower( $strings ) ). ' from'; ?> {customer_name}:</p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Booking Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Booking Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Itinerary', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Itinerary'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1026,14 +1026,14 @@ function wptravel_enqueries_admin_email_template() {
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Customer Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Customer Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Name', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Name'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1047,7 +1047,7 @@ function wptravel_enqueries_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Email', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Email'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1061,7 +1061,7 @@ function wptravel_enqueries_admin_email_template() {
 				<td align="left">
 					<table class="wp-travel-content-head full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo esc_html( $strings ) . esc_html__( ' Message', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo esc_html( $strings ) . ' Message'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info full-width" align="left" cellspacing="0" cellpadding="0" style="width: 100%!important;">
@@ -1074,12 +1074,12 @@ function wptravel_enqueries_admin_email_template() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="center">				
-					<a href="{enquery_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php esc_html_e( 'View details on site', 'wp-travel' ); ?></a>
+					<a href="{enquery_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php echo 'View details on site'; ?></a>
 				</td>
 			</tr>
 			<tr class="wp-travel-footer" style="background: #fff;">
 				<td align="center" style="background: #eaebed;box-sizing: border-box;font-size: 14px;padding: 10px 25px;">
-					<p>{sitename} - <?php esc_html_e( 'Powered By', 'wp-travel' ); ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
+					<p>{sitename} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php echo 'WP Travel'; ?></a></p>
 				</td>
 			</tr>
 		</table><!-- /Wrapper -->
@@ -1108,7 +1108,7 @@ function wptravel_payment_email_template_admin() {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo esc_html( 'To admin', 'wp-travel' ); ?></title>
+		<title><?php echo 'To admin'; ?></title>
 		<style type="text/css">
 			body{
 				background: #fcfcfc ;
@@ -1205,26 +1205,26 @@ function wptravel_payment_email_template_admin() {
 		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;"> 
 			<tr class="wp-travel-header" style="background: #fff;">			
 				<td align="left" style="background: #dd402e;box-sizing: border-box;margin: 0;padding: 20px 25px;"> <!-- Header -->
-					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php esc_html_e( 'New Bookings Payment', 'wp-travel' ); ?></h2>
+					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php echo 'New Bookings Payment'; ?></h2>
 				</td> <!-- /Header -->
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {sitename} <?php esc_html_e( 'Admin', 'wp-travel' ); ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'You have received payment from', 'wp-travel' ); ?> {customer_name}:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received payment from'; ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-title" style="background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;">				
-					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php esc_html_e( 'Booking Details', 'wp-travel' ); ?>:</b></h3>
+					<h3 style="font-size: 16px;line-height: 1;margin: 0;margin-top: 30px;"><b><?php echo 'Booking Details'; ?>:</b></h3>
 				</td>
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Itinerary', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Itinerary'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1240,7 +1240,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : esc_html__( 'Pax', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo $strings['bookings']['pax'] ? esc_html( $strings['bookings']['pax'] ) : 'Pax'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1254,7 +1254,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Scheduled Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Scheduled Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1268,7 +1268,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Arrival Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Arrival Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1282,7 +1282,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Departure Date', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Departure Date'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1297,7 +1297,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Status', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Status'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1313,7 +1313,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Mode', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Mode'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1329,7 +1329,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b> <?php esc_html_e( 'Trip Price', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b> <?php echo 'Trip Price'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1345,7 +1345,7 @@ function wptravel_payment_email_template_admin() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Amount', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Amount'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1361,12 +1361,12 @@ function wptravel_payment_email_template_admin() {
 
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="center">				
-					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php esc_html_e( 'View details ', 'wp-travel' ); ?></a>
+					<a href="{booking_edit_link}" class="wp-travel-veiw-more" target="_blank" style="color: #fcfffd;text-decoration: none;background: #dd402e;border-radius: 3px;display: block;font-size: 14px;margin: 20px auto;padding: 10px 20px;text-align: center;width: 130px;"><?php echo 'View details '; ?></a>
 				</td>
 			</tr>
 			<tr class="wp-travel-footer" style="background: #fff;">
 				<td align="center" style="background: #eaebed;box-sizing: border-box;font-size: 14px;padding: 10px 25px;">
-					<p>{sitename} - <?php esc_html_e( 'Powered By', 'wp-travel' ); ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
+					<p>{sitename} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php echo 'WP Travel'; ?></a></p>
 				</td>
 			</tr>
 		</table><!-- /Wrapper -->
@@ -1391,7 +1391,7 @@ function wptravel_payment_email_template_customer() {
 	<html>
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title><?php echo esc_html( 'To customer', 'wp-travel' ); ?></title>
+		<title><?php echo 'To customer'; ?></title>
 		<style type="text/css">
 			body{
 				background: #fcfcfc;
@@ -1488,14 +1488,14 @@ function wptravel_payment_email_template_customer() {
 		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0" style="color: #5d5d5d;font-family: Roboto, sans-serif;margin: auto;"> 
 			<tr class="wp-travel-header" style="background: #fff;">			
 				<td align="left" style="background: #dd402e;box-sizing: border-box;margin: 0;padding: 20px 25px;"> <!-- Header -->
-					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php esc_html_e( 'Thank you for your Payment.', 'wp-travel' ); ?></h2>
+					<h2 style="color: #fcfffd;font-size: 20px;margin: 0;padding: 0;text-align: center;"><?php echo 'Thank you for your Payment.'; ?></h2>
 				</td> <!-- /Header -->
 			</tr>
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Hello', 'wp-travel' ); ?> {customer_name},</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php esc_html_e( 'Your payment has been received.', 'wp-travel' ); ?>:</p>
-					<p style="line-height: 1.55;font-size: 14px;"><b><?php esc_html_e( 'Booking ID', 'wp-travel' ); ?>: #{booking_id} ({booking_arrival_date})</b></p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {customer_name},</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Your payment has been received.'; ?>:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: #{booking_id} ({booking_arrival_date})</b></p>
 				</td>
 			</tr>			
 			<!-- /Payment Starts -->
@@ -1503,7 +1503,7 @@ function wptravel_payment_email_template_customer() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Status', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Status'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1519,7 +1519,7 @@ function wptravel_payment_email_template_customer() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Mode', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Mode'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1535,7 +1535,7 @@ function wptravel_payment_email_template_customer() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b> <?php esc_html_e( 'Trip Price', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b> <?php echo 'Trip Price'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1551,7 +1551,7 @@ function wptravel_payment_email_template_customer() {
 				<td align="left">
 					<table class="wp-travel-content-head" align="left" cellspacing="0" cellpadding="0" style="width: 24%;">
 						<tr style="background: #fff;">
-							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php esc_html_e( 'Payment Amount', 'wp-travel' ); ?></b></td>
+							<td style="font-size: 14px;background: #fff;box-sizing: border-box;margin: 0;padding: 0px 0px 8px 25px;"><b><?php echo 'Payment Amount'; ?></b></td>
 						</tr>
 					</table>
 					<table class="wp-travel-content-info" align="left" cellspacing="0" cellpadding="0" style="width: 76%;">
@@ -1566,7 +1566,7 @@ function wptravel_payment_email_template_customer() {
 			<!-- /Payment ends -->
 			<tr class="wp-travel-footer" style="background: #fff;">
 				<td align="center" style="background: #eaebed;box-sizing: border-box;font-size: 14px;padding: 10px 25px;">
-					<p>{sitename} - <?php esc_html_e( 'Powered By', 'wp-travel' ); ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
+					<p>{sitename} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank" style="color: #5a418b;text-decoration: none;"><?php echo 'WP Travel'; ?></a></p>
 				</td>
 			</tr>
 		</table><!-- /Wrapper -->

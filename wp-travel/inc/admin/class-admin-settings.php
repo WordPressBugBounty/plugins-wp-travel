@@ -45,23 +45,23 @@ class WP_Travel_Admin_Settings { // @phpcs:ignore
 		$sysinfo_url            = add_query_arg( array( 'page' => 'sysinfo' ), $url );
 
 		echo '<div class="wrap wp-trave-settings-warp">';
-			echo '<h1>' . esc_html__( 'WP Travel Settings', 'wp-travel' ) . '</h1>';
+			echo '<h1>' . 'WP Travel Settings' . '</h1>';
 			echo '<div class="wp-trave-settings-form-warp">';
 			do_action( 'wp_travel_before_admin_setting_form' ); // @phpcs:ignore
 			echo '<form method="post" action="' . esc_url( $url ) . '">';
 				echo '<div class="wp-travel-setting-buttons">';
-				submit_button( __( 'Save Settings', 'wp-travel' ), 'primary', 'save_settings_button', false, array( 'id' => 'save_settings_button_top' ) );
+				submit_button( 'Save Settings', 'primary', 'save_settings_button', false, array( 'id' => 'save_settings_button_top' ) );
 				echo '</div>';
 				WPTravel()->tabs->load( self::$collection, $args );
 				echo '<div class="wp-travel-setting-buttons">';
 				echo '<div class="wp-travel-setting-system-info">';
-					echo '<a href="' . esc_url( $sysinfo_url ) . '" title="' . esc_attr__( 'View system information', 'wp-travel' ) . '"><span class="dashicons dashicons-info"></span>';
-						esc_html_e( 'System Information', 'wp-travel' );
+					echo '<a href="' . esc_url( $sysinfo_url ) . '" title="' . 'View system information' . '"><span class="dashicons dashicons-info"></span>';
+						 'System Information';
 					echo '</a>';
 				echo '</div>';
 				echo '<input type="hidden" name="current_tab" id="wp-travel-settings-current-tab">';
 				wp_nonce_field( 'wp_travel_settings_page_nonce' );
-				submit_button( __( 'Save Settings', 'wp-travel' ), 'primary', 'save_settings_button', false );
+				submit_button( 'Save Settings', 'primary', 'save_settings_button', false );
 				echo '</div>';
 			echo '</form>';
 			do_action( 'wp_travel_after_admin_setting_form' ); // @phpcs:ignore
@@ -80,7 +80,7 @@ class WP_Travel_Admin_Settings { // @phpcs:ignore
 					<div id="aside-wrap" class="single-module-side">
 						<div class="aside-wrap-buttons-container">
 							<h2 class="wp-travel-aside-wrap-block-title">
-								<span><?php esc_html_e( 'Need Help?', 'wp-travel' ); ?></span>
+								<span><?php 'Need Help?'; ?></span>
 							</h2>
 							<div class="wp-travel-aside-help-block">
 							<?php
@@ -105,8 +105,8 @@ class WP_Travel_Admin_Settings { // @phpcs:ignore
 	 */
 	public function add_tabs( $tabs ) {
 		$settings_fields['general'] = array(
-			'tab_label'     => __( 'General', 'wp-travel' ),
-			'content_title' => __( 'General Settings', 'wp-travel' ),
+			'tab_label'     => 'General',
+			'content_title' => 'General Settings',
 			'priority'      => 10,
 			'callback'      => 'wptravel_settings_callback_general',
 			'icon'          => 'fa-sticky-note',
@@ -114,97 +114,97 @@ class WP_Travel_Admin_Settings { // @phpcs:ignore
 
 		$settings_fields['itinerary'] = array(
 			'tab_label'     => ucfirst( WP_TRAVEL_POST_TITLE_SINGULAR ),
-			'content_title' => __( ucfirst( WP_TRAVEL_POST_TITLE_SINGULAR ) . ' Settings', 'wp-travel' ), // @phpcs:ignore
+			'content_title' => ucfirst( WP_TRAVEL_POST_TITLE_SINGULAR ) . ' Settings', // @phpcs:ignore
 			'priority'      => 20,
 			'callback'      => 'wptravel_settings_callback_itinerary',
 			'icon'          => 'fa-hiking',
 		);
 
 		$settings_fields['email'] = array(
-			'tab_label'     => __( 'Email', 'wp-travel' ),
-			'content_title' => __( 'Email Settings', 'wp-travel' ),
+			'tab_label'     => 'Email',
+			'content_title' => 'Email Settings',
 			'priority'      => 25,
 			'callback'      => 'wptravel_settings_callback_email',
 			'icon'          => 'fa-envelope',
 		);
 
 		$settings_fields['account_options_global'] = array(
-			'tab_label'     => __( 'Account', 'wp-travel' ),
-			'content_title' => __( 'Account Settings', 'wp-travel' ),
+			'tab_label'     => 'Account',
+			'content_title' => 'Account Settings',
 			'priority'      => 30,
 			'callback'      => 'wptravel_settings_callback_account_options_global',
 			'icon'          => 'fa-lock',
 		);
 
 		$settings_fields['tabs_global'] = array(
-			'tab_label'     => __( 'Tabs', 'wp-travel' ),
-			'content_title' => __( 'Global Tabs Settings', 'wp-travel' ),
+			'tab_label'     => 'Tabs',
+			'content_title' => 'Global Tabs Settings',
 			'priority'      => 40,
 			'callback'      => 'wptravel_settings_callback_tabs_global',
 			'icon'          => 'fa-window-maximize',
 		);
 		$settings_fields['payment']     = array(
-			'tab_label'     => __( 'Payment', 'wp-travel' ),
-			'content_title' => __( 'Payment Settings', 'wp-travel' ),
+			'tab_label'     => 'Payment',
+			'content_title' => 'Payment Settings',
 			'priority'      => 50,
 			'callback'      => 'wptravel_settings_callback_payment',
 			'icon'          => 'fa-credit-card',
 		);
 		$settings_fields['facts']       = array(
-			'tab_label'     => __( 'Facts', 'wp-travel' ),
-			'content_title' => __( 'Facts Settings', 'wp-travel' ),
+			'tab_label'     => 'Facts',
+			'content_title' => 'Facts Settings',
 			'priority'      => 60,
 			'callback'      => 'wptravel_settings_callback_facts',
 			'icon'          => 'fa-industry',
 		);
 		if ( ! is_multisite() ) :
 			$settings_fields['license'] = array(
-				'tab_label'     => __( 'License', 'wp-travel' ),
-				'content_title' => __( 'License Details', 'wp-travel' ),
+				'tab_label'     => 'License',
+				'content_title' => 'License Details',
 				'priority'      => 70,
 				'callback'      => 'wptravel_settings_callback_license',
 				'icon'          => 'fa-id-badge',
 			);
 		endif;
 		$settings_fields['field_editor']                  = array(
-			'tab_label'     => __( 'Field Editor', 'wp-travel' ),
-			'content_title' => __( 'Field Editor', 'wp-travel' ),
+			'tab_label'     => 'Field Editor',
+			'content_title' => 'Field Editor',
 			'priority'      => 75,
 			'callback'      => 'wptravel_settings_callback_field_editor',
 			'icon'          => 'fa-newspaper',
 		);
 		$settings_fields['utilities_faq_global']          = array(
-			'tab_label'     => __( 'FAQs', 'wp-travel' ),
-			'content_title' => __( 'Global FAQs', 'wp-travel' ),
+			'tab_label'     => 'FAQs',
+			'content_title' => 'Global FAQs',
 			'priority'      => 80,
 			'callback'      => 'wptravel_settings_callback_utilities_faq_global',
 			'icon'          => 'fa-question-circle',
 		);
 		$settings_fields['cart_checkout_settings_global'] = array(
-			'tab_label'     => __( 'Cart & Checkout', 'wp-travel' ),
-			'content_title' => __( 'Cart & Checkout Process Options', 'wp-travel' ),
+			'tab_label'     => 'Cart & Checkout',
+			'content_title' => 'Cart & Checkout Process Options',
 			'priority'      => 85,
 			'callback'      => 'wptravel_settings_callback_cart_checkout_settings_global',
 			'icon'          => 'fa-shopping-cart',
 		);
 
 		$settings_fields['addons_settings']     = array(
-			'tab_label'     => __( 'Addons Settings', 'wp-travel' ),
-			'content_title' => __( 'Addons Settings', 'wp-travel' ),
+			'tab_label'     => 'Addons Settings',
+			'content_title' => 'Addons Settings',
 			'priority'      => 90,
 			'callback'      => 'wptravel_settings_callback_addons_settings',
 			'icon'          => 'fa-plug',
 		);
 		$settings_fields['misc_options_global'] = array(
-			'tab_label'     => __( 'Misc. Options', 'wp-travel' ),
-			'content_title' => __( 'Miscellaneous Options', 'wp-travel' ),
+			'tab_label'     => 'Misc. Options',
+			'content_title' => 'Miscellaneous Options',
 			'priority'      => 95,
 			'callback'      => 'wptravel_settings_callback_misc_options_global',
 			'icon'          => 'fa-thumbtack',
 		);
 		$settings_fields['debug']               = array(
-			'tab_label'     => __( 'Debug', 'wp-travel' ),
-			'content_title' => __( 'Debug Options', 'wp-travel' ),
+			'tab_label'     => 'Debug',
+			'content_title' => 'Debug Options',
 			'priority'      => 100,
 			'callback'      => 'wptravel_settings_callback_debug',
 			'icon'          => 'fa-bug',

@@ -827,9 +827,8 @@ class WpTravel_Helpers_Trips {
 		$max_price  = isset( $args['max_price'] ) ? floatval( $args['max_price'] ) : '';
 
 		// List all trip ids as per filter arguments.
-		$sql = $wpdb->prepare(
-					"SELECT DISTINCT DATES.trip_id FROM {$date_table}"
-				);
+		$sql = "SELECT DISTINCT DATES.trip_id FROM {$date_table}";
+			
 
 		// Order By qyery.
 		$orderby_sql = ' ORDER BY post_date desc';
@@ -880,22 +879,21 @@ class WpTravel_Helpers_Trips {
 		}
 		$sql .= ' DATES'; // table alias.
 		$sql .= " JOIN {$wpdb->prefix}wt_pricings PRICINGS on DATES.trip_id=PRICINGS.trip_id";
-
+		
 		// Second query for group size if max_pax param.
 		if ( $max_pax && $max_pax > 0 ) {
 			$sql .= $wpdb->prepare( " AND ( PRICINGS.max_pax = 0 OR ( %d >= PRICINGS.min_pax AND %d <= PRICINGS.max_pax ) )", $max_pax, $max_pax );
 		}
 
 		// Query 2 for trip duration dates.
-		$duration_query = $wpdb->prepare( "
-							SELECT META.post_id AS trip_id, TRIPS.post_date, TRIPS.post_title
+		$duration_query = "SELECT META.post_id AS trip_id, TRIPS.post_date, TRIPS.post_title
 							FROM {$wpdb->prefix}postmeta META
 							JOIN {$wpdb->prefix}posts TRIPS ON META.post_id=TRIPS.ID
 							WHERE META.meta_key='wp_travel_fixed_departure'
 							AND META.meta_value!= 'yes'
 							AND TRIPS.post_status IN ( 'publish' )
-							{$orderby_sql}"
-						);
+							{$orderby_sql}";
+						
 
 		// Filter as per min and max price.
 		if ( ( $min_price && $min_price > 0 ) || ( $max_price && $max_price > 0 ) ) {
@@ -940,11 +938,9 @@ class WpTravel_Helpers_Trips {
 
 		}
 		// SQL for Trip ids from dates table.
-		$sql      = $wpdb->prepare( "
-						SELECT TRIPS.ID AS trip_id, TRIPS.post_date, TRIPS.post_title
+		$sql      = "SELECT TRIPS.ID AS trip_id, TRIPS.post_date, TRIPS.post_title
 						FROM {$wpdb->prefix}posts TRIPS
-						WHERE TRIPS.ID IN({$sql}) {$orderby_sql}"
-					);
+						WHERE TRIPS.ID IN({$sql}) {$orderby_sql}";
 		$results  = $wpdb->get_results( $sql ); // @phpcs:ignore
 		$results2 = $wpdb->get_results( $duration_query );
 

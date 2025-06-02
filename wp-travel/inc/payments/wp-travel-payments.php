@@ -56,8 +56,8 @@ function wptravel_payment_field_list() {
  */
 function wptravel_payment_gateway_lists() {
 	$gateway = array(
-		'paypal'       => __( 'Standard Paypal', 'wp-travel' ),
-		'bank_deposit' => __( 'Bank Deposit', 'wp-travel' ),
+		'paypal'       => 'Standard Paypal',
+		'bank_deposit' => 'Bank Deposit',
 	);
 	return apply_filters( 'wp_travel_payment_gateway_lists', $gateway );
 

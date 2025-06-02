@@ -123,8 +123,8 @@ class WpTravel_Network_Settings {
 	public function add_tabs( $tabs ) {
 
 		$settings_fields['license'] = array(
-			'tab_label'     => __( 'License', 'wp-travel' ),
-			'content_title' => __( 'License Details', 'wp-travel' ),
+			'tab_label'     => 'License',
+			'content_title' => 'License Details',
 			'priority'      => 10,
 			'callback'      => 'wptravel_settings_callback_license',
 			'icon'          => 'fa-id-badge',
@@ -197,6 +197,5 @@ function wptravel_license_tab_content( $args ) {
 		<?php
 	}
 }
-
 
 

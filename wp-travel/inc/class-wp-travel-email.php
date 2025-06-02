@@ -109,7 +109,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				$email_content = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
 
 				if ( ! wp_mail( $this->admin_email, $email_subject, $email_content, $headers, array( $attachment ) ) ) {
-					WPTravel()->notices->add( __( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
+					WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
 				}
 			}
 			$send_mail = apply_filters( 'wptravel_send_booking_email_to_client', true );
@@ -130,7 +130,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				$email_content = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
 
 				if ( ! wp_mail( $customer_email, $email_subject, $email_content, $headers, array( $attachment ) ) ) {
-					WPTravel()->notices->add( __( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
+					WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
 				}
 			}
 		}
@@ -239,7 +239,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 					$amdin_send_booking = apply_filters( 'wp_travel_booking_mail_sent_to_admin', true );
 					if ( $amdin_send_booking == true ) {
 						if ( ! wp_mail( $this->admin_email, $email_subject, $email_content, $headers, $attachment ) ) {
-							WPTravel()->notices->add( __( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
+							WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
 						}
 					}
 				}
@@ -269,7 +269,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 					$email_content = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
 
 					if ( ! wp_mail( $customer_email, $email_subject, $email_content, $headers, $attachment ) ) {
-						WPTravel()->notices->add( __( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
+						WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
 					}
 				}
 			}
@@ -315,9 +315,9 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 
 			if( apply_filters( 'wptravel_traveller_salutation', true ) ==  true ){
 				if( $customer_gender == 'male' ){
-					$salutation = __( 'Mr ', 'wp-travel' );
+					$salutation = 'Mr ';
 				}elseif( $customer_gender == 'female' ){
-					$salutation = __( 'Ms ', 'wp-travel' );
+					$salutation = 'Ms ';
 				}else{
 					$salutation = '';
 				}
@@ -351,7 +351,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				'{booking_id}'             => $booking_id,
 				'{booking_edit_link}'      => admin_url( 'post.php?post='.$booking_id.'&action=edit' ),
 				'{booking_no_of_pax}'      => $pax,
-				'{booking_scheduled_date}' => esc_html__( 'N/A', 'wp-travel' ), // always N/A. Need to remove this in future.
+				'{booking_scheduled_date}' => 'N/A', // always N/A. Need to remove this in future.
 				'{booking_arrival_date}'   => wptravel_format_date( $arrival_date ),
 				'{trip_booking_date}'      => wptravel_format_date( get_post_meta( $booking_id, 'wp_travel_arrival_date' )[0] ),
 				'{booking_departure_date}' => wptravel_format_date( $departure_date ),
@@ -435,9 +435,9 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				
 				
 				if( $customer_gender == 'male' ){
-					$salutation = __( 'Mr ', 'wp-travel' );
+					$salutation = 'Mr ';
 				}elseif( $customer_gender == 'female' ){
-					$salutation = __( 'Ms ', 'wp-travel' );
+					$salutation = 'Ms ';
 				}else{
 					$salutation = '';
 				}
@@ -504,7 +504,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				'{booking_departure_date}' => wptravel_format_date( $departure_date ),  // @deprecated.
 				'{trip_booking_date}'      => wptravel_format_date( get_post_meta( $booking_id, 'wp_travel_arrival_date' )[0] ),
 				'{booking_selected_time}'  => apply_filters( 'wp_travel_booking_email_trip_time', $trip_time_get, $items, $trip_times ),  // @deprecated.
-				'{booking_scheduled_date}' => esc_html__( 'N/A', 'wp-travel' ), // @deprecated.
+				'{booking_scheduled_date}' => 'N/A', // @deprecated.
 				'{customer_name}'          => $customer_name,
 				'{customer_country}'       => $customer_country,
 				'{customer_address}'       => $customer_address,
@@ -523,7 +523,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 
 			);
 			if( apply_filters( 'wptravel_checkout_enable_media_input', false ) == true ){
-				$email_tags['{media_attachment}'] = '<a href="'.esc_url( get_post_meta( $booking_id, "wp_travel_checkout_media", true )).'" target="_blank">'.esc_html__( 'See attachment', 'wp-travel' ).'</a>';
+				$email_tags['{media_attachment}'] = '<a href="'.esc_url( get_post_meta( $booking_id, "wp_travel_checkout_media", true )).'" target="_blank">'.'See attachment'.'</a>';
 			}
 			$email_tags = apply_filters( 'wp_travel_admin_booking_email_tags', $email_tags, $booking_id ); // @phpcs:ignore
 

@@ -38,7 +38,7 @@ class WpTravel_Admin_Tour_Extras_Metaboxes {
 	 * Register metabox.
 	 */
 	public function register_metaboxes() {
-		add_meta_box( self::$post_type . '-detail', __( 'Trip Extras', 'wp-travel' ), array( $this, 'load_tour_extras_tab_template' ), self::$post_type, 'normal', 'high' );
+		add_meta_box( self::$post_type . '-detail', 'Trip Extras', array( $this, 'load_tour_extras_tab_template' ), self::$post_type, 'normal', 'high' );
 
 	}
 	/**
@@ -60,15 +60,15 @@ class WpTravel_Admin_Tour_Extras_Metaboxes {
 	 */
 	public function add_tabs( $tabs ) {
 		$tour_extras['tour_extras_general'] = array(
-			'tab_label'     => __( 'General', 'wp-travel' ),
-			'content_title' => __( 'General Settings', 'wp-travel' ),
+			'tab_label'     => 'General',
+			'content_title' => 'General Settings',
 			'priority'      => 10,
 			'callback'      => 'wptravel_tour_extras_general_tab_callback',
 			'icon'          => 'fa-sticky-note',
 		);
 		$tour_extras['tour_extras_gallery'] = array(
-			'tab_label'     => __( 'Gallery', 'wp-travel' ),
-			'content_title' => __( 'Gallery', 'wp-travel' ),
+			'tab_label'     => 'Gallery',
+			'content_title' => 'Gallery',
 			'priority'      => 20,
 			'callback'      => 'wptravel_tour_extras_gallery_tab_callback',
 			'icon'          => 'fa-images',
