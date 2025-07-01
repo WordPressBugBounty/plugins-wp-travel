@@ -944,8 +944,8 @@ class WpTravel_Localize_Admin {
 
 		$react_settings_enable = apply_filters( 'wp_travel_settings_react_enabled', true ); // @phpcs:ignore
 		$react_settings_enable = apply_filters( 'wptravel_settings_react_enabled', $react_settings_enable );
-		if ( $react_settings_enable && WP_Travel::is_page( 'settings', true ) ) { // settings page.
-		}
+		// if ( $react_settings_enable && WP_Travel::is_page( 'settings', true ) ) { // settings page.
+		// }
 		wp_localize_script( 'wp-travel-admin-settings', '_wp_travel', $translation_array );  // temp fixes to use localized data.
         wp_localize_script( 'wptravel_google_calendar_admin-settings', '_wp_travel', $translation_array );
 		if ( get_current_screen()->base == 'dashboard_page_wp-travel-setup-page' ) {

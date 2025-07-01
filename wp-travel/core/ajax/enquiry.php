@@ -45,6 +45,7 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 	 * @since 5.0.0
 	 */
 	public static function update_enquiry_details() {
+		
 
 		$user = wp_get_current_user();
 

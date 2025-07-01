@@ -375,8 +375,8 @@ function wptravel_get_checkout_form_fields() {
 		'payment_fields'   => $payment_fields,
 	);
 	$checkout_fields = apply_filters( 'wp_travel_checkout_fields', $checkout_fields ); // sort field after this filter.
-
-
+					
+	
 	if ( isset( $checkout_fields['traveller_fields'] ) ) {
 		$checkout_fields['traveller_fields'] = wptravel_sort_form_fields( $checkout_fields['traveller_fields'] );
 	}

@@ -96,6 +96,8 @@ class WpTravel_Helpers_Enquiry {
 		// Update enquiry data.
 		$data['post_id'] = $data['wp_travel_trip_id'];
 		unset( $data['wp_travel_trip_id'] );
+
+		$enquiry['post_id'] = 	$data['post_id'];
 		update_post_meta( $enquiry_id, 'wp_travel_enquiry_name', $data['wp_travel_enquiry_name'] );
 		update_post_meta( $enquiry_id, 'wp_travel_enquiry_email', $data['wp_travel_enquiry_email'] );
 		update_post_meta( $enquiry_id, 'wp_travel_enquiry_query', $data['wp_travel_enquiry_query'] );

@@ -248,9 +248,17 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 	<div class="panel ws-theme-timeline-block">
 		<div class="panel-body">
 			<div class="payment-content">
-				<?php 
 				
+				<?php 
+
+				if( wptravel_get_settings()['wt_test_mode'] == 'yes' ){
+					?>
+					<span class="wptravel-test-mode-notice" style="background:red; padding: 5px 20px; color: #fff; margin-bottom:30px"><?php echo esc_html__( 'Test Mode is active', 'wp-travel' ); ?></span>
+					<?php
+				}
+
 				$wptravel_form_field->init( $wptravel_payment_fields )->render( $wptravel_trips ); 
+		
 
 				/**
 				 * Before Booknow button on checkout page.

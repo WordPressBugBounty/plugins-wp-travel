@@ -437,35 +437,36 @@ function wptravel_book_now() {
 	// Clear Cart After process is complete.
 	$wt_cart->clear();
 
+	if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true && class_exists( 'WP_Travel_Pro' ) ){
+		$reserved_booking_dates = array();
 
-	$reserved_booking_dates = array();
+		$booking_args = array(
+			'post_type'      => 'itinerary-booking', // Specify the custom post type
+			'posts_per_page' => 50, // Get all posts
+		);
+		
+		// Get the posts
+		$booking_posts = get_posts( $booking_args );
 
-	$booking_args = array(
-		'post_type'      => 'itinerary-booking', // Specify the custom post type
-		'posts_per_page' => 50, // Get all posts
-	);
-	
-	// Get the posts
-	$booking_posts = get_posts( $booking_args );
+		if ( !empty( $booking_posts ) ) {
 
-	if ( !empty( $booking_posts ) ) {
+			$i = 0;
+			foreach ( $booking_posts as $post ) {
 
-		$i = 0;
-		foreach ( $booking_posts as $post ) {
+				$oreder_items = get_post_meta( $post->ID, 'order_items_data', true );
 
-			$oreder_items = get_post_meta( $post->ID, 'order_items_data', true );
-
-			foreach( $oreder_items as $item ){
-				$reserved_booking_dates[$i]['id'] = $item['trip_id'];
-				$reserved_booking_dates[$i]['date'] = $item['trip_start_date'];
-				$i++;
+				foreach( $oreder_items as $item ){
+					$reserved_booking_dates[$i]['id'] = $item['trip_id'];
+					$reserved_booking_dates[$i]['date'] = $item['trip_start_date'];
+					$i++;
+				}
+				
 			}
-			
+			// Reset the global post object
+			wp_reset_postdata();
 		}
-		// Reset the global post object
-		wp_reset_postdata();
+		update_option('wp_travel_reserve_date', $reserved_booking_dates);
 	}
-	update_option('wp_travel_reserve_date', $reserved_booking_dates);
 
 	if( apply_filters( 'wp_travel_disable_default_thankyoupage', false ) == false ){
 		$thankyou_page_url = add_query_arg( 'booked', true, $thankyou_page_url );

@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 10.3.1
+ * Version: 10.4.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -39,7 +39,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '10.3.1';
+		public $version = '10.4.0';
 
 		/**
 		 * WP Travel API version.
@@ -265,39 +265,40 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			/**
 			 * Admin Notice for install wp travel slicewp affiliate addon
  			 */
-			add_action( 'admin_notices', array( $this, 'wp_travel_slicewp_affiliate_install_notice' ) );			
-			
-			$reserved_booking_dates = array();
+			add_action( 'admin_notices', array( $this, 'wp_travel_slicewp_affiliate_install_notice' ) );
 
-			$booking_args = array(
-				'post_type'      => 'itinerary-booking', // Specify the custom post type
-				'posts_per_page' => 50, // Get all posts
-			);
-			
-			// Get the posts
-			$booking_posts = get_posts( $booking_args );
+			if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true && class_exists( 'WP_Travel_Pro' ) ){
+				$reserved_booking_dates = array();
 
-			if ( !empty( $booking_posts ) ) {
+				$booking_args = array(
+					'post_type'      => 'itinerary-booking', // Specify the custom post type
+					'posts_per_page' => 50, // Get all posts
+				);
+				
+				// Get the posts
+				$booking_posts = get_posts( $booking_args );
 
-				$i = 0;
-				foreach ( $booking_posts as $post ) {
+				if ( !empty( $booking_posts ) ) {
 
-					$oreder_items = get_post_meta( $post->ID, 'order_items_data', true );
-					
-					if( is_array( $oreder_items ) ){
-						foreach( $oreder_items as $item ){
-							$reserved_booking_dates[$i]['id'] = $item['trip_id'];
-							$reserved_booking_dates[$i]['date'] = isset( $item['trip_start_date'] ) ? $item['trip_start_date'] : '';
-							$i++;
+					$i = 0;
+					foreach ( $booking_posts as $post ) {
+
+						$oreder_items = get_post_meta( $post->ID, 'order_items_data', true );
+						
+						if( is_array( $oreder_items ) ){
+							foreach( $oreder_items as $item ){
+								$reserved_booking_dates[$i]['id'] = $item['trip_id'];
+								$reserved_booking_dates[$i]['date'] = isset( $item['trip_start_date'] ) ? $item['trip_start_date'] : '';
+								$i++;
+							}
 						}
+						
 					}
-					
+					// Reset the global post object
+					wp_reset_postdata();
 				}
-				// Reset the global post object
-				wp_reset_postdata();
+				update_option('wp_travel_reserve_date', $reserved_booking_dates);
 			}
-			update_option('wp_travel_reserve_date', $reserved_booking_dates);
-			
 		}
 
 		/**
@@ -357,7 +358,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			$locale = is_admin() && function_exists( 'get_user_locale' ) ? get_user_locale() : get_locale();
 			$locale = apply_filters( 'plugin_locale', $locale, 'wp-travel' ); // phpcs:ignore
 			unload_textdomain( 'wp-travel' );
-
+			
 			load_textdomain( 'wp-travel', WP_LANG_DIR . '/wp-travel/wp-travel-' . $locale . '.mo' );
 			load_plugin_textdomain( 'wp-travel', false, dirname( plugin_basename( __FILE__ ) ) . '/i18n/languages' );
 		}
@@ -397,7 +398,9 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 */
 		public function includes() {
 			
-			include sprintf( '%s/core/helpers/strings.php', WP_TRAVEL_ABSPATH );
+			add_action( 'init', function() { 
+				include sprintf( '%s/core/helpers/strings.php', WP_TRAVEL_ABSPATH );
+			});
 			include sprintf( '%s/core/helpers/dev.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/core/helpers/layout.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/core/helpers/localize.php', WP_TRAVEL_ABSPATH );
@@ -441,6 +444,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			include sprintf( '%s/inc/widgets/class-wp-travel-widget-sale-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/widgets/class-wp-travel-search-filters-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/widgets/class-wp-travel-trip-enquiry-form-widget.php', WP_TRAVEL_ABSPATH );
+			include sprintf( '%s/inc/helpers\trip-lists-shortcode.php', WP_TRAVEL_ABSPATH );
 
 			/**
 			 * Include Query Classes.
@@ -995,5 +999,20 @@ function wptravel() {
 	return WP_Travel::instance();
 }
 
-// // Start WP Travel.
-wptravel();
+if( is_plugin_active( 'elementor/elementor.php' ) ){
+	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && !is_admin() ){
+		function wptravel_get_cart_icon(){
+			return;
+		}
+	}
+
+	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && is_admin() ){
+		wptravel();
+	}
+	
+	if( empty( get_option('elementor_maintenance_mode_mode') ) ){
+		wptravel();
+	}
+}else{
+	wptravel();
+}

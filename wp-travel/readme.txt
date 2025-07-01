@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 10.3.1
+Stable tag: 10.4.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -427,10 +427,26 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 10.4.0 =
+Release Date: 01st July 2025
+
+Fixes:
+* Resolved WordPress warnings appearing in version 6.7 and above.
+* Fixed performance issues caused by slow queries related to WP Travel page settings.
+* Addressed maintenance mode conflicts when enabled via Elementor.
+* Corrected payment status label display on the admin booking page.
+
+Enhancements:
+* Updated the theme listings on the Marketplace page.
+* Displayed a “Test Mode is active” notice on the checkout page when test mode is enabled.
+* Introduced two new email tags: {remaining_payment_details} and {paid_payment_details}.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-4-0-update-release-note).**
+
 = 10.3.1 =
 Release Date: 02nd June 2025
 Fixes:
-* Fixed early text doamin loading issue
+* Fixed early text domain loading issue
 
 = 10.3.0 =
 Release Date: 27th May 2025

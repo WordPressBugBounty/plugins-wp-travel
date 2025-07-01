@@ -927,9 +927,13 @@ function wptravel_single_excerpt( $trip_id ) {
 				if ( $enable_one_page == true && $hook_for_double_enable == true ) {
 				?>
 				<div id='wp-travel-one-page-checkout-enables'><?php __('Book Now', 'wp-travel' ); ?></div>
-				<?php } else { ?>
-				<button class="wptravel-book-your-trip wp-travel-booknow-btn"><?php echo esc_html( apply_filters( 'wp_travel_template_book_now_text', $book_now_text ) ); // @phpcs:ignore ?></button>
-			<?php } endif;
+				<?php } else { 
+					echo apply_filters(
+						'wp_travel_template_book_now_button',
+						'<button class="wptravel-book-your-trip wp-travel-booknow-btn">' . esc_html( apply_filters( 'wp_travel_template_book_now_text', $book_now_text ) ) . '</button>',
+						$book_now_text
+					);
+				 } endif;
 			if ( 'yes' === $enable_enquiry ) : ?>
 				<a id="wp-travel-send-enquiries" class="wp-travel-send-enquiries" data-effect="mfp-move-from-top" href="#wp-travel-enquiries">
 					<span class="wp-travel-booking-enquiry">

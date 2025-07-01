@@ -181,19 +181,19 @@ class WP_Travel_Admin_Metaboxes {
 					<table>
 						<?php if ( isset( $payment_args['payment_id'] ) ) : ?>
 							<tr>
-								<th align="right"><?php 'Payment ID : '; ?></th>
+								<th align="right"><?php echo 'Payment ID : '; ?></th>
 								<td><?php echo esc_html( $payment_args['payment_id'] ); ?></td>
 							</tr>
 						<?php endif; ?>
 						<?php if ( isset( $payment_args['payment_method'] ) ) : ?>
 							<tr>
-								<th align="right"><?php 'Payment Method : '; ?></th>
+								<th align="right"><?php echo 'Payment Method : '; ?></th>
 								<td><?php echo esc_html( $payment_args['payment_method'] ); ?></td>
 							</tr>
 						<?php endif; ?>
 						<?php if ( isset( $payment_args['payment_date'] ) ) : ?>
 							<tr>
-								<th align="right"><?php 'Payment Date : '; ?></th>
+								<th align="right"><?php echo 'Payment Date : '; ?></th>
 								<td><?php echo esc_html( $payment_args['payment_date'] ); ?></td>
 							</tr>
 						<?php endif; ?>
@@ -250,7 +250,7 @@ class WP_Travel_Admin_Metaboxes {
 		$details        = wptravel_booking_data( $booking_id );
 		$payment_status = $details['payment_status'];
 
-		if( get_post_meta( $payment_id, 'wp_travel_payment_mode' )[0] == 'full_discount' ){
+		if( isset( get_post_meta( $payment_id, 'wp_travel_payment_mode' )[0] ) && get_post_meta( $payment_id, 'wp_travel_payment_mode' )[0] == 'full_discount' ){
 			$details['payment_mode'] = 'Full Discount';
 		}
 		?>
@@ -277,19 +277,19 @@ class WP_Travel_Admin_Metaboxes {
 				$due_amount  = $details['due_amount'];
 				?>
 				<tr>
-					<td><strong><?php 'Payment Mode'; ?></strong></td>
+					<td><strong><?php echo 'Payment Mode'; ?></strong></td>
 					<td><?php echo esc_html( $details['payment_mode'] ); ?></td>
 				</tr>
 				<tr>
-					<td><strong><?php 'Total Price'; ?></strong></td>
+					<td><strong><?php echo 'Total Price'; ?></strong></td>
 					<td><?php echo wptravel_get_formated_price_currency( $total_price ); //phpcs:ignore ?></td>
 				</tr>
 				<tr>
-					<td><strong><?php 'Paid Amount'; ?></strong></td>
+					<td><strong><?php echo 'Paid Amount'; ?></strong></td>
 					<td><?php echo wptravel_get_formated_price_currency( $paid_amount ); //phpcs:ignore ?></td>
 				</tr>
 				<tr>
-					<td><strong><?php 'Due Amount'; ?></strong></td>
+					<td><strong><?php echo 'Due Amount'; ?></strong></td>
 					<td><?php echo wptravel_get_formated_price_currency( $due_amount ); //phpcs:ignore ?></td>
 				</tr>
 			<?php endif; ?>

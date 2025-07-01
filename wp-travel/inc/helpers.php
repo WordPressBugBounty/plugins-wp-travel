@@ -700,15 +700,16 @@ function wptravel_search_form( $args = array() ) {
 	$label_string = apply_filters(
 		'wp_travel_search_filter_label_strings',
 		array(
-			'search'        	=> 'Search:',
-			'trip_type'     	=> 'Trip Type:',
-			'location'      	=> 'Location:',
-			'activity'      	=> 'Activity:',
-			'travel_keywords'   => 'Keywords:',
-			'search_button' 	=> 'Search',
+			'search'        	=> __( 'Search:', 'wp-travel' ),
+			'trip_type'     	=> __( 'Trip Type:', 'wp-travel' ),
+			'location'      	=> __( 'Location:', 'wp-travel' ),
+			'activity'      	=> __( 'Activity:', 'wp-travel' ),
+			'travel_keywords'   => __( 'Keywords:', 'wp-travel' ),
+			'search_button' 	=> __( 'Search', 'wp-travel' ),
 		)
 	);
 
+	
 	// @since 7.6.0
 	$input_field = apply_filters(
 		'wp_travel_search_filter_input_fields',
@@ -4965,3 +4966,39 @@ function wt_add_custom_link_column() {
 }
 
 wt_add_custom_link_column();
+
+function wptravel_get_travellers_data( $booking_id ){
+
+	$data = [];
+
+	$info = get_post_meta( $booking_id, "wp_travel_fname_traveller", true );
+	$array_key  = array_keys( $info )[0];
+	$values = $info[$array_key];
+	
+	$fields = apply_filters( 'wptravel_travellers_data_key', [ 'fname', 'lname', 'country', 'phone', 'email', 'date_of_birth', 'gender' ] );
+
+	foreach ( $values as $key => $value ) {
+		foreach ( $fields as $field ) {
+			$field_meta = get_post_meta( $booking_id, "wp_travel_{$field}_traveller", true );
+
+			if ( is_array( $field_meta ) && isset( $field_meta[ $array_key ][ $key ] ) ) {
+				$data[ $key ][ $field ] = $field_meta[ $array_key ][ $key ];
+			} else {
+				$data[ $key ][ $field ] = '';
+			}
+		}
+	}
+
+	return $data;
+}
+
+add_action( 'admin_head', 'wp_travel_hide_add_new_button_for_post_type' );
+function wp_travel_hide_add_new_button_for_post_type() {
+    // $screen = get_current_screen();
+    
+    // if ( $screen->post_type === 'itinerary-enquiries' ) {
+        echo '<style>
+		.post-type-itinerary-enquiries .page-title-action { display: none !important; }
+		</style>';
+    // }
+}

@@ -97,6 +97,9 @@ class WP_Travel_Ajax_Trips {
 		//$post_data     = is_string( $post_data ) ? json_decode( $post_data, true ) : $post_data;
 		$new_post_data = is_string( $post_data ) ? json_decode( $post_data, true ) : $post_data;
 		$new_post_data = wptravel_sanitize_array( $new_post_data, true );
+
+		$new_post_data = apply_filters( 'wptravel_new_trip_data', $new_post_data, $trip_id  );
+
 		$response  = WP_Travel_Helpers_Trips::update_trip( $trip_id, $new_post_data );
 
 		WP_Travel_Helpers_REST_API::response( $response );

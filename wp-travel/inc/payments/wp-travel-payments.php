@@ -503,6 +503,8 @@ function wptravel_send_email_payment( $booking_id ) {
 		'{booking_details}'        => WpTravel_Helpers_Booking::render_booking_details( $booking_id ),
 		'{traveler_details}'       => WpTravel_Helpers_Booking::render_traveler_details( $booking_id ),
 		'{payment_details}'        => WpTravel_Helpers_Payment::render_payment_details( $booking_id ),
+		'{remaining_payment_details}'        => WpTravel_Helpers_Payment::render_remaining_payment_details( $booking_id ),
+		'{paid_payment_details}'        => WpTravel_Helpers_Payment::render_paid_payment_details( $booking_id ),
 	);
 
 	if( apply_filters( 'wptravel_checkout_enable_media_input', false ) == true ){

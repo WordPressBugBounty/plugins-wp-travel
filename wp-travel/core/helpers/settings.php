@@ -129,23 +129,38 @@ class WP_Travel_Helpers_Settings {
 		}
 		$settings['wp_travel_bank_deposits'] = $mapped_bank_deposite; // override values.
 
-		// Page Lists.
-		$lists     = get_posts(
-			array(
-				'numberposts' => -1,
-				'post_type'   => 'page',
-				'orderby'     => 'title',
-				'order'       => 'asc',
-			)
-		);
-		$page_list = array();
-		$i         = 0;
-		foreach ( $lists as $page_data ) {
-			$page_list[ $i ]['label'] = $page_data->post_title;
-			$page_list[ $i ]['value'] = $page_data->ID;
-			$i++;
+		// Try to get the cached version first
+		$page_list = get_transient( 'wp_travel_cached_page_list' );
+
+		if ( false === $page_list ) {
+			// Not cached, so run the query
+			$lists = get_posts(
+				array(
+					'numberposts' => -1,
+					'post_type'   => 'page',
+					'orderby'     => 'title',
+					'order'       => 'asc',
+				)
+			);
+
+			$page_list = array();
+			$i = 0;
+
+			if ( ! empty( $lists ) ) {
+				foreach ( $lists as $page_data ) {
+					$page_list[ $i ]['label'] = $page_data->post_title;
+					$page_list[ $i ]['value'] = $page_data->ID;
+					$i++;
+				}
+			}
+
+			// Store in a transient for 12 hours (you can change the duration)
+			set_transient( 'wp_travel_cached_page_list', $page_list, 12 * HOUR_IN_SECONDS );
 		}
+
+		// Use it in settings
 		$settings_options['page_list'] = $page_list;
+
 
 		$settings_options['wp_travel_user_since'] = get_option( 'wp_travel_user_since', '3.0.0' );
 

@@ -107,4 +107,58 @@ class WpTravel_Helpers_Payment { // @phpcs:ignore
 		ob_end_clean();
 		return $content;
 	}
+
+	public static function render_remaining_payment_details( $booking_id ){
+
+		if ( ! $booking_id ) {
+			return;
+		}
+
+		$payment_mode = get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+
+		$cart_total = (float) get_post_meta( $booking_id, 'order_totals', true )['sub_total'];
+
+		$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['total_partial'];
+
+		$remaning_amount = $cart_total - $cart_sub_total_partial;
+		
+		if( $payment_mode[0] == 'full' ){
+			$remaning_amount = 0;
+		}
+
+		ob_start();
+
+		?>
+		<span><?php echo wptravel_get_formated_price_currency( $remaning_amount, false, '', $booking_id ); ?></span>
+		<?php
+		
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+
+	public static function render_paid_payment_details( $booking_id ){
+
+		if ( ! $booking_id ) {
+			return;
+		}
+
+		$payment_mode = get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+
+		$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['total_partial'];	
+
+		if( $payment_mode[0] == 'full' ){
+			$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['cart_total'];
+		}
+
+		ob_start();
+
+		?>
+		<span><?php echo wptravel_get_formated_price_currency( $cart_sub_total_partial, false, '', $booking_id ); ?></span>
+		<?php
+		
+		$content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
 }

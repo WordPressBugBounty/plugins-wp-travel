@@ -309,9 +309,11 @@ class WP_Travel_Cart {
 
 		$cart_items = WPTravel()->session->set( $this->cart_id, $cart );
 		
-		ob_start();
-			setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
-		ob_end_flush();	
+		//comment on 2025 june 10 - while inspecting 'wp_travel_cart' cookiee issue
+		
+		// ob_start();
+		// 	setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
+		// ob_end_flush();	
 	}
 	/**
 	 * Read items from cart session.
@@ -661,6 +663,7 @@ class WP_Travel_Cart {
 				}
 				$cart_total         += $this->get_item_total( $cart_id ); // Total excluding discount.
 				$cart_total_partial += $this->get_item_total( $cart_id, true ); // Total excluding discount.
+				
 			endforeach;
 		}
 
@@ -704,8 +707,9 @@ class WP_Travel_Cart {
 		$total_trip_price         = $total_trip_price_after_dis + $tax_amount;
 		$total_trip_price_partial = $total_trip_price_partial_after_dis + $tax_amount_partial; // Need to deprecate this.
 
-		$payout_percent           = WP_Travel_Helpers_Pricings::get_payout_percent( $trip_id );
-		$total_trip_price_partial = ( class_exists( 'WP_Travel_Pro' ) && wptravel_get_settings()['partial_payment_amount'] == 'yes' ) ? wptravel_get_settings()['partial_amount'] : ( $total_trip_price * $payout_percent ) / 100;
+		// $payout_percent           = WP_Travel_Helpers_Pricings::get_payout_percent( $trip_id );
+		$total_trip_price_partial = ( class_exists( 'WP_Travel_Pro' ) && wptravel_get_settings()['partial_payment_amount'] == 'yes' ) ? wptravel_get_settings()['partial_amount'] : $total_trip_price_partial;
+
 		$get_total                = array(
 			'cart_total'         => wptravel_get_formated_price( $cart_total ), // Effective for multiple cart items[cart_total].
 			'discount'           => wptravel_get_formated_price( $discount_amount ),
@@ -794,6 +798,7 @@ class WP_Travel_Cart {
 			return;
 		}
 		$items       = $this->items;
+
 		$item        = isset( $items[ $cart_item_id ] ) ? $items[ $cart_item_id ] : array();
 		$trip_extras = isset( $item['trip_extras'] ) ? (array) $item['trip_extras'] : array();
 

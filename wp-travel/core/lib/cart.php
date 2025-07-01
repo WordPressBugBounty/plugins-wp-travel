@@ -259,15 +259,15 @@ class WP_Travel_Lib_Cart {
 		// Cookie data to enable data info in js.
 		ob_start();
 		// setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
-		setcookie(
-			'wp_travel_cart',               // Cookie name
-			wp_json_encode($cart),          // Cookie value (JSON-encoded cart)
-			time() + 604800,                // Expiration time (1 week)
-			'/',                            // Path
-			$_SERVER['HTTP_HOST'],          // Domain
-			isset($_SERVER['HTTPS']),       // Secure flag (true if HTTPS is enabled)
-			true                            // HttpOnly flag
-		);
+		// setcookie(
+		// 	'wp_travel_cart',               // Cookie name
+		// 	wp_json_encode($cart),          // Cookie value (JSON-encoded cart)
+		// 	time() + 604800,                // Expiration time (1 week)
+		// 	'/',                            // Path
+		// 	$_SERVER['HTTP_HOST'],          // Domain
+		// 	isset($_SERVER['HTTPS']),       // Secure flag (true if HTTPS is enabled)
+		// 	true                            // HttpOnly flag
+		// );
 		ob_end_flush();
 	}
 	/**
@@ -402,7 +402,6 @@ class WP_Travel_Lib_Cart {
 
 					if ( $payout_percent > 0 ) {
 						$trip_price_partial = ( $trip_price * $payout_percent ) / 100;
-						$trip_price_partial = $trip_price_partial;
 					}
 					$this->items[ $cart_item_id ]['trip_price_partial'] = $trip_price_partial;
 				}
@@ -632,7 +631,9 @@ class WP_Travel_Lib_Cart {
 	}
 }
 
-new WP_Travel_Lib_Cart();
+//comment on 2025 june 10 - while inspecting 'wp_travel_cart' cookiee issue
 
-// Set cart global variable.
-$GLOBALS['wp_travel_cart'] = new WP_Travel_Lib_Cart();
+// new WP_Travel_Lib_Cart();
+
+// // Set cart global variable.
+// $GLOBALS['wp_travel_cart'] = new WP_Travel_Lib_Cart();
