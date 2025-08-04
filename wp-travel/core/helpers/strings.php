@@ -37,6 +37,8 @@ class WpTravel_Helpers_Strings {
 
 		$localized_strings = array(
 			'trip_extras_content_limit' => apply_filters( 'wp_travel_trip_extras_content_limit', 250 ),
+			'pax_increment'				=> apply_filters( 'wp_travel_set_pax_increment_by', 1 ),
+			'disable_pax_input'			=> apply_filters( 'wp_travel_set_pax_input_disable', false ),
 			'activities'                => __( 'Activities', 'wp-travel' ),
 			'add_date'                  => __( 'Please add date.', 'wp-travel' ),
 			'alert'                     => self::alert_strings(),
@@ -287,7 +289,7 @@ class WpTravel_Helpers_Strings {
 		$localized_strings['add_to_cart_notice'] = apply_filters( 'wp_travel_add_to_cart_notice_delay_time', 3000 );
 
 
-		if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true && class_exists( 'WP_Travel_Pro' ) ){
+		if( get_option( 'wptravel_reserve_date' ) == 'yes' ){
 			$localized_strings['reserved_booking_dates'] = get_option('wp_travel_reserve_date');
 		}else{
 			$localized_strings['reserved_booking_dates'] = array();

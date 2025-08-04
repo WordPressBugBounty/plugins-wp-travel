@@ -382,11 +382,17 @@ function wptravel_send_email_payment( $booking_id ) {
 
 	// Clearing cart after successfult payment.
 	global $wt_cart;
+
 	$wt_cart->clear();
+	
 
 	$settings = wptravel_get_settings();
 
-	$send_booking_email_to_admin = ( isset( $settings['send_booking_email_to_admin'] ) && '' !== $settings['send_booking_email_to_admin'] ) ? $settings['send_booking_email_to_admin'] : 'yes';
+	$send_payment_email_to_admin = ( isset( $settings['send_payment_email_to_admin'] ) && '' !== $settings['send_payment_email_to_admin'] ) ? $settings['send_payment_email_to_admin'] : 'yes';
+
+	
+
+	$send_booking_email_to_client = ( isset( $settings['send_payment_email_to_client'] ) && '' !== $settings['send_payment_email_to_client'] ) ? $settings['send_payment_email_to_client'] : 'yes';
 
 	$first_name = get_post_meta( $booking_id, 'wp_travel_fname_traveller', true );
 	$last_name  = get_post_meta( $booking_id, 'wp_travel_lname_traveller', true );
@@ -522,7 +528,7 @@ function wptravel_send_email_payment( $booking_id ) {
 	$reply_to_email = isset( $settings['wp_travel_from_email'] ) ? $settings['wp_travel_from_email'] : $site_admin_email;
 
 	// Send mail to admin if booking email is set to yes.
-	if ( 'yes' == $send_booking_email_to_admin ) {
+	if ( 'yes' == $send_payment_email_to_admin ) {
 		// Admin Payment Email Vars.
 		$admin_payment_template = $email->wptravel_get_email_template( 'payments', 'admin' );
 
@@ -563,7 +569,7 @@ function wptravel_send_email_payment( $booking_id ) {
 	// To send HTML mail, the Content-type header must be set.
 	$headers = $email->email_headers( $reply_to_email, $reply_to_email );
 	$payment_client_mail = apply_filters( 'wp_travel_payment_admin_mail', true );
-	if ( $payment_client_mail == true ) {
+	if ( $payment_client_mail == true && $send_booking_email_to_client === 'yes') {
 		if ( ! wp_mail( $client_email, $client_payment_subject, $client_payment_message, $headers ) ) {
 			WPTravel()->notices->add( __( 'Your Payment has been received but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'wp-travel' ), 'error' );
 		}

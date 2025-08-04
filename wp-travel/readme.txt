@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 10.4.0
+Stable tag: 10.5.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -427,8 +427,27 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 10.5.0 =
+Release Date: 04th August 2025
+
+Fixes:
+* Fixed translation compatibility issue with Loco Translate plugin.
+* Fixed PHP warning related to payment status on the booking admin page.
+* Optimized AJAX code for submitting enquiries.
+
+Enhancements:
+* Updated code to display all trips in a monthly tabular format per year.
+* Added wp_travel_set_pax_input_disable option to disable the pax selector input.
+* Added wp_travel_set_pax_increment_by to set increment value for the pax selector.
+* Replaced the previous date picker library due to UI limitations.
+* Modified logic to exclude expired dates on the trip page.
+* Introduced a new admin page for Enquiry Listings.
+* Introduced a new admin page for Booking Reports.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-5-0-update-release-note).**
+
 = 10.4.0 =
-Release Date: 01st July 2025
+Release Date: 30th June 2025
 
 Fixes:
 * Resolved WordPress warnings appearing in version 6.7 and above.

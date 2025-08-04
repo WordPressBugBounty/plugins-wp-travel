@@ -43,5 +43,10 @@ $url = add_query_arg(
 	<a class="link" href="<?php echo esc_url( $url ); ?>">
 			<?php esc_html_e( 'Click here to reset your password', 'wp-travel' ); ?></a>
 </p>
-<p><?php esc_html_e( 'Powered by', 'wp-travel' ); ?><a href="http://wptravel.io" target="_blank"> <?php esc_html_e( 'WP Travel', 'wp-travel' ); ?></a></p>
-<p></p>
+<?php
+
+ $html = '<p>' . esc_html__( 'Powered by', 'wp-travel' ) . 
+            '<a href="http://wptravel.io" target="_blank"> ' . esc_html__( 'WP Travel', 'wp-travel' ) . '</a></p>';
+
+echo apply_filters( 'wp_travel_powered_by_text_pass_reset_email', $html );
+

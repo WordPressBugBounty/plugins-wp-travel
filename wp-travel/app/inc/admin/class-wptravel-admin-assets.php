@@ -116,9 +116,18 @@ class WpTravel_Admin_Assets {
 			wp_enqueue_script( 'wptravel-admin-coupon' );
 		}
 		// Block Enquiries.
-		if ( WP_Travel::is_page( 'enquiry', true ) ) {
+		// if ( WP_Travel::is_page( 'enquiry', true ) ) {
+		// 	wp_enqueue_style( 'wptravel-admin-enquiry' );
+		// 	wp_enqueue_script( 'wptravel-admin-enquiry' );
+		// }
+
+		if ( 
+			$screen->post_type === 'itinerary-booking' &&
+			$screen->id === 'itinerary-booking_page_wp-travel-enquiry-settings'
+		) {
 			wp_enqueue_style( 'wptravel-admin-enquiry' );
 			wp_enqueue_script( 'wptravel-admin-enquiry' );
+			wp_enqueue_style( 'primeicons', 'https://unpkg.com/primeicons/primeicons.css' );
 		}
 		
 	}

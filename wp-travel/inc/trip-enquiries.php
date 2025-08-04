@@ -377,9 +377,15 @@ function wptravel_save_user_enquiry() {
 	if ( ! empty( $enquiry_data ) ) {
 
 		$fields   = wptravel_enquiries_form_fields();
-
+		
 		foreach ( $fields as $key => $field ) :
+
 			$meta_val = isset( $_POST[ $field['name'] ] ) ? sanitize_text_field( wp_unslash( ( $_POST[ $field['name'] ] ) ) ) : '';
+
+			if( is_array( $_POST[ $field['name'] ] ) ){
+				$meta_val = implode(', ', $_POST[ $field['name'] ]);
+			}
+
 			update_post_meta( $new_enquiry, $field['name'], sanitize_text_field( $meta_val ) );
 			$enquiry_data[ $field['name'] ] = $meta_val;
 		endforeach;
@@ -387,6 +393,8 @@ function wptravel_save_user_enquiry() {
 		$enquiry_data = apply_filters( 'wp_travel_frontend_enquiry_data', $enquiry_data );
 
 		update_post_meta( $new_enquiry, 'wp_travel_post_id', $enquiry_data['post_id'] );
+
+		update_post_meta( $new_enquiry, 'wp_travel_enquiry_status', 'unread' );
 
 		update_post_meta( $new_enquiry, 'wp_travel_trip_enquiry_data', $enquiry_data );
 

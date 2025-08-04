@@ -796,117 +796,126 @@ class Wp_Travel_Shortcodes {
 		ob_start();
 
 		if($results):
-		?>
-		<div id="wp-travel-trip-by-months">
-			<table class="table wp-travel-trip-by-months">
-				<h3>Trips For <?php echo esc_html( date("Y") ); ?></h3>
-				<tbody>
-			
-					<?php 
-						$month = '00';
-						foreach( $results as $data ){
-							$date = $data->start_date;
 
-							if( date('m', strtotime($date)) > $month ){
-								$month = date('m', strtotime($date));
-								?>
-									<tr class="new-month">
-										<th colspan="2"><?php echo $months_label[$month]; ?></th>
-									</tr>
-								<?php
-							}
+			$grouped_by_year = [];
 
-							$pricing_ids = explode(",", $data->pricing_ids);
-	
-							foreach( $pricing_ids as $id ){
-								$inventory_args = '';
-								$booking_full = false;
-								if( class_exists( 'WP_Travel_Pro' ) ){
-									$args = array(
-										'trip_id'       => (int)$data->trip_id,
-										'pricing_id'    => (int)$id,
-										'selected_date' => $date,
-										'times'         => '',
-									);
-									
-									if( !isset( WP_Travel_Helpers_Inventory::get_inventory( $args )->errors ) ){
-										$inventory_args = WP_Travel_Helpers_Inventory::get_inventory( $args )['inventory'][0];
+			foreach( $results as $data ) {
+				$year = date('Y', strtotime($data->start_date));
+				$grouped_by_year[$year][] = $data;
+			}
 
-										if( (int)$inventory_args['booked_pax'] == (int)$inventory_args['pax_limit'] ){
-											$booking_full = true;
-										}else{
-											$booking_full = false;
-										}
-									}
-									
-								}
-								
-								$pricing_results = $wpdb->get_results(
-									$wpdb->prepare(
-										"SELECT price_per, regular_price, is_sale, sale_price, is_sale_percentage, sale_percentage_val
-										FROM {$wpdb->prefix}wt_price_category_relation
-										WHERE pricing_id = %d",
-										(int)$id
-									)
-								)[0];
-								$sale_price = 0;
-					
-								if( $pricing_results->is_sale_percentage == '1' ){
-									$sale_price = ((float)$pricing_results->sale_percentage_val / 100) * (float)$pricing_results->regular_price;
-								}else{
-									$sale_price = $pricing_results->sale_price;
-								}
+			foreach ( $grouped_by_year as $year => $year_data ) :
+			?>
+			<div id="wp-travel-trip-by-months">
+				<h3><?php echo esc_html__( 'Trips For', 'wp-travel'); ?> <?php echo esc_html( $year ); ?></h3>
+				<table class="table wp-travel-trip-by-months">
+					<tbody>
+					<?php
+					$month = '00';
 
-								
-								?>	
-									<tr class="trip-item">
-										<th></th>
-										<td class="trip-item"> 
-											<a class="<?php echo $booking_full == false ? 'book-active' : 'full-booked'; ?>" href="<?php echo esc_url( get_the_permalink( (int)$data->trip_id ) );?>">
-												<span class="trip-title"><?php echo esc_html( get_the_title( (int)$data->trip_id ) );?></span>
-												<span class="table-trip-metas">
-													<span class="date"> <?php echo esc_html( $date );?> </span>
-													<?php if( !empty( $inventory_args ) ): ?>
-													<span class="pax"><?php echo sprintf("%d/%d %s", $inventory_args['booked_pax'], $inventory_args['pax_limit'], __( '( Pax )', 'wp-travel' ) ); ?></span> 
-													<?php endif; ?>
-													<span class="trip-price">
-														<?php if( $pricing_results->is_sale == '1' ): ?>
-															<del>
-																<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $pricing_results->regular_price ) ) ) ?>
-															</del>
-															<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $sale_price ) ) ) ?>
-															<?php else: ?>
-																<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $pricing_results->regular_price ) ) ) ?>
-														<?php endif; ?>
-														
-													</span>
-													<span class="pricing-per"><?php echo sprintf( "%s %s", __( 'per', 'wp-travel' ), $pricing_results->price_per ); ?></span>
-													
-													<?php if(!empty($inventory_args)): ?>
-														<?php if($booking_full): ?>
-															<span class="closed"><?php echo esc_html__('Booking Closed', 'wp-travel'); ?></span> 
-															<?php else: ?>
-																<span class="active"><?php echo esc_html__('Booking Active', 'wp-travel'); ?></span> 
-														<?php endif; ?>
-														
-														<?php else: ?>
-															<span class="active"><?php echo esc_html__('Booking Active', 'wp-travel'); ?></span> 
-													<?php endif; ?>
-													
-												</span>
-											</a> 
-										</td>
-									</tr>
-								<?php
-							}
+					foreach( $year_data as $data ) {
+						$date = $data->start_date;
+						$current_month = date('m', strtotime($date));
+
+						if( $current_month > $month ){
+							$month = $current_month;
+							?>
+							<tr class="new-month">
+								<th colspan="2"><?php echo $months_label[$month]; ?></th>
+							</tr>
+							<?php
 						}
+
+						$pricing_ids = explode(",", $data->pricing_ids);
+
+						foreach( $pricing_ids as $id ) {
+							$inventory_args = '';
+							$booking_full = false;
+
+							if( class_exists( 'WP_Travel_Pro' ) ) {
+								$args = array(
+									'trip_id'       => (int)$data->trip_id,
+									'pricing_id'    => (int)$id,
+									'selected_date' => $date,
+									'times'         => '',
+								);
+
+								$inventory_data = WP_Travel_Helpers_Inventory::get_inventory( $args );
+								if( !isset( $inventory_data->errors ) ) {
+									$inventory_args = $inventory_data['inventory'][0];
+
+									if( (int)$inventory_args['booked_pax'] == (int)$inventory_args['pax_limit'] ) {
+										$booking_full = true;
+									}
+								}
+							}
+
+							$pricing_results = $wpdb->get_results(
+								$wpdb->prepare(
+									"SELECT price_per, regular_price, is_sale, sale_price, is_sale_percentage, sale_percentage_val
+									FROM {$wpdb->prefix}wt_price_category_relation
+									WHERE pricing_id = %d",
+									(int)$id
+								)
+							)[0];
+
+							$sale_price = 0;
+							if( $pricing_results->is_sale_percentage == '1' ) {
+								$sale_price = ((float)$pricing_results->sale_percentage_val / 100) * (float)$pricing_results->regular_price;
+							} else {
+								$sale_price = $pricing_results->sale_price;
+							}
+							?>
+							<tr class="trip-item">
+								<th></th>
+								<td class="trip-item"> 
+									<a class="<?php echo $booking_full == false ? 'book-active' : 'full-booked'; ?>" href="<?php echo esc_url( get_the_permalink( (int)$data->trip_id ) ); ?>">
+										<span class="trip-title"><?php echo esc_html( get_the_title( (int)$data->trip_id ) ); ?></span>
+										<span class="table-trip-metas">
+											<span class="date"> <?php echo esc_html( $date ); ?> </span>
+											<?php if( !empty( $inventory_args ) ): ?>
+												<span class="pax"><?php echo sprintf("%d/%d %s", $inventory_args['booked_pax'], $inventory_args['pax_limit'], __( '( Pax )', 'wp-travel' ) ); ?></span> 
+											<?php endif; ?>
+
+											<span class="trip-price">
+												<?php if( $pricing_results->is_sale == '1' ): ?>
+													<del>
+														<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $pricing_results->regular_price ) ) ); ?>
+													</del>
+													<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $sale_price ) ) ); ?>
+												<?php else: ?>
+													<?php echo wp_kses_post( wptravel_get_formated_price_currency( WpTravel_Helpers_Trip_Pricing_Categories::get_converted_price( $pricing_results->regular_price ) ) ); ?>
+												<?php endif; ?>
+											</span>
+
+											<span class="pricing-per"><?php echo sprintf( "%s %s", __( 'per', 'wp-travel' ), $pricing_results->price_per ); ?></span>
+
+											<?php if( !empty($inventory_args) ): ?>
+												<?php if( $booking_full ): ?>
+													<span class="closed"><?php echo esc_html__('Booking Closed', 'wp-travel'); ?></span> 
+												<?php else: ?>
+													<span class="active"><?php echo esc_html__('Booking Active', 'wp-travel'); ?></span> 
+												<?php endif; ?>
+											<?php else: ?>
+												<span class="active"><?php echo esc_html__('Booking Active', 'wp-travel'); ?></span> 
+											<?php endif; ?>
+										</span>
+									</a> 
+								</td>
+							</tr>
+							<?php
+						}
+					}
 					?>
 					<tr class="new-month end">
 						<th colspan="2"><?php echo esc_html__('End Of Year', 'wp-travel'); ?></th>
 					</tr>
-				</tbody>
-			</table>
-		</div>
+					</tbody>
+				</table>
+				</div>
+			<?php endforeach; ?>
+		
+
 		
 		<style>
 			#wp-travel-trip-by-months{

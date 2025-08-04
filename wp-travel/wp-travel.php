@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 10.4.0
+ * Version: 10.5.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -24,6 +24,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// add_filter( 'woocommerce_locate_template', 'my_plugin_override_checkout_template', 10, 3 );
+
+// function my_plugin_override_checkout_template( $template, $template_name, $template_path ) {
+//     if ( $template_name === 'checkout/form-checkout.php' ) {
+//         $custom = plugin_dir_path( __FILE__ ) . 'templates/checkout/form-checkout.php';
+//         if ( file_exists( $custom ) ) {
+//             return $custom;
+//         }
+//     }
+//     return $template;
+// }
+
+
+
+
+
 if ( ! class_exists( 'WP_Travel' ) ) :
 
 	/**
@@ -39,7 +55,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '10.4.0';
+		public $version = '10.5.0';
 
 		/**
 		 * WP Travel API version.
@@ -91,7 +107,13 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			add_filter( 'manage_edit-itinerary-booking_columns', array( $this, 'wp_travel_booking_column_name' ) );
 			add_action( 'manage_itinerary-booking_posts_custom_column', array( $this, 'wp_travel_booking_columns_content' ), 10, 2 );
 			
-			
+			add_action('wp_loaded', function() {
+				if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true ){
+					update_option( 'wptravel_reserve_date', 'yes' );
+				}else{
+					update_option( 'wptravel_reserve_date', 'no' );
+				}
+			});
 		}
 
 		public function wp_travel_add_column_on_price_category_relation_table(){
@@ -127,12 +149,15 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			$columns['contact_number'] = __( 'Contact Number', 'wp-travel' );
 			$columns['contact_email'] = __( 'Contact Email', 'wp-travel' );
 			$columns['country_code'] = __( 'Country', 'wp-travel' );
-			$columns['tour_date'] = __( 'Tour date', 'wp-travel' );
+			$columns['total_pax'] = __( 'Total Pax', 'wp-travel' );
+			$columns['total_amount'] = __( 'Total Amount', 'wp-travel' );
+			$columns['paid_amount'] = __( 'Paid Amount', 'wp-travel' );
+			$columns['tour_date'] = __( 'Travel date', 'wp-travel' );
 			return $columns;
 		}
 
 		public function wp_travel_booking_columns_content( $column_name, $id ) {
-			$traveller_data = get_post_meta( $id, 'order_data', true );
+			$booking_data = get_post_meta( $id, 'order_totals', true );
 
 			switch ( $column_name ) {
 				case 'contact_number':
@@ -161,6 +186,24 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 					
 					<?php
 					}
+					break;
+				case 'total_pax':
+					if( !empty(get_post_meta( $id, 'wp_travel_pax', true )) ){
+					?>
+					<span><?php echo esc_html( get_post_meta( $id, 'wp_travel_pax', true ) ); ?></span>
+					<?php
+					}
+					break;
+				case 'total_amount':
+					?>
+					<span><?php echo wptravel_get_formated_price_currency($booking_data['total']); ?></span>
+					<?php				
+					break;
+				case 'paid_amount':
+					$payment_info = wptravel_booking_data( $id );
+					?>
+					<span><?php echo wptravel_get_formated_price_currency($payment_info['paid_amount']); ?></span>
+					<?php
 					break;
 				case 'tour_date':
 					if( !empty(get_post_meta( $id, 'wp_travel_arrival_date', true )) ){
@@ -267,9 +310,10 @@ if ( ! class_exists( 'WP_Travel' ) ) :
  			 */
 			add_action( 'admin_notices', array( $this, 'wp_travel_slicewp_affiliate_install_notice' ) );
 
-			if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true && class_exists( 'WP_Travel_Pro' ) ){
+			if( get_option( 'wptravel_reserve_date' ) == 'yes' ){
+				
 				$reserved_booking_dates = array();
-
+				
 				$booking_args = array(
 					'post_type'      => 'itinerary-booking', // Specify the custom post type
 					'posts_per_page' => 50, // Get all posts
@@ -444,7 +488,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			include sprintf( '%s/inc/widgets/class-wp-travel-widget-sale-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/widgets/class-wp-travel-search-filters-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/widgets/class-wp-travel-trip-enquiry-form-widget.php', WP_TRAVEL_ABSPATH );
-			include sprintf( '%s/inc/helpers\trip-lists-shortcode.php', WP_TRAVEL_ABSPATH );
+			include sprintf( '%s/inc/helpers/trip-lists-shortcode.php', WP_TRAVEL_ABSPATH );
 
 			/**
 			 * Include Query Classes.
@@ -475,6 +519,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			
 
 			if ( $this->is_request( 'admin' ) ) {
+				
 				include sprintf( '%s/inc/admin/admin-helper.php', WP_TRAVEL_ABSPATH );
 				include sprintf( '%s/inc/admin/admin-notices.php', WP_TRAVEL_ABSPATH );
 				include sprintf( '%s/inc/admin/class-admin-uploader.php', WP_TRAVEL_ABSPATH );
@@ -572,6 +617,8 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			if( is_admin() ){
 				include sprintf( '%s/inc/admin-review-notice.php', WP_TRAVEL_ABSPATH );
 			}
+
+			include sprintf( '%s/inc/admin/class-admin-enquiry.php', WP_TRAVEL_ABSPATH );
 			
 		}
 
@@ -999,20 +1046,36 @@ function wptravel() {
 	return WP_Travel::instance();
 }
 
-if( is_plugin_active( 'elementor/elementor.php' ) ){
-	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && !is_admin() ){
-		function wptravel_get_cart_icon(){
-			return;
-		}
-	}
+// if( is_plugin_active( 'elementor/elementor.php' ) ){
+// 	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && !is_admin() ){
+// 		function wptravel_get_cart_icon(){
+// 			return;
+// 		}
+// 	}
 
-	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && is_admin() ){
-		wptravel();
-	}
+// 	if(  !empty( get_option('elementor_maintenance_mode_mode') ) && is_admin() ){
+// 		wptravel();
+// 	}
 	
-	if( empty( get_option('elementor_maintenance_mode_mode') ) ){
-		wptravel();
-	}
-}else{
+// 	if( empty( get_option('elementor_maintenance_mode_mode') ) ){
+// 		wptravel();
+// 	}
+// }else{
 	wptravel();
-}
+// }
+
+
+
+// add_filter( 'default_hidden_columns', 'custom_default_hidden_columns_for_bookings', 10, 2 );
+// function custom_default_hidden_columns_for_bookings( $hidden, $screen ) {
+//     // Replace 'edit-{post_type}' with your actual screen ID
+//     if ( isset( $screen->id ) && $screen->id === 'itinerary-booking' ) {
+//         $hidden = array(
+//             'total_pax',
+//             'total_amount',
+//             'paid_amount',
+//         );
+//     }
+
+//     return $hidden;
+// }

@@ -364,96 +364,96 @@ jQuery(function ($) {
     });
 
     // Multiple Pricing > Fixed Departure No, Multiple Date Off.
-    jQuery('.wp-travel-pricing-dates').each(function () {
-        var availabledate = jQuery(this).data('available-dates');
-        if (availabledate) {
-            jQuery(this).wpt_datepicker({
-                language: wp_travel.locale,
-                // inline: true,
-                autoClose: true,
-                minDate: new Date(),
-                onRenderCell: function (date, cellType) {
-                    if (cellType == 'day') {
-                        availabledate = availabledate.map(function (d) {
-                            return (new Date(d)).toLocaleDateString("en-US");
-                        });
-                        // availabledate = availabledate.map((d) => (new Date(d)).toLocaleDateString("en-US"));
-                        isDisabled = !availabledate.includes(date.toLocaleDateString("en-US"));
-                        return {
-                            disabled: isDisabled
-                        }
-                    }
-                },
-            });
+    // jQuery('.wp-travel-pricing-dates').each(function () {
+    //     var availabledate = jQuery(this).data('available-dates');
+    //     if (availabledate) {
+    //         jQuery(this).wpt_datepicker({
+    //             language: wp_travel.locale,
+    //             // inline: true,
+    //             autoClose: true,
+    //             minDate: new Date(),
+    //             onRenderCell: function (date, cellType) {
+    //                 if (cellType == 'day') {
+    //                     availabledate = availabledate.map(function (d) {
+    //                         return (new Date(d)).toLocaleDateString("en-US");
+    //                     });
+    //                     // availabledate = availabledate.map((d) => (new Date(d)).toLocaleDateString("en-US"));
+    //                     isDisabled = !availabledate.includes(date.toLocaleDateString("en-US"));
+    //                     return {
+    //                         disabled: isDisabled
+    //                     }
+    //                 }
+    //             },
+    //         });
 
-        } else {
-            jQuery(this).wpt_datepicker({
-                language: wp_travel.locale,
-                minDate: new Date(),
-                autoClose: true,
-            });
-        }
+    //     } else {
+    //         jQuery(this).wpt_datepicker({
+    //             language: wp_travel.locale,
+    //             minDate: new Date(),
+    //             autoClose: true,
+    //         });
+    //     }
 
-    });
+    // });
 
     // Date picker for days and nights.
-    if ('undefined' !== typeof moment) {
-        $('.wp-travel-pricing-days-night').wpt_datepicker({
-            language: wp_travel.locale,
-            minDate: new Date(),
-            autoClose: true,
-            onSelect: function (formattedDate, date, inst) {
-                if (date) {
+    // if ('undefined' !== typeof moment) {
+    //     $('.wp-travel-pricing-days-night').wpt_datepicker({
+    //         language: wp_travel.locale,
+    //         minDate: new Date(),
+    //         autoClose: true,
+    //         onSelect: function (formattedDate, date, inst) {
+    //             if (date) {
 
-                    var el = inst.$el;
-                    var parent = $(el).closest('form').attr('id');
-                    var next_el = ('arrival_date' === $(el).attr('name')) ? $('#' + parent + ' input[name=departure_date]') : $('#' + parent + ' input[name=arrival_date]')
-                    var day_to_add = parseInt(el.data('totaldays'));
-                    if (day_to_add < 1) {
-                        next_el.val(formattedDate);
-                        return;
-                    }
-                    var _moment = moment(date);
-                    // var newdate = new Date( date );
-                    if ('arrival_date' === $(el).attr('name')) {
-                        someFormattedDate = _moment.add(day_to_add, 'days').format('YYYY-MM-DD');
-                    } else {
-                        // newdate.setDate( newdate.getDate() - day_to_add );
-                        someFormattedDate = _moment.subtract(day_to_add, 'days').format('YYYY-MM-DD');
-                    }
+    //                 var el = inst.$el;
+    //                 var parent = $(el).closest('form').attr('id');
+    //                 var next_el = ('arrival_date' === $(el).attr('name')) ? $('#' + parent + ' input[name=departure_date]') : $('#' + parent + ' input[name=arrival_date]')
+    //                 var day_to_add = parseInt(el.data('totaldays'));
+    //                 if (day_to_add < 1) {
+    //                     next_el.val(formattedDate);
+    //                     return;
+    //                 }
+    //                 var _moment = moment(date);
+    //                 // var newdate = new Date( date );
+    //                 if ('arrival_date' === $(el).attr('name')) {
+    //                     someFormattedDate = _moment.add(day_to_add, 'days').format('YYYY-MM-DD');
+    //                 } else {
+    //                     // newdate.setDate( newdate.getDate() - day_to_add );
+    //                     someFormattedDate = _moment.subtract(day_to_add, 'days').format('YYYY-MM-DD');
+    //                 }
 
-                    var next_el_datepicker = next_el.wpt_datepicker().data('datepicker');
-                    next_el_datepicker.date = new Date(someFormattedDate);
-                    next_el.val(someFormattedDate);
-                }
-            }
-        });
+    //                 var next_el_datepicker = next_el.wpt_datepicker().data('datepicker');
+    //                 next_el_datepicker.date = new Date(someFormattedDate);
+    //                 next_el.val(someFormattedDate);
+    //             }
+    //         }
+    //     });
 
-        //   var departure_date = $('input[name=departure_date]').wpt_datepicker().data('datepicker');
-        //   if ( 'undefined' !== typeof departure_date ) {
-        //     var day_to_add = departure_date.$el.data('totaldays' );;
-        //     if ( day_to_add > 0 ) {
-        //       someFormattedDate = moment().add(day_to_add, 'days').format('YYYY-MM-DD');
-        //       departure_date.update('minDate', new Date( someFormattedDate ))
-        //     }
-        //   }
+    //     //   var departure_date = $('input[name=departure_date]').wpt_datepicker().data('datepicker');
+    //     //   if ( 'undefined' !== typeof departure_date ) {
+    //     //     var day_to_add = departure_date.$el.data('totaldays' );;
+    //     //     if ( day_to_add > 0 ) {
+    //     //       someFormattedDate = moment().add(day_to_add, 'days').format('YYYY-MM-DD');
+    //     //       departure_date.update('minDate', new Date( someFormattedDate ))
+    //     //     }
+    //     //   }
 
-        $('input[name=departure_date]').each(function () {
-            //   var parent = $(this).closest('form').attr( 'id' );
+    //     $('input[name=departure_date]').each(function () {
+    //         //   var parent = $(this).closest('form').attr( 'id' );
 
-            var departure_date = $(this).wpt_datepicker().data('datepicker');
-            if ('undefined' !== typeof departure_date) {
-                var day_to_add = departure_date.$el.data('totaldays');;
-                if (day_to_add > 0) {
-                    someFormattedDate = moment().add(day_to_add, 'days').format('YYYY-MM-DD');
-                    departure_date.update('minDate', new Date(someFormattedDate))
-                }
-            }
-        });
+    //         var departure_date = $(this).wpt_datepicker().data('datepicker');
+    //         if ('undefined' !== typeof departure_date) {
+    //             var day_to_add = departure_date.$el.data('totaldays');;
+    //             if (day_to_add > 0) {
+    //                 someFormattedDate = moment().add(day_to_add, 'days').format('YYYY-MM-DD');
+    //                 departure_date.update('minDate', new Date(someFormattedDate))
+    //             }
+    //         }
+    //     });
 
 
 
-    }
+    // }
 
     if (typeof parsley == "function") {
 

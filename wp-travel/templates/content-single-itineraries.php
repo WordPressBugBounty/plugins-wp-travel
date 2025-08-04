@@ -89,6 +89,43 @@ do_action( 'wp_travel_before_content_start' );
 </div><!-- #itinerary-<?php the_ID(); ?> -->
 
 <?php do_action( 'wp_travel_after_single_itinerary', get_the_ID() ); ?>
+
+<div id="wp-travel-woo-checkout-modal" class="wp-travel-woo-checkout-modal" aria-hidden="true">
+	<div class="wp-travel-woo-checkout-backdrop"></div>
+
+	<div class="wp-travel-woo-checkout-dialog" role="dialog" aria-modal="true" aria-labelledby="wp-travel-woo-checkout-modal-title">
+		<div class="wp-travel-woo-checkout-modal-header">
+			<h2 id="wp-travel-woo-checkout-modal-title" class="wp-travel-woo-checkout-title">Checkout</h2>
+			<button type="button" id="wp-travel-woo-checkout-close" class="wp-travel-woo-checkout-close" aria-label="Close checkout">
+				&times;
+			</button>
+		</div>
+		
+		<?php if( apply_filters( 'wp_travel_woo_enable_onapage', false ) == true ):?>
+			<div class="wp-travel-woo-checkout-modal-body">
+				<div class="wp-travel-woo-loader">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" style="shape-rendering: auto; display: block; background: transparent; margin-top: 10%;" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<g>
+						<circle stroke-dasharray="164.93361431346415 56.97787143782138" r="35" stroke-width="10" stroke="#008600" fill="none" cy="50" cx="50">
+						<animateTransform keyTimes="0;1" values="0 50 50;360 50 50" dur="1s" repeatCount="indefinite" type="rotate" attributeName="transform"></animateTransform>
+						</circle>
+					</g>
+					</svg>
+				</div>
+				<iframe
+					id="wp-travel-woo-checkout-frame"
+					src=""
+					loading="lazy"
+					referrerpolicy="no-referrer-when-downgrade"
+					allow="payment *; autoplay *"
+					title="Checkout"
+				></iframe>
+			</div>
+		<?php endif;?>
+	</div>
+</div>
+
+
 </div>
 
 <?php if( apply_filters( 'wp_travel_enable_quick_book', false ) == true ): ?>

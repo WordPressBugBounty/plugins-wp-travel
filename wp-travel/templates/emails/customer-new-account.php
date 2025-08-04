@@ -35,7 +35,18 @@ $generate_user_password       = isset( $settings['generate_user_password'] ) ? $
 
 <?php endif; ?>
 
-	<p><?php echo  esc_html__( 'You can access your account area to view your Trip Bookings and change your password here: ', 'wp-travel' ). esc_html( make_clickable( esc_url( wptravel_get_page_permalink( 'wp-travel-dashboard' ) ) ) ); ?></p>
-	<p><?php echo esc_html__( 'Powered by', 'wp-travel' ); ?><a href="http://wptravel.io" target="_blank"> <?php echo esc_html__( 'WP Travel', 'wp-travel' ); ?></a></p>
+	<p><?php echo  esc_html__( 'You can access your account area to view your Trip Bookings and change your password here: ', 'wp-travel' ); ?><a href="<?php echo esc_url( wptravel_get_page_permalink( 'wp-travel-dashboard' ) );?>" target="_blank"> <?php echo esc_html__( 'Here', 'wp-travel' ); ?></a></p>
+	
 <?php
+
+ $html = '<p>' . esc_html__( 'Powered by', 'wp-travel' ) . 
+            '<a href="http://wptravel.io" target="_blank"> ' . esc_html__( 'WP Travel', 'wp-travel' ) . '</a></p>';
+
+echo apply_filters( 'wp_travel_powered_by_text_new_account_email', $html );
+
+// add_filter( 'wp_travel_powered_by_text_new_account_email', 'custom_powered_by_email_text' );
+// function custom_powered_by_email_text( $html ) {
+//     return '<p>' . esc_html__( 'Powered by', 'wp-travel' ) . 
+//             '<a href="http://wptravel.io" target="_blank"> ' . esc_html__( 'WP Travel', 'wp-travel' ) . '</a></p>';
+// }
 

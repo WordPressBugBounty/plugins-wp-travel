@@ -107,6 +107,59 @@ function wptravel_archive_title() {
 	endif;
 }
 
+function wptravel_parse_user_date( $input_date ) {
+	if ( empty( $input_date ) ) {
+		return '';
+	}
+
+	// Step 1: Sanitize
+	$input_date = sanitize_text_field( wp_unslash( $input_date ) );
+
+	// Step 2: Translate Dutch months to English
+	$month_translation = [
+		'Januari'   => 'January',
+		'Februari'  => 'February',
+		'Maart'     => 'March',
+		'April'     => 'April',
+		'Mei'       => 'May',
+		'Juni'      => 'June',
+		'Juli'      => 'July',
+		'Augustus'  => 'August',
+		'September' => 'September',
+		'Oktober'   => 'October',
+		'November'  => 'November',
+		'December'  => 'December',
+	];
+
+	foreach ( $month_translation as $nl => $en ) {
+		if ( stripos( $input_date, $nl ) !== false ) {
+			$input_date = str_ireplace( $nl, $en, $input_date );
+			break;
+		}
+	}
+
+	// Step 3: Try common formats
+	$formats = [
+		'd/m/Y', 'm/d/Y', 'Y-m-d', 'd-m-Y', 'd M Y', 'd F Y', 'd-M-y', 'd-F-y', // English & Numeric
+	];
+
+	foreach ( $formats as $format ) {
+		$date_obj = DateTime::createFromFormat( $format, $input_date );
+		if ( $date_obj instanceof DateTime ) {
+			return $date_obj->format( 'Y-m-d' );
+		}
+	}
+
+	// Step 4: Fallback to strtotime()
+	$timestamp = strtotime( $input_date );
+	if ( $timestamp ) {
+		return date( 'Y-m-d', $timestamp );
+	}
+
+	// Step 5: Failed to parse
+	return '';
+}
+
 /**
  * Filters post clause to filter trips after 4.0.0.
  *
@@ -146,8 +199,9 @@ function wptravel_posts_clauses_filter( $post_clauses, $object ) {
 	 */
 	// Where clause.
 	$where      = '';
-	$start_date = isset( $_GET['trip_start'] ) && !empty( $_GET['trip_start'] ) ? DateTime::createFromFormat('m/d/Y', sanitize_text_field( wp_unslash( $_GET['trip_start'] ) ) )->format('Y-m-d') : ''; // @phpcs:ignore
-	$end_date   = isset( $_GET['trip_end'] ) && !empty( $_GET['trip_end'] ) ? DateTime::createFromFormat('m/d/Y', sanitize_text_field( wp_unslash( $_GET['trip_end'] ) ) )->format('Y-m-d') : ''; // @phpcs:ignore
+	$start_date = isset( $_GET['trip_start'] ) ? wptravel_parse_user_date( $_GET['trip_start'] ) : '';
+	$end_date   = isset( $_GET['trip_end'] ) ? wptravel_parse_user_date( $_GET['trip_end'] ) : '';
+
 
 	// Filter by date clause.
 	if ( ! empty( $start_date ) || ! empty( $end_date ) ) { // For search filter Widgets.

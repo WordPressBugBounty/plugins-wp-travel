@@ -107,6 +107,9 @@ function wptravel_settings_default_fields() {
 		// Email Settings Fields.
 		'wp_travel_from_email'                    => get_option( 'admin_email' ),
 		'send_booking_email_to_admin'             => 'yes',
+		'send_payment_email_to_client'            => 'yes',
+		'send_payment_email_to_admin'             => 'yes',
+		'send_booking_email_to_client'            => 'yes',
 		'booking_admin_template_settings'         => $booking_admin_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
 		'booking_client_template_settings'        => $booking_client_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
 		'payment_admin_template_settings'         => $payment_admin_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
@@ -2723,6 +2726,25 @@ function wptravel_view_booking_details_table( $booking_id, $hide_payment_column 
 							</div>
 							
 							<?php 
+						
+								$order_id = get_post_meta( $booking_id, 'refrence_woo_order_details', true );
+
+								if ( $order_id ) {
+									$edit_url = admin_url( 'post.php?post=' . absint( $order_id ) . '&action=edit' );
+									?>
+									<div class="my-order-single-field clearfix">
+										<span class="my-order-head"><?php echo 'WooCommerce Reference Order Details:'; ?></span>
+										<span class="my-order-tail">
+											<a href="<?php echo esc_url( $edit_url ); ?>" target="_blank" rel="noopener">
+												<?php echo esc_html( 'Edit Order #' . $order_id ); ?>
+											</a>
+											<br />
+											<small><?php echo esc_html( get_the_date( '', $booking_id ) ); ?></small>
+										</span>
+									</div>
+									<?php
+								}						
+
 
 								if( isset( get_post_meta( $booking_id, 'order_data', true )['privacy_policy'] ) && get_post_meta( $booking_id, 'order_data', true )['privacy_policy'] ){
 									echo esc_html( apply_filters( 'wptravel_booking_privacy_policy_text', 'The customer has accepted the Privacy Policy as part of this booking process. All personal data provided will be handled in accordance with our Privacy Policy to ensure compliance with applicable data protection regulations.' ) );
@@ -3242,6 +3264,7 @@ function wptravel_view_payment_details_table( $booking_id ) {
  * @return String URL.
  */
 function wptravel_thankyou_page_url( $trip_id = null ) {
+	
 	$thankyou_page_id = $trip_id;
 	$settings         = wptravel_get_settings();
 	if ( ! $trip_id ) {
@@ -3255,8 +3278,10 @@ function wptravel_thankyou_page_url( $trip_id = null ) {
 	}
 
 	if ( class_exists( 'WP_Travel_Cart_Checkout_Addon' ) ) {
+		
 		$thankyou_page_id = isset( $settings['thank_you_page_id'] ) && ! empty( $settings['thank_you_page_id'] ) ? $settings['thank_you_page_id'] : wptravel_get_page_id( 'booking-thank-you' );
 	}
+
 	$thankyou_page_url = 0 < $thankyou_page_id ? get_permalink( $thankyou_page_id ) : get_home_url();
 	return apply_filters( 'wp_travel_thankyou_page_url', $thankyou_page_url, $trip_id );
 }
@@ -3519,6 +3544,7 @@ function wptravel_get_submenu() {
 			),
 		),
 	);
+	
 
 	$all_submenus['bookings']['settings'] = array(
 		'priority'   => '130',

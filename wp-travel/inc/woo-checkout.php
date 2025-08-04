@@ -1,5 +1,166 @@
 <?php 
 
+// add_action('wp_ajax_wp_travel_render_checkout', 'wp_travel_render_checkout_ajax');
+// add_action('wp_ajax_nopriv_wp_travel_render_checkout', 'wp_travel_render_checkout_ajax');
+
+// function wp_travel_render_checkout_ajax() {
+//     // Render the checkout block fresh, based on current cart
+//     echo do_shortcode('[woocommerce_checkout]');
+    
+//     wp_die();
+
+// }
+
+add_action( 'rest_api_init', function () {
+    register_rest_route( 'wp-travel/v1', '/invoice/(?P<code>[a-zA-Z0-9]+)', array(
+        'methods'  => 'GET',
+        'callback' => 'serve_secure_invoice_pdf',
+        'permission_callback' => '__return_true', // you can secure this further
+    ) );
+});
+
+function serve_secure_invoice_pdf( $request ) {
+    $raw_code = sanitize_text_field( $request['code'] );
+
+    // Remove "invoice" prefix if present
+    if ( strpos( $raw_code, 'invoice' ) === 0 ) {
+        $numeric_part = substr( $raw_code, strlen( 'invoice' ) ); // get string after 'invoice'
+    } else {
+        $numeric_part = $raw_code; // fallback
+    }
+
+    // Convert to integer and subtract 5
+    $booikng_id = (int) $numeric_part - 5;
+
+	$wt_invoice_id = get_post_meta( $booikng_id, 'wt_invoice_id' )[0];
+
+	$invoice_path = WP_CONTENT_DIR . '/wt-invoice/' . $wt_invoice_id . '.pdf'; 
+
+	// return $invoice_path;
+
+	header( 'Content-Type: application/pdf' );
+    header( 'Content-Disposition: inline; filename="invoice-' . $booking_id . '.pdf"' );
+    header( 'Content-Length: ' . filesize( $invoice_path ) );
+
+    readfile( $invoice_path );
+    exit;
+}
+
+
+
+add_action( 'woocommerce_email_after_order_table', 'wp_travel_booking_info_after_customer_order_table', 10, 4 );
+
+function wp_travel_booking_info_after_customer_order_table( $order, $sent_to_admin, $plain_text, $email ) {
+    if ( in_array( $email->id, [ 'customer_processing_order', 'customer_completed_order', 'customer_invoice', 'customer_on_hold_order',
+    'customer_note' ], true ) ) {
+		$order_id = (int) $order->get_id();
+        global $wt_cart;
+
+		$items = $wt_cart->getItems();
+
+        foreach ( $items as $item ) {
+			
+			$total_pax = '';
+            foreach ( $item['trip'] as $data ) {
+                $total_pax .= '(' . $data['custom_label'] . ' * ' . $data['pax'] . ')';
+				
+            }
+
+            $trip_id     = $item['trip_id'];
+            $trip_name   = get_the_title( $trip_id );
+            $travel_date = $item['trip_start_date'];
+        }
+
+		$invoice_url = trailingslashit( site_url() ) . 'wp-json/wp-travel/v1/invoice/invoice'.$order_id+6;
+
+        ob_start();
+		if ( count( $items ) > 0 ) {
+        ?>
+	
+        <h2 style="color: #7f54b3; font-family: Helvetica Neue, Helvetica, Roboto, Arial, sans-serif; font-size: 18px; font-weight: bold; line-height: 130%; margin: 0 0 18px; text-align: left;">
+            <?php echo esc_html__( 'Trip Info', 'wp-travel' ); ?>
+        </h2>
+
+        <div style="margin-top: 20px; margin-bottom: 20px; padding: 12px; color: #636363; border: 1px solid #e5e5e5;">
+            <p><strong><?php echo esc_html__( 'Trip Name: ', 'wp-travel' ); ?></strong> 
+                <a href="<?php echo esc_url( get_permalink( $trip_id ) ); ?>" target="_blank">
+                    <?php echo esc_html( $trip_name ); ?>
+                </a>
+            </p>
+            <p><strong><?php echo esc_html__( 'Total Pax: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $total_pax ); ?></p>
+            <p><strong><?php echo esc_html__( 'Travel Date: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $travel_date ); ?></p>
+        </div>
+		<p>
+			<a href="<?php echo esc_url( $invoice_url ); ?>" target="_blank" style="display: inline-block; padding: 10px 16px; background-color: #7f54b3; color: #ffffff; text-decoration: none; border-radius: 4px;">
+				<?php echo esc_html__( 'Download Invoice (PDF)', 'wp-travel' ); ?>
+			</a>
+		</p>
+        <?php
+		}
+        echo ob_get_clean();
+    }
+}
+
+add_action( 'woocommerce_email_after_order_table', 'wp_travel_booking_info_after_order_table', 10, 4 );
+
+function wp_travel_booking_info_after_order_table( $order, $sent_to_admin, $plain_text, $email ) {
+    if ( $email->id === 'new_order' ) {
+        $order_id = (int) $order->get_id();
+
+        global $wt_cart;
+		$items = $wt_cart->getItems();
+
+		foreach( $items as $item ){
+			
+			$total_pax = '';
+            foreach ( $item['trip'] as $data ) {
+                $total_pax .= '(' . $data['custom_label'] . ' * ' . $data['pax'] . ')';
+				
+            }
+
+			$trip_id = $item['trip_id'];
+
+			$trip_name   = get_the_title( $item['trip_id'] );
+			
+			$travel_date = $item['trip_start_date'];
+		}
+
+		
+
+		// $trip_name   = get_the_title( get_post_meta( $booking_id, 'wp_travel_post_id' ) );
+		
+		// $total_pax   = 11;
+		// $travel_date = get_post_meta( $booking_id, 'wp_travel_arrival_date' )[0];
+		$invoice_url = trailingslashit( site_url() ) . 'wp-json/wp-travel/v1/invoice/invoice'.$order_id+6;
+
+		ob_start();
+		if ( count( $items ) > 0 ) {
+		?>
+
+		<h2 style="color: #7f54b3; font-family: Helvetica Neue, Helvetica, Roboto, Arial, sans-serif; font-size: 18px; font-weight: bold; line-height: 130%; margin: 0 0 18px; text-align: left;">
+			<?php echo esc_html__( 'Trip Info', 'wp-travel' ); ?>
+		</h2>
+
+		<div style="margin-top: 20px; margin-bottom: 20px; padding: 12px; color: #636363; border: 1px solid #e5e5e5;">
+
+			<p><strong><?php echo esc_html__( 'Trip Name: ', 'wp-travel' ); ?></strong> <a href="<?php echo esc_url( get_permalink( $trip_id ) ); ?>" target="_blank"><?php echo esc_html( $trip_name ); ?></a></p>
+			<p><strong><?php echo esc_html__( 'Total Pax: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $total_pax ); ?></p>
+			<p><strong><?php echo esc_html__( 'Travel Date: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $travel_date ); ?></p>
+		</div>
+
+		<p>
+			<a href="<?php echo esc_url( $invoice_url ); ?>" target="_blank" style="display: inline-block; padding: 10px 16px; background-color: #7f54b3; color: #ffffff; text-decoration: none; border-radius: 4px;">
+				<?php echo esc_html__( 'Download Invoice (PDF)', 'wp-travel' ); ?>
+			</a>
+		</p>
+		<?php
+		}
+		echo ob_get_clean();
+        
+    }
+}
+
+
 add_action('woocommerce_loaded' , function (){ 
 	class My_Product_Data_Store_CPT extends WC_Product_Data_Store_CPT implements WC_Object_Data_Store_Interface, WC_Product_Data_Store_Interface {
 
@@ -86,4 +247,21 @@ add_action('woocommerce_loaded' , function (){
 
 } );
 
+
+add_filter('woocommerce_cart_item_removed_message', 'disable_specific_removed_notice', 10, 2);
+function disable_specific_removed_notice($message, $cart_item_key) {
+    // Return an empty string to suppress the notice
+    return '';
+}
+
+if( apply_filters( 'wp_travel_woo_enable_onapage', false ) == true ){
+	add_filter( 'body_class', 'wp_travel_add_class_woo_onepage' );
+	function wp_travel_add_class_woo_onepage( $classes ) {
+		if(is_page((int)wptravel_get_settings()['thank_you_page_id'])){
+			$classes[] = 'woo-onpage-enable';
+		}
+		
+		return $classes;
+	}
+}
 

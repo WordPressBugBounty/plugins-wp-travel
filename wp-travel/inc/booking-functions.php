@@ -5,11 +5,6 @@
  * @package WP_Travel
  */
 
-/**
- * Frontend booking and send Email after clicking Book Now.
- *
- * @since 1.7.5
- */
 function wptravel_book_now() {
 
 	global $wt_cart;
@@ -107,6 +102,12 @@ function wptravel_book_now() {
 		'post_type'    => 'itinerary-booking',
 	);
 	$booking_id = wp_insert_post( $post_array );
+
+	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
+		update_post_meta( $booking_id, 'refrence_woo_order_details', ( (int) $booking_id -1 ) );
+		update_post_meta( $booking_id, 'booking_invoice_key', 'incoice'.( $booking_id - 5 ) );
+	}
+	
 	// Update Booking Title.
 	$update_data_array = array(
 		'ID'         => $booking_id,
@@ -434,18 +435,16 @@ function wptravel_book_now() {
 
 	$affiliate = apply_filters( 'wp_travel_all_booking_data_list_for_slicewp', $booking_id, $user_id );
 
-	// Clear Cart After process is complete.
 	$wt_cart->clear();
 
-	if( apply_filters( 'wp_travel_enable_booking_reserve_date', false ) == true && class_exists( 'WP_Travel_Pro' ) ){
+	if( get_option( 'wptravel_reserve_date' ) == 'yes' ){
 		$reserved_booking_dates = array();
 
 		$booking_args = array(
-			'post_type'      => 'itinerary-booking', // Specify the custom post type
-			'posts_per_page' => 50, // Get all posts
+			'post_type'      => 'itinerary-booking',
+			'posts_per_page' => 50,
 		);
 		
-		// Get the posts
 		$booking_posts = get_posts( $booking_args );
 
 		if ( !empty( $booking_posts ) ) {
@@ -469,250 +468,798 @@ function wptravel_book_now() {
 	}
 
 	if( apply_filters( 'wp_travel_disable_default_thankyoupage', false ) == false ){
-		$thankyou_page_url = add_query_arg( 'booked', true, $thankyou_page_url );
-		$thankyou_page_url = add_query_arg( '_nonce', WP_Travel::create_nonce(), $thankyou_page_url );
-		$thankyou_page_url = add_query_arg( 'order_id', $booking_id, $thankyou_page_url );
-		header( 'Location: ' . $thankyou_page_url );
-		exit;
+		if( apply_filters( 'wp_travel_woo_enable_onapage', false ) == false ){
+			$thankyou_page_url = add_query_arg( 'booked', true, $thankyou_page_url );
+			$thankyou_page_url = add_query_arg( '_nonce', WP_Travel::create_nonce(), $thankyou_page_url );
+			$thankyou_page_url = add_query_arg( 'order_id', $booking_id, $thankyou_page_url );
+			header( 'Location: ' . $thankyou_page_url );
+
+			exit;
+		}
 	}
 
 }
 
 function wptravel_get_booking_chart() {
 
-	$submission_request = WP_Travel::get_sanitize_request();
+	global $wpdb;
 
-	$wp_travel_itinerary_list = wptravel_get_itineraries_array();
-	$wp_travel_post_id        = ( isset( $submission_request['booking_itinerary'] ) && '' !== $submission_request['booking_itinerary'] ) ? absint( $submission_request['booking_itinerary'] ) : 0;
+	$total_booking = $wpdb->get_var("
+		SELECT COUNT(DISTINCT pm.post_id)
+		FROM {$wpdb->postmeta} pm
+		INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+		WHERE pm.meta_key = 'wp_travel_booking_status'
+		AND pm.meta_value = 'booked'
+		AND p.post_status = 'publish'
+	");
 
-	$country_list     = wptravel_get_countries();
-	$selected_country = ( isset( $submission_request['booking_country'] ) && '' !== $submission_request['booking_country'] ) ? esc_attr( $submission_request['booking_country'] ) : '';
+	$total_booking_last_month = $wpdb->get_var("
+		SELECT COUNT(DISTINCT pm.post_id)
+		FROM {$wpdb->postmeta} pm
+		INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+		WHERE pm.meta_key = 'wp_travel_booking_status'
+		AND pm.meta_value = 'booked'
+		AND p.post_status = 'publish'
+		AND p.post_date >= DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m-01')
+		AND p.post_date < DATE_FORMAT(NOW(), '%Y-%m-01')
+	");
 
-	$from_date = ( isset( $submission_request['booking_stat_from'] ) && '' !== $submission_request['booking_stat_from'] ) ? rawurldecode( $submission_request['booking_stat_from'] ) : '';
-	$to_date   = ( isset( $submission_request['booking_stat_to'] ) && '' !== $submission_request['booking_stat_to'] ) ? rawurldecode( $submission_request['booking_stat_to'] ) : '';
+	$total_booking_current_month = $wpdb->get_var("
+		SELECT COUNT(DISTINCT pm.post_id)
+		FROM {$wpdb->postmeta} pm
+		INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+		WHERE pm.meta_key = 'wp_travel_booking_status'
+		AND pm.meta_value = 'booked'
+		AND p.post_status = 'publish'
+		AND p.post_date >= DATE_FORMAT(NOW(), '%Y-%m-01')
+		AND p.post_date < DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+	");
 
-	$compare_stat = ( isset( $submission_request['compare_stat'] ) && '' !== $submission_request['compare_stat'] ) ? rawurldecode( $submission_request['compare_stat'] ) : '';
+	$booking_growth = 0;
 
-	$compare_from_date         = ( isset( $submission_request['compare_stat_from'] ) && '' !== $submission_request['compare_stat_from'] ) ? rawurldecode( $submission_request['compare_stat_from'] ) : '';
-	$compare_to_date           = ( isset( $submission_request['compare_stat_to'] ) && '' !== $submission_request['compare_stat_to'] ) ? rawurldecode( $submission_request['compare_stat_to'] ) : '';
-	$compare_selected_country  = ( isset( $submission_request['compare_country'] ) && '' !== $submission_request['compare_country'] ) ? esc_attr( $submission_request['compare_country'] ) : '';
-	$compare_itinerary_post_id = ( isset( $submission_request['compare_itinerary'] ) && '' !== $submission_request['compare_itinerary'] ) ? esc_attr( $submission_request['compare_itinerary'] ) : 0;
-	$chart_type                = isset( $submission_request['chart_type'] ) ? esc_attr( $submission_request['chart_type'] ) : '';
+	if ( $total_booking_last_month > 0 ) {
+		$booking_growth = ( ( $total_booking_current_month - $total_booking_last_month ) / $total_booking_last_month ) * 100;
+	}
+
+	$total_canceled_booking = $wpdb->get_var("
+		SELECT COUNT(DISTINCT pm.post_id)
+		FROM {$wpdb->postmeta} pm
+		INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+		WHERE pm.meta_key = 'wp_travel_booking_status'
+		AND pm.meta_value = 'canceled'
+		AND p.post_status = 'publish'
+	");
+
+ 	$all_performing_trips = $wpdb->get_results("
+		SELECT 
+			trip_meta.meta_value AS trip_id,
+			order_totals.meta_value AS order_total
+		FROM {$wpdb->posts} AS booking_post
+		INNER JOIN {$wpdb->postmeta} AS booking_status 
+			ON booking_status.post_id = booking_post.ID 
+			AND booking_status.meta_key = 'wp_travel_booking_status' 
+			AND booking_status.meta_value = 'booked'
+		INNER JOIN {$wpdb->postmeta} AS payment_status 
+			ON payment_status.post_id = booking_post.ID 
+			AND payment_status.meta_key = 'wp_travel_payment_status' 
+			AND payment_status.meta_value = 'paid'
+		INNER JOIN {$wpdb->postmeta} AS trip_meta 
+			ON trip_meta.post_id = booking_post.ID 
+			AND trip_meta.meta_key = 'wp_travel_post_id'
+		INNER JOIN {$wpdb->postmeta} AS order_totals 
+			ON order_totals.post_id = booking_post.ID 
+			AND order_totals.meta_key = 'order_totals'
+		WHERE booking_post.post_status = 'publish'
+	", ARRAY_A);
+
+	$booking_data = [];
+
+	foreach ( $all_performing_trips as $booking ) {
+		$trip_id = (int) $booking['trip_id'];
+		$order_totals = maybe_unserialize( $booking['order_total'] );
+
+		if ( isset( $order_totals['total'] ) ) {
+			if ( ! isset( $booking_data[ $trip_id ] ) ) {
+				$booking_data[ $trip_id ] = [
+					'total_bookings' => 0,
+					'total_revenue'  => 0,
+				];
+			}
+
+			$booking_data[ $trip_id ]['total_bookings'] += 1;
+			$booking_data[ $trip_id ]['total_revenue']  += floatval( $order_totals['total'] );
+		}
+	}
+
+	uasort( $booking_data, function ( $a, $b ) {
+		return $b['total_bookings'] <=> $a['total_bookings'];
+	});
+
+	
+
+	$all_total_revenue = 0;
+
+	foreach ( $booking_data as $trip ) {
+		$all_total_revenue += $trip['total_revenue'];
+	}
+
+	$top_trip_id   = null;
+	$top_trip_data = null;
+
+	if ( ! empty( $booking_data ) ) {
+		// Find the trip with the maximum number of bookings
+		$top_trip_id = array_key_first(
+			array_filter(
+				$booking_data,
+				fn($trip) => $trip['total_bookings'] === max(array_column($booking_data, 'total_bookings'))
+			)
+		);
+		$top_trip_data = $booking_data[ $top_trip_id ];
+		$top_trip_data['trip_id'] = $top_trip_id;
+	}
+
+	$best_selling_trip = $top_trip_data;
+
+	$top_revenue_trip_id   = null;
+	$top_revenue_trip_data = null;
+
+	if ( ! empty( $booking_data ) ) {
+		// Find the trip with the maximum number of bookings
+		$top_revenue_trip_id = array_key_first(
+			array_filter(
+				$booking_data,
+				fn($trip) => $trip['total_revenue'] === max(array_column($booking_data, 'total_revenue'))
+			)
+		);
+		$top_revenue_trip_data = $booking_data[ $top_revenue_trip_id ];
+		$top_revenue_trip_data['trip_id'] = $top_revenue_trip_id;
+	}
+
+	$top_revenue_trip_data = $top_revenue_trip_data;
+
+
+	$start_date = date('Y-m-01', strtotime('first day of last month'));
+	$end_date   = date('Y-m-t', strtotime('last day of last month'));
+
+	$last_month_performing_trips = $wpdb->get_results("
+		SELECT 
+			trip_meta.meta_value AS trip_id,
+			order_totals.meta_value AS order_total
+		FROM {$wpdb->posts} AS booking_post
+		INNER JOIN {$wpdb->postmeta} AS booking_status 
+			ON booking_status.post_id = booking_post.ID 
+			AND booking_status.meta_key = 'wp_travel_booking_status' 
+			AND booking_status.meta_value = 'booked'
+		INNER JOIN {$wpdb->postmeta} AS payment_status 
+			ON payment_status.post_id = booking_post.ID 
+			AND payment_status.meta_key = 'wp_travel_payment_status' 
+			AND payment_status.meta_value = 'paid'
+		INNER JOIN {$wpdb->postmeta} AS trip_meta 
+			ON trip_meta.post_id = booking_post.ID 
+			AND trip_meta.meta_key = 'wp_travel_post_id'
+		INNER JOIN {$wpdb->postmeta} AS order_totals 
+			ON order_totals.post_id = booking_post.ID 
+			AND order_totals.meta_key = 'order_totals'
+		WHERE booking_post.post_status = 'publish'
+		AND booking_post.post_date BETWEEN '$start_date' AND '$end_date'
+	", ARRAY_A);
+
+	$booking_data = [];
+
+	foreach ( $last_month_performing_trips as $booking ) {
+		$trip_id = (int) $booking['trip_id'];
+		$order_totals = maybe_unserialize( $booking['order_total'] );
+
+		if ( isset( $order_totals['total'] ) ) {
+			if ( ! isset( $booking_data[ $trip_id ] ) ) {
+				$booking_data[ $trip_id ] = [
+					'total_bookings' => 0,
+					'total_revenue'  => 0,
+				];
+			}
+
+			$booking_data[ $trip_id ]['total_bookings'] += 1;
+			$booking_data[ $trip_id ]['total_revenue']  += floatval( $order_totals['total'] );
+		}
+	}
+
+	uasort( $booking_data, function ( $a, $b ) {
+		return $b['total_bookings'] <=> $a['total_bookings'];
+	});
+
+
+	$last_month_revenue = 0;
+
+	foreach ( $booking_data as $trip ) {
+		$last_month_revenue += $trip['total_revenue'];
+	}
+
+	$start_date = date('Y-m-01'); // First day of current month
+	$end_date   = date('Y-m-t');  // Last day of current month
+
+
+	$current_month_performing_trips = $wpdb->get_results("
+		SELECT 
+			trip_meta.meta_value AS trip_id,
+			order_totals.meta_value AS order_total
+		FROM {$wpdb->posts} AS booking_post
+		INNER JOIN {$wpdb->postmeta} AS booking_status 
+			ON booking_status.post_id = booking_post.ID 
+			AND booking_status.meta_key = 'wp_travel_booking_status' 
+			AND booking_status.meta_value = 'booked'
+		INNER JOIN {$wpdb->postmeta} AS payment_status 
+			ON payment_status.post_id = booking_post.ID 
+			AND payment_status.meta_key = 'wp_travel_payment_status' 
+			AND payment_status.meta_value = 'paid'
+		INNER JOIN {$wpdb->postmeta} AS trip_meta 
+			ON trip_meta.post_id = booking_post.ID 
+			AND trip_meta.meta_key = 'wp_travel_post_id'
+		INNER JOIN {$wpdb->postmeta} AS order_totals 
+			ON order_totals.post_id = booking_post.ID 
+			AND order_totals.meta_key = 'order_totals'
+		WHERE booking_post.post_status = 'publish'
+		AND booking_post.post_date BETWEEN '$start_date' AND '$end_date'
+	", ARRAY_A);
+
+	$booking_data = [];
+
+	foreach ( $current_month_performing_trips as $booking ) {
+		$trip_id = (int) $booking['trip_id'];
+		$order_totals = maybe_unserialize( $booking['order_total'] );
+
+		if ( isset( $order_totals['total'] ) ) {
+			if ( ! isset( $booking_data[ $trip_id ] ) ) {
+				$booking_data[ $trip_id ] = [
+					'total_bookings' => 0,
+					'total_revenue'  => 0,
+				];
+			}
+
+			$booking_data[ $trip_id ]['total_bookings'] += 1;
+			$booking_data[ $trip_id ]['total_revenue']  += floatval( $order_totals['total'] );
+		}
+	}
+
+	uasort( $booking_data, function ( $a, $b ) {
+		return $b['total_bookings'] <=> $a['total_bookings'];
+	});
+
+	$current_month_revenue = 0;
+
+	foreach ( $booking_data as $trip ) {
+		$current_month_revenue += $trip['total_revenue'];
+	}
+
+	$earning_growth = 0;
+
+	if ( $last_month_revenue > 0 ) {
+		$earning_growth = round( ( ( $current_month_revenue - $last_month_revenue ) / $last_month_revenue ) * 100, 2 );
+	} elseif ( $current_month_revenue > 0 ) {
+		$earning_growth = 'N/A'; // cannot compute growth from zero base
+	} else {
+		$earning_growth = 0;
+	}
+
+	$best_destination_results = $wpdb->get_results("
+		SELECT 
+			terms.term_id AS term_id,
+			terms.name AS destination,
+			COUNT(*) AS total_bookings,
+			SUM(
+				CAST(
+					SUBSTRING_INDEX(
+						SUBSTRING_INDEX(order_totals.meta_value, 'total\";d:', -1), 
+						';', 
+						1
+					) AS UNSIGNED
+				)
+			) AS total_revenue
+		FROM {$wpdb->posts} AS booking_post
+		INNER JOIN {$wpdb->postmeta} AS booking_status 
+			ON booking_status.post_id = booking_post.ID 
+			AND booking_status.meta_key = 'wp_travel_booking_status' 
+			AND booking_status.meta_value = 'booked'
+		INNER JOIN {$wpdb->postmeta} AS payment_status 
+			ON payment_status.post_id = booking_post.ID 
+			AND payment_status.meta_key = 'wp_travel_payment_status' 
+			AND payment_status.meta_value = 'paid'
+		INNER JOIN {$wpdb->postmeta} AS trip_meta 
+			ON trip_meta.post_id = booking_post.ID 
+			AND trip_meta.meta_key = 'wp_travel_post_id'
+		INNER JOIN {$wpdb->postmeta} AS order_totals 
+			ON order_totals.post_id = booking_post.ID 
+			AND order_totals.meta_key = 'order_totals'
+
+		-- Taxonomy Join for destination
+		INNER JOIN {$wpdb->term_relationships} AS rel 
+			ON rel.object_id = trip_meta.meta_value
+		INNER JOIN {$wpdb->term_taxonomy} AS tax 
+			ON tax.term_taxonomy_id = rel.term_taxonomy_id 
+			AND tax.taxonomy = 'travel_locations'
+		INNER JOIN {$wpdb->terms} AS terms 
+			ON terms.term_id = tax.term_id
+
+		WHERE booking_post.post_status = 'publish'
+			AND booking_post.post_date BETWEEN '$start_date' AND '$end_date'
+
+		GROUP BY terms.term_id
+		ORDER BY total_bookings DESC
+		LIMIT 1
+	", ARRAY_A);
+
+	$top_revenue_destination = $wpdb->get_results("
+		SELECT 
+			trip_meta.meta_value AS trip_id,
+			order_totals.meta_value AS order_total
+		FROM {$wpdb->posts} AS booking_post
+		INNER JOIN {$wpdb->postmeta} AS booking_status 
+			ON booking_status.post_id = booking_post.ID 
+			AND booking_status.meta_key = 'wp_travel_booking_status' 
+			AND booking_status.meta_value = 'booked'
+		INNER JOIN {$wpdb->postmeta} AS payment_status 
+			ON payment_status.post_id = booking_post.ID 
+			AND payment_status.meta_key = 'wp_travel_payment_status' 
+			AND payment_status.meta_value = 'paid'
+		INNER JOIN {$wpdb->postmeta} AS trip_meta 
+			ON trip_meta.post_id = booking_post.ID 
+			AND trip_meta.meta_key = 'wp_travel_post_id'
+		INNER JOIN {$wpdb->postmeta} AS order_totals 
+			ON order_totals.post_id = booking_post.ID 
+			AND order_totals.meta_key = 'order_totals'
+		WHERE booking_post.post_status = 'publish'
+	", ARRAY_A);
+
+	// Step 2: Group by trip_id
+	$booking_data = [];
+
+	foreach ( $top_revenue_destination as $booking ) {
+		$trip_id = (int) $booking['trip_id'];
+		$order_totals = maybe_unserialize( $booking['order_total'] );
+
+		if ( isset( $order_totals['total'] ) ) {
+			if ( ! isset( $booking_data[ $trip_id ] ) ) {
+				$booking_data[ $trip_id ] = [
+					'total_bookings' => 0,
+					'total_revenue'  => 0,
+				];
+			}
+
+			$booking_data[ $trip_id ]['total_bookings'] += 1;
+			$booking_data[ $trip_id ]['total_revenue']  += floatval( $order_totals['total'] );
+		}
+	}
+
+	// Step 3: Get destinations for each trip
+	$trip_ids = array_keys( $booking_data );
+	$trip_destinations = [];
+
+	foreach ( $trip_ids as $trip_id ) {
+		$terms = get_the_terms( $trip_id, 'travel_locations' );
+		if ( is_array( $terms ) ) {
+			$trip_destinations[ $trip_id ] = array_map( fn($term) => [
+				'term_id' => $term->term_id,
+				'name'    => $term->name,
+			], $terms );
+		}
+	}
+
+	// Step 4: Aggregate revenue per destination
+	$destination_data = [];
+
+	foreach ( $booking_data as $trip_id => $data ) {
+		if ( ! isset( $trip_destinations[ $trip_id ] ) ) {
+			continue;
+		}
+
+		foreach ( $trip_destinations[ $trip_id ] as $term ) {
+			if ( ! isset( $destination_data[ $term['term_id'] ] ) ) {
+				$destination_data[ $term['term_id'] ] = [
+					'name'          => $term['name'],
+					'total_revenue' => 0,
+				];
+			}
+
+			$destination_data[ $term['term_id'] ]['total_revenue'] += $data['total_revenue'];
+		}
+	}
+
+	// Step 5: Find the top revenue destination
+	$top_destination_term_id = null;
+	$top_destination_data = null;
+
+	if ( ! empty( $destination_data ) ) {
+		$top_destination_term_id = array_key_first(
+			array_filter(
+				$destination_data,
+				fn($dest) => $dest['total_revenue'] === max(array_column($destination_data, 'total_revenue'))
+			)
+		);
+
+		$top_destination_data = $destination_data[ $top_destination_term_id ];
+		$top_destination_data['term_id'] = $top_destination_term_id;
+	}
+
+	// Final result
+	$top_revenue_destination = $top_destination_data;
+
+
+	$total_customers = $wpdb->get_var("
+		SELECT COUNT(*)
+		FROM {$wpdb->usermeta}
+		WHERE meta_key = '{$wpdb->prefix}capabilities'
+		AND meta_value LIKE '%wp-travel-customer%'
+	");
+
+	$total_customers_last_month = $wpdb->get_var("
+		SELECT COUNT(*)
+		FROM {$wpdb->users} u
+		INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID
+		WHERE um.meta_key = '{$wpdb->prefix}capabilities'
+		AND um.meta_value LIKE '%wp-travel-customer%'
+		AND u.user_registered >= DATE_FORMAT(NOW() - INTERVAL 1 MONTH, '%Y-%m-01')
+		AND u.user_registered < DATE_FORMAT(NOW(), '%Y-%m-01')
+	");
+
+	$total_customers_current_month = $wpdb->get_var("
+		SELECT COUNT(*)
+		FROM {$wpdb->users} u
+		INNER JOIN {$wpdb->usermeta} um ON um.user_id = u.ID
+		WHERE um.meta_key = '{$wpdb->prefix}capabilities'
+		AND um.meta_value LIKE '%wp-travel-customer%'
+		AND u.user_registered >= DATE_FORMAT(NOW(), '%Y-%m-01')
+		AND u.user_registered < DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')
+	");
+
+	$customer_growth = 0;
+
+	if ( $total_customers_last_month > 0 ) {
+		$customer_growth = ( ( $total_customers_current_month - $total_customers_last_month ) / $total_customers_last_month ) * 100;
+	}
+
 	?>
-	<div class="wrap">
-		<h2><?php esc_html_e( 'Statistics', 'wp-travel' ); ?></h2>
-		<div class="stat-toolbar">
-				<form name="stat_toolbar" class="stat-toolbar-form" action="" method="get" >
-					<input type="hidden" name="_nonce" value="<?php echo esc_attr( WP_Travel::create_nonce() ); ?>" />
-					<input type="hidden" name="post_type" value="itinerary-booking" >
-					<input type="hidden" name="page" value="booking_chart">
-					<p class="field-group full-width">
-						<span class="field-label"><?php esc_html_e( 'Display Chart', 'wp-travel' ); ?>:</span>
-						<select name="chart_type" >
-							<option value="booking" <?php selected( 'booking', $chart_type ); ?> ><?php esc_html_e( 'Booking', 'wp-travel' ); ?></option>
-							<option value="payment" <?php selected( 'payment', $chart_type ); ?> ><?php esc_html_e( 'Payment', 'wp-travel' ); ?></option>
-						</select>
-					</p>
-					<?php
-					// @since 1.0.6 // Hook since
-					do_action( 'wp_travel_before_stat_toolbar_fields' ); // phpcs:ignore
-					do_action( 'wptravel_before_stat_toolbar_fields' );
+	<div class="wrap wptravel-report-page">
+		<div class="page-header">
+			<h3 class="wp-heading-inline" style="font-size: 2em;"><?php esc_html_e( 'Statistics Overview', 'wp-travel' ); ?></h3>
+			<p><?php esc_html_e( "Welcome back! Here's what's happening with your bookings.", 'wp-travel' ); ?></p>
+		</div>
+		
+		<div class="grid-container quick-status">
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Total Bookings", 'wp-travel' ); ?></h3>
+				<p class="count-number"><?php echo esc_html( $total_booking ); ?></p>
+				<p> 
+					<?php if( $booking_growth > 0 ): ?>
+
+							<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
+							<span style="color:#16C47F"> <?php echo abs( round( $booking_growth, 2 ) ) . ' % ' ?></span>
+						<?php elseif ( $booking_growth < 0 ): ?>
+
+							<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
+							<span style="color:#E14434"> <?php echo abs( round( $booking_growth, 2 ) ) . ' % ' ?></span>
+						<?php else: ?>
+							<span style="color:#151515"> <?php echo '0 % ' ?></span>
+					<?php endif; ?>
+					<?php esc_html_e( "form last month", 'wp-travel' ); ?>
+				</p>
+			</div>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Total Earnings", 'wp-travel' ); ?></h3>
+				<p class="count-number"><?php echo wptravel_get_formated_price_currency( $all_total_revenue, true ); ?></p>
+				<p> 
+					<?php if( $earning_growth > 0 ): ?>
+
+							<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
+							<span style="color:#16C47F"> <?php echo $earning_growth . ' % ' ?></span>
+						<?php elseif ( $earning_growth < 0 ): ?>
+
+							<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
+							<span style="color:#E14434"> <?php echo $earning_growth . ' % ' ?></span>
+						<?php else: ?>
+							<span style="color:#151515"> <?php echo '0 % ' ?></span>
+					<?php endif; ?>
+					<?php esc_html_e( "form last month", 'wp-travel' ); ?>
+				</p>
+			</div>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Total Customers", 'wp-travel' ); ?></h3>
+				
+				<p class="count-number"><?php echo esc_html( $total_customers ); ?></p>
+				<p> 
+					<?php if( $customer_growth > 0 ): ?>
+
+						<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
+						<span style="color:#16C47F"> <?php echo abs( round( $customer_growth, 2 ) ) . ' % ' ?></span>
+						<?php elseif ( $customer_growth < 0 ): ?>
+
+						<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
+						<span style="color:#E14434"> <?php echo abs( round( $customer_growth, 2 ) ) . ' % ' ?></span>
+					<?php else: ?>
+						<span style="color:#151515"> <?php echo '0 % ' ?></span>
+					<?php endif; ?>
+					<?php esc_html_e( "form last month", 'wp-travel' ); ?>
+				</p>
+				
+			</div>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Total Cancelled Bookings", 'wp-travel' ); ?></h3>
+				<p class="count-number"><?php echo esc_html( $total_canceled_booking ); ?></p>
+			</div>
+			
+		</div>
+
+		<div class="grid-container second-quick-status">
+			<div class="grid-item">
+				<h3>
+					<?php 
+						$itinerary_count = wp_count_posts( 'itineraries' )->publish;
+						echo esc_html__( "Best Selling Trip", 'wp-travel' );
 					?>
-					<div class="show-all compare">
-						<p class="show-compare-stat">
-						<span class="checkbox-default-design">
-							<span class="field-label"><?php esc_html_e( 'Compare Stat', 'wp-travel' ); ?>:</span>
-							<label data-on="ON" data-off="OFF">
-								<input id="compare-stat" type="checkbox" name="compare_stat" value="yes" <?php checked( 'yes', $compare_stat ); ?>>
-								<span class="switch">
-								</span>
-							</label>
-						</span>
+				</h3>
 
-						</p>
-					</div>
-					<div class="form-compare-stat clearfix">
-						<!-- Field groups -->
-						<p class="field-group field-group-stat">
-							<span class="field-label"><?php esc_html_e( 'From', 'wp-travel' ); ?>:</span>
-							<input type="text" name="booking_stat_from" class="datepicker-from" class="form-control" value="<?php echo esc_attr( $from_date ); ?>" id="fromdate1" />
-							<label class="input-group-addon btn" for="fromdate1">
-							<span class="dashicons dashicons-calendar-alt"></span>
-							</label>
-						</p>
-						<p class="field-group field-group-stat">
-							<span class="field-label"><?php esc_html_e( 'To', 'wp-travel' ); ?>:</span>
-							<input type="text" name="booking_stat_to" class="datepicker-to" class="form-control" value="<?php echo esc_attr( $to_date ); ?>" id="fromdate2" />
-							<label class="input-group-addon btn" for="fromdate2">
-							<span class="dashicons dashicons-calendar-alt"></span>
-							</label>
-						</p>
-						<p class="field-group field-group-stat">
-							<span class="field-label"><?php esc_html_e( 'Country', 'wp-travel' ); ?>:</span>
+				<h4>
+					<?php if($best_selling_trip['trip_id']): ?>
+						<a href="<?php echo esc_url( get_the_permalink( $best_selling_trip['trip_id'] ) );?>" target="_blank"><?php echo esc_html( get_the_title( $best_selling_trip['trip_id'] ) );?></a>
+						<?php else: ?>
+						-
+					<?php endif; ?>
+					 
+				</h4>
+				<p>( <?php echo esc_html__( 'Total Bookings ' ) . $best_selling_trip['total_bookings']; ?> )</p>
+			</div>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Highest Revenue Trip", 'wp-travel' ); ?></h3>
+				<h4>
+					<?php if($top_revenue_trip_data['trip_id']): ?>
+						<a href="<?php echo esc_url( get_the_permalink( $top_revenue_trip_data['trip_id'] ) );?>" target="_blank"><?php echo esc_html( get_the_title( $top_revenue_trip_data['trip_id'] ) );?></a>
+						<?php else: ?>
+						-
+					<?php endif; ?>
+					  
+				</h4>
+				<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_trip_data['total_revenue'] ); ?> )</p>
+			</div>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Best Destination", 'wp-travel' ); ?></h3>
+				<h4>
+					<?php 
+					if( $best_destination_results &&  $best_destination_results[0]['term_id']): ?>
+						<a href="<?php echo esc_attr( get_term_link( (int)$best_destination_results[0]['term_id'] ) ); ?>" class="wp-travel-top-itineraries" target="_blank"><?php echo esc_html( $best_destination_results[0]['destination'] );?> </a>
+						<?php else: ?>
+						-
+					<?php endif; ?>
+				</h4>
+				<?php if( $best_destination_results ): ?>
+					<p>
+						( <?php echo esc_html__( 'Total Bookings ' ) . $best_destination_results[0]['total_bookings']; ?> )
+					</p>
+				<?php endif; ?>
+			</div>
 
-							<select class="selectpicker form-control" name="booking_country">
 
-								<option value=""><?php esc_html_e( 'All Country', 'wp-travel' ); ?></option>
+			<div class="grid-item">
+				<h3><?php esc_html_e( "Top Revenue Destination", 'wp-travel' ); ?></h3>
+				<h4>
+					<?php if($top_revenue_destination && $top_revenue_destination['term_id']): ?>
+						<a href="<?php echo esc_attr( get_term_link( (int)$top_revenue_destination['term_id']) ); ?>" class="wp-travel-top-itineraries" target="_blank"><?php echo esc_html( $top_revenue_destination['name'] );?></a>
+						<?php else: ?>
+						-
+					<?php endif; ?>
+					
+				</h4>
+				<?php if( $top_revenue_destination ): ?>
+				<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_destination['total_revenue'] ); ?> )</p>
+				<?php endif; ?>
+			</div>
+		</div>
 
-								<?php foreach ( $country_list as $key => $value ) : ?>
-									<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $selected_country ); ?>>
-										<?php echo esc_html( $value ); ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
+		<?php if( (int)$total_booking > 0 ): ?>
+			<div class="custom-data">
+				
+				<div class="main-chart">
+					<div class="stat-toolbar">
+						<form name="stat_toolbar" class="stat-toolbar-form" action="" method="get" >
+							<input type="hidden" name="_nonce" value="<?php echo esc_attr( WP_Travel::create_nonce() ); ?>" />
+							<input type="hidden" name="post_type" value="itinerary-booking" >
+							<input type="hidden" name="page" value="booking_chart">
+							
+							<?php
+							// @since 1.0.6 // Hook since
+							do_action( 'wp_travel_before_stat_toolbar_fields' ); // phpcs:ignore
+							do_action( 'wptravel_before_stat_toolbar_fields' );
+							?>
 
-						</p>
-						<p class="field-group field-group-stat">
-							<span class="field-label"><?php echo esc_html( WP_TRAVEL_POST_TITLE ); ?>:</span>
-							<select class="selectpicker form-control" name="booking_itinerary">
-								<option value="">
+							<div class="form-compare-stat clearfix ">
+								<!-- Field groups -->
+								<p class="field-group field-group-stat date-picker">
+									<span class="field-label"><?php esc_html_e( 'From', 'wp-travel' ); ?>:</span>
+									<input type="text" name="booking_stat_from" class="datepicker-from" class="form-control" id="fromdate1" />
+									<label class="input-group-addon btn" for="fromdate1">
+									<span class="dashicons dashicons-calendar-alt"></span>
+									</label>
+								</p>
+								<p class="field-group field-group-stat date-picker">
+									<span class="field-label"><?php esc_html_e( 'To', 'wp-travel' ); ?>:</span>
+									<input type="text" name="booking_stat_to" class="datepicker-to" class="form-control"  id="fromdate2" />
+									<label class="input-group-addon btn" for="fromdate2">
+									<span class="dashicons dashicons-calendar-alt"></span>
+									</label>
+								</p>
+							
 								<?php
-								esc_html_e( 'All ', 'wp-travel' );
-								echo esc_html( WP_TRAVEL_POST_TITLE_SINGULAR );
+									$selected_interval = isset($_REQUEST['booking_intervals']) ? $_REQUEST['booking_intervals'] : 'all-time';
 								?>
-								</option>
-								<?php foreach ( $wp_travel_itinerary_list as $trip_id => $itinerary_name ) : ?>
-									<option value="<?php echo esc_attr( $trip_id ); ?>" <?php selected( $wp_travel_post_id, $trip_id ); ?>>
-										<?php echo esc_html( $itinerary_name ); ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
-						</p>
+								
+								<p class="field-group field-group-stat">
+									<span class="field-label"><?php echo esc_html( 'Time Intervals:', 'wp-travel' ); ?></span>
+									<select id="interval-selection" class="selectpicker form-control" name="booking_intervals">
+										<option value="all-time" <?php selected($selected_interval, 'all-time'); ?>>
+											<?php esc_html_e('All Time', 'wp-travel'); ?>
+										</option>
+										<option value="last-week" <?php selected($selected_interval, 'last-week'); ?>>
+											<?php esc_html_e('Last Week', 'wp-travel'); ?>
+										</option>
+										<option value="last-month" <?php selected($selected_interval, 'last-month'); ?>>
+											<?php esc_html_e('Last Month', 'wp-travel'); ?>
+										</option>
+										<option value="last-three-months" <?php selected($selected_interval, 'last-three-months'); ?>>
+											<?php esc_html_e('Last Three Months', 'wp-travel'); ?>
+										</option>
+										<option value="last-six-months" <?php selected($selected_interval, 'last-six-months'); ?>>
+											<?php esc_html_e('Last Six Months', 'wp-travel'); ?>
+										</option>
+										<option value="last-year" <?php selected($selected_interval, 'last-year'); ?>>
+											<?php esc_html_e('Last Year', 'wp-travel'); ?>
+										</option>
+										<option value="custom" <?php selected($selected_interval, 'custom'); ?>>
+											<?php esc_html_e('Custom Date', 'wp-travel'); ?>
+										</option>
+									</select>
+								</p>
 
-						<?php
-						// @since 1.0.6 // Hook since
-						do_action( 'wp_travel_after_stat_toolbar_fields' ); // phpcs:ignore
-						do_action( 'wptravel_after_stat_toolbar_fields' );
-						?>
-						<div class="show-all btn-show-all" style="display:<?php echo esc_attr( 'yes' === $compare_stat ? 'none' : 'block' ); ?>" >
-							<?php submit_button( esc_attr__( 'Show All', 'wp-travel' ), 'primary', 'submit' ); ?>
+								<?php
+								// @since 1.0.6 // Hook since
+								do_action( 'wp_travel_after_stat_toolbar_fields' ); // phpcs:ignore
+								do_action( 'wptravel_after_stat_toolbar_fields' );
+								?>
+								<div class="show-all btn-show-all" >
+									<?php submit_button( esc_attr__( 'Show All', 'wp-travel' ), 'primary', 'submit' ); ?>
+								</div>
+
+							</div>
+
+						</form>
+					</div>
+					<div class="loader-wrapper">
+						<div class="loader"></div>
+					</div>
+					
+					<div class="data-wrapper">
+						<div class="left-block">
+							<canvas id="wp-travel-booking-canvas"></canvas>
+						</div>
+						<div class="right-block">
+
+							<div class="wp-travel-stat-info">
+
+								<div class="right-block-single total-sales">
+									<div>
+										<strong><big class="wp-travel-total-sales"><?php echo wptravel_get_formated_price_currency( $all_total_revenue, true ); ?></big></strong><br />
+									</div>
+									
+									<p><?php esc_html_e( 'Total Sales', 'wp-travel' ); ?></p>
+								</div>
+
+								<div class="right-block-single total-bookings">
+									<div>
+										<strong><big class="wp-travel-max-bookings"></big></strong><br />
+									</div>
+									
+									<p><?php esc_html_e( 'Bookings', 'wp-travel' ); ?></p>
+
+								</div>
+								<div class="right-block-single top-destination">
+									<div>
+										<strong class="wp-travel-top-countries wp-travel-more">								
+										</strong>
+									</div>
+									
+									<p><?php esc_html_e( 'Top Destination', 'wp-travel' ); ?></p>
+								</div>
+								<div class="right-block-single top-trip">
+									<div>
+									<strong></strong>
+									</div>
+									
+									<p><?php esc_html_e( 'Top itinerary', 'wp-travel' ); ?></p>
+								</div>
+							</div>
+
+						</div>
+						<div class="top-trips" style="display: flex; width: 96%; gap: 20px;">
+							<div class="table-wrapper" style="width: 50%;">
+								<h3><?php echo esc_html__( 'Top Performing Trips', 'wp-travel' ); ?></h3>
+								<table class="top-bottom" style="width: 100%;" border="1" cellpadding="6" cellspacing="0">
+									<thead>
+										<tr>
+											<th><?php echo esc_html__( 'SN', 'wp-travel' ); ?></th>
+											<th><?php echo esc_html__( 'Trip Name', 'wp-travel' ); ?></th>
+											<th><?php echo esc_html__( 'Booking Count', 'wp-travel' ); ?></th>
+											<th><?php echo esc_html__( 'Total Revenue', 'wp-travel' ); ?></th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+								</table>
+							</div>
+
+							<div style="width: 50%;">
+								<h3><?php echo esc_html__( 'Low Performing Trips', 'wp-travel' ); ?></h3>
+
+								<table class="bottom-top" style="width: 100%;" border="1" cellpadding="6" cellspacing="0">
+								<thead>
+									<tr>
+									<th><?php echo esc_html__( 'SN', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Trip Name', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Booking Count', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Total Revenue', 'wp-travel' ); ?></th>
+									</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+								</table>
+							</div>
+
 						</div>
 
+						<div class="top-destinations" style="display: flex; width: 96%; gap: 20px;">
+
+							<div class="table-wrapper" style="width: 50%;">
+								<h3><?php echo esc_html__( 'Top Performing Destinations', 'wp-travel' ); ?></h3>
+								<table class="top-bottom" style="width: 100%;" border="1" cellpadding="6" cellspacing="0">
+								<thead>
+									<tr>
+									<th><?php echo esc_html__( 'SN', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Destination Name', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Booking Count', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Total Revenue', 'wp-travel' ); ?></th>
+									</tr>
+								</thead>
+								<tbody>
+									
+								</tbody>
+								</table>
+							</div>
+
+							<div style="width: 50%;">
+								<h3><?php echo esc_html__( 'Low Performing Destinations', 'wp-travel' ); ?></h3>
+
+								<table class="bottom-top" style="width: 100%;" border="1" cellpadding="6" cellspacing="0">
+								<thead>
+									<tr>
+									<th><?php echo esc_html__( 'SN', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Trip Name', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Booking Count', 'wp-travel' ); ?></th>
+									<th><?php echo esc_html__( 'Total Revenue', 'wp-travel' ); ?></th>
+									</tr>
+								</thead>
+								<tbody>
+								
+								</tbody>
+								</table>
+							</div>
+
+						</div>
 					</div>
+					
+				</div>			
 
-					<?php $field_group_display = ( 'yes' === $compare_stat ) ? 'block' : 'none'; ?>
-					<div class="additional-compare-stat clearfix">
-					<!-- Field groups to compare -->
-					<p class="field-group field-group-compare" style="display:<?php echo esc_attr( $field_group_display ); ?>" >
-						<span class="field-label"><?php esc_html_e( 'From', 'wp-travel' ); ?>:</span>
-						<input type="text" name="compare_stat_from" class="datepicker-from" class="form-control" value="<?php echo esc_attr( $compare_from_date ); ?>" id="fromdate3" />
-						<label class="input-group-addon btn" for="fromdate3">
-						<span class="dashicons dashicons-calendar-alt"></span>
-						</label>
-					</p>
-					<p class="field-group field-group-compare"  style="display:<?php echo esc_attr( $field_group_display ); ?>" >
-						<span class="field-label"><?php esc_html_e( 'To', 'wp-travel' ); ?>:</span>
-						<input type="text" name="compare_stat_to" class="datepicker-to" class="form-control" value="<?php echo esc_attr( $compare_to_date ); ?>" id="fromdate4" />
-						<label class="input-group-addon btn" for="fromdate4">
-						<span class="dashicons dashicons-calendar-alt"></span>
-						</label>
-					</p>
-					<p class="field-group field-group-compare"  style="display:<?php echo esc_attr( $field_group_display ); ?>" >
-						<span class="field-label"><?php esc_html_e( 'Country', 'wp-travel' ); ?>:</span>
-
-						<select class="selectpicker form-control" name="compare_country">
-
-							<option value=""><?php esc_html_e( 'All Country', 'wp-travel' ); ?></option>
-
-							<?php foreach ( $country_list as $key => $value ) : ?>
-								<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $compare_selected_country ); ?>>
-									<?php echo esc_html( $value ); ?>
-								</option>
-							<?php endforeach; ?>
-						</select>
-
-					</p>
-					<p class="field-group field-group-compare"  style="display:<?php echo esc_attr( $field_group_display ); ?>" >
-						<span class="field-label"><?php echo esc_html( WP_TRAVEL_POST_TITLE ); ?>:</span>
-						<select class="selectpicker form-control" name="compare_itinerary">
-							<option value="">
-							<?php
-							esc_html_e( 'All ', 'wp-travel' );
-							echo esc_html( WP_TRAVEL_POST_TITLE_SINGULAR );
-							?>
-							</option>
-							<?php foreach ( $wp_travel_itinerary_list as $trip_id => $itinerary_name ) : ?>
-								<option value="<?php echo esc_attr( $trip_id ); ?>" <?php selected( $compare_itinerary_post_id, $trip_id ); ?>>
-									<?php echo esc_html( $itinerary_name ); ?>
-								</option>
-							<?php endforeach; ?>
-						</select>
-					</p>
-					<div class="compare-all field-group-compare" style="display:<?php echo esc_attr( $field_group_display ); ?>">
-						<?php submit_button( esc_attr__( 'Compare', 'wp-travel' ), 'primary', 'submit' ); ?>
-					</div>
-					</div>
-
-				</form>
+				
 			</div>
-		<div class="left-block stat-toolbar-wrap">
+			
+		<?php endif; ?>		
 
-		</div>
-		<div class="left-block">
-			<canvas id="wp-travel-booking-canvas"></canvas>
-		</div>
-		<div class="right-block <?php echo esc_attr( isset( $submission_request['compare_stat'] ) && 'yes' === $submission_request['compare_stat'] ? 'has-compare' : '' ); ?>">
-
-			<div class="wp-travel-stat-info">
-				<?php if ( isset( $submission_request['compare_stat'] ) && 'yes' === $submission_request['compare_stat'] ) : ?>
-				<div class="right-block-single for-compare">
-					<h3><?php esc_html_e( 'Compare 1', 'wp-travel' ); ?></h3>
-				</div>
-				<?php endif; ?>
-
-				<div class="right-block-single">
-					<strong><big><?php echo esc_attr( wptravel_get_currency_symbol() ); ?></big><big class="wp-travel-total-sales">0</big></strong><br />
-					<p><?php esc_html_e( 'Total Sales', 'wp-travel' ); ?></p>
-				</div>
-
-				<div class="right-block-single">
-					<strong><big class="wp-travel-max-bookings">0</big></strong><br />
-					<p><?php esc_html_e( 'Bookings', 'wp-travel' ); ?></p>
-
-				</div>
-				<div class="right-block-single">
-					<strong><big  class="wp-travel-max-pax">0</big></strong><br />
-					<p><?php esc_html_e( 'Pax', 'wp-travel' ); ?></p>
-				</div>
-				<div class="right-block-single">
-					<strong class="wp-travel-top-countries wp-travel-more"><?php esc_html_e( 'N/A', 'wp-travel' ); ?></strong>
-					<p><?php esc_html_e( 'Countries', 'wp-travel' ); ?></p>
-				</div>
-				<div class="right-block-single">
-					<strong><a href="#" class="wp-travel-top-itineraries" target="_blank"><?php esc_html_e( 'N/A', 'wp-travel' ); ?></a></strong>
-					<p><?php esc_html_e( 'Top itinerary', 'wp-travel' ); ?></p>
-				</div>
-			</div>
-			<?php if ( isset( $submission_request['compare_stat'] ) && 'yes' === $submission_request['compare_stat'] ) : ?>
-
-				<div class="wp-travel-stat-info">
-					<div class="right-block-single for-compare">
-						<h3><?php esc_html_e( 'Compare 2', 'wp-travel' ); ?></h3>
-					</div>
-					<div class="right-block-single">
-						<strong><big><?php echo wp_kses_post( wptravel_get_currency_symbol() ); ?></big><big class="wp-travel-total-sales-compare">0</big></strong><br />
-						<p><?php esc_html_e( 'Total Sales', 'wp-travel' ); ?></p>
-					</div>
-					<div class="right-block-single">
-						<strong><big class="wp-travel-max-bookings-compare">0</big></strong><br />
-						<p><?php esc_html_e( 'Bookings', 'wp-travel' ); ?></p>
-
-					</div>
-					<div class="right-block-single">
-						<strong><big  class="wp-travel-max-pax-compare">0</big></strong><br />
-						<p><?php esc_html_e( 'Pax', 'wp-travel' ); ?></p>
-					</div>
-					<div class="right-block-single">
-						<strong class="wp-travel-top-countries-compare wp-travel-more"><?php esc_html_e( 'N/A', 'wp-travel' ); ?></strong>
-						<p><?php esc_html_e( 'Countries', 'wp-travel' ); ?></p>
-					</div>
-					<div class="right-block-single">
-						<strong><a href="#" class="wp-travel-top-itineraries-compare" target="_blank"><?php esc_html_e( 'N/A', 'wp-travel' ); ?></a></strong>
-						<p><?php esc_html_e( 'Top itinerary', 'wp-travel' ); ?></p>
-					</div>
-				</div>
-			<?php endif; ?>
-		</div>
 	</div>
 	<?php
 }

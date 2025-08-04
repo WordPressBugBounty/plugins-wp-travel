@@ -5,8 +5,104 @@ function GetConvertedPrice( price ) {
     return parseFloat( price * conversionRate ).toFixed( _toFixed );
 }
 
-jQuery(function($) {
 
+document.addEventListener('DOMContentLoaded', function () {
+
+    setTimeout(function() {
+		document.querySelectorAll('.woocommerce-order-received header, .woocommerce-order-received footer, .woocommerce-order-received #wpadminbar, .woocommerce-order-received main div').forEach(function(el) {
+			el.style.visibility = 'visible';
+		});
+	}, 1000);
+
+	const iframe = document.getElementById('wp-travel-woo-checkout-frame');
+
+	if (!iframe) return;
+
+	// Reusable function to apply styles and logic
+	const applyIframeCustomizations = () => {
+		try {
+			const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+			const iframeWindow = iframe.contentWindow;
+
+			if (!iframeDoc || !iframeDoc.body) {
+				console.warn('Iframe content not accessible yet.');
+				return;
+			}
+
+            const style = iframeDoc.createElement('style');
+            style.id = 'custom-iframe-style';
+            style.textContent = `
+                .woocommerce-checkout.woocommerce-page #wpadminbar,
+                .woocommerce-checkout.woocommerce-page footer,
+                .woocommerce-checkout.woocommerce-page header,
+                .woo-onpage-enable #wpadminbar,
+                .woo-onpage-enable footer,
+                .woo-onpage-enable header {
+                    display: none !important;
+                }
+                .woocommerce-order-received main div {
+                    visibility: hidden !important;
+                }
+                .woo-onpage-enable #newBookingDetails br {
+                    display: none !important;
+                }
+                .woo-onpage-enable #newBookingDetails td a {
+                    white-space: normal;
+                    word-break: break-word;
+                    display: inline-block;
+                }
+            `;
+            iframeDoc.head.appendChild(style);
+			
+
+			const iframeURL = iframeWindow.location.href;
+
+			// If it's the order received page
+			if (iframeURL.includes('/order-received/')) {
+				const main = iframeDoc.querySelector('main');
+
+				if (main) {
+					main.innerHTML = `
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" width="200" height="200" style="shape-rendering: auto; display: block; background: transparent; margin-top: 10%;" xmlns:xlink="http://www.w3.org/1999/xlink">
+							<g>
+								<circle stroke-dasharray="164.93361431346415 56.97787143782138" r="35" stroke-width="10" stroke="#008600" fill="none" cy="50" cx="50">
+									<animateTransform keyTimes="0;1" values="0 50 50;360 50 50" dur="1s" repeatCount="indefinite" type="rotate" attributeName="transform"></animateTransform>
+								</circle>
+							</g>
+						</svg>
+					`;
+
+					const match = iframeURL.match(/\/order-received\/(\d+)\//);
+					if (match && match[1]) {
+						const orderID = parseInt(match[1]);
+						const newOrderID = orderID + 1;
+
+						const thankyouUrl = new URL(wp_travel.thankyouPageUrl);
+						thankyouUrl.searchParams.set('order_id', newOrderID);
+
+						// Wait 1 second then redirect
+						setTimeout(() => {
+							window.location.href = thankyouUrl.toString();
+						}, 1000);
+					}
+				}
+			}
+		} catch (err) {
+			console.warn('Iframe access failed:', err);
+		}
+	};
+
+	// Re-apply logic on every load
+	iframe.addEventListener('load', () => {
+		// Wait a bit to ensure iframe content is fully loaded
+		setTimeout(applyIframeCustomizations, 150);
+	});
+});
+
+
+
+jQuery(function($) {
+    $('.g-recaptcha-response').attr('required', true);
     function findGetParameter(parameterName) {
         var result = null,
             tmp = [];
@@ -17,6 +113,13 @@ jQuery(function($) {
         }
         return result;
     }
+
+    $(document).on('click', '.showcoupon', function(e) {
+        e.preventDefault();
+
+        const form = $('.woocommerce-form-coupon');
+        form.slideToggle(); // Or use `.toggle()` for instant toggle
+    });
 
     $(document).ready(function() {
         var prices = [];
@@ -62,9 +165,9 @@ jQuery(function($) {
         $(".price-amount").val(wp_travel.currency_symbol + $(".wp-travel-range-slider").slider("values", 0) +
             " - " + wp_travel.currency_symbol + $(".wp-travel-range-slider").slider("values", 1));
 
-        $(".trip-duration-calender input").wpt_datepicker({
-            language: wp_travel.locale,
-        });
+        // $(".trip-duration-calender input").wpt_datepicker({
+        //     language: wp_travel.locale,
+        // });
 
     });
 

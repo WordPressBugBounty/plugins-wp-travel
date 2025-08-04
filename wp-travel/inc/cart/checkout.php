@@ -233,6 +233,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 
 		do_action( 'wp_travel_action_before_billing_info_field' ); // @phpcs:ignore
 		if ( is_array( $wptravel_billing_fields ) && count( $wptravel_billing_fields ) > 0 ) : 
+	
 		?>
 		<!-- Billing info -->
 		<div class="panel ws-theme-timeline-block">

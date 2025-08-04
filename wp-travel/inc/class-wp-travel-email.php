@@ -251,8 +251,10 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				 *
 				 * @since 5.3.1
 				 */
+				$send_email_to_client = $this->settings['send_booking_email_to_client'];
+
 				$send_mail = apply_filters( 'wptravel_send_booking_email_to_client', true );
-				if ( true === $send_mail ) {
+				if ( true === $send_mail && $send_email_to_client === 'yes' ) {
 					// Send mail to client.
 					$email_template = $email->wptravel_get_email_template( 'bookings', 'client' );
 
