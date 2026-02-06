@@ -11,12 +11,22 @@ class WP_Travel_Ajax_Pricings {
 
 	public static function get_pricings() {
 
-		$user = wp_get_current_user();
-
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get trip pricing.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		/**
@@ -29,13 +39,22 @@ class WP_Travel_Ajax_Pricings {
 
 	public static function remove_trip_pricing() {
 
-		$user = wp_get_current_user();
-
-
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to remove trip pricing.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		/**

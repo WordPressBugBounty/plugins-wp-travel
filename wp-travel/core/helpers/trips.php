@@ -104,9 +104,21 @@ class WpTravel_Helpers_Trips {
 			$default_label               = isset( $default_tabs[ $key ]['label'] ) ? $default_tabs[ $key ]['label'] : $tab['label'];
 			$tabs[ $i ]['id']            = $i;
 			$tabs[ $i ]['default_label'] = $default_label;
-			$tabs[ $i ]['label']         = $tab['label'];
-			$tabs[ $i ]['show_in_menu']  = $tab['show_in_menu'];
-			$tabs[ $i ]['tab_key']       = ! empty( $tab['tab_key'] ) ? $tab['tab_key'] : $key; // Key is required to save meta value. @todo: can remove this key latter.
+
+			$tabs[ $i ]['label'] = $tab['label'] ?? '';
+
+			$tabs[ $i ]['icon'] = $tab['icon'] ?? '';
+
+			$tabs[ $i ]['icon_img'] = $tab['icon_img'] ?? '';
+
+			$tabs[ $i ]['icon_img_id'] = $tab['icon_img_id'] ?? 0;
+
+			$tabs[ $i ]['selected_icon_type'] = $tab['selected_icon_type'] ?? '';
+
+			$tabs[ $i ]['show_in_menu'] = $tab['show_in_menu'] ?? 'yes';
+
+			$tabs[ $i ]['tab_key'] = ! empty( $tab['tab_key'] ) ? $tab['tab_key'] : $key;
+ // Key is required to save meta value. @todo: can remove this key latter.
 			$i++;
 		endforeach;
 
@@ -379,6 +391,10 @@ class WpTravel_Helpers_Trips {
 			foreach ( $trip_data->trip_tabs as  $trip_tab ) {
 				$tab_key                               = $trip_tab['tab_key']; // quick fix.
 				$trip_tabs[ $tab_key ]['label']        = $trip_tab['label'];
+				$trip_tabs[ $tab_key ]['icon']        	= $trip_tab['icon'];
+				$trip_tabs[ $tab_key ]['icon_img']        	= $trip_tab['icon_img'];
+				$trip_tabs[ $tab_key ]['icon_img_id']        	= $trip_tab['icon_img_id'];
+				$trip_tabs[ $tab_key ]['selected_icon_type']        	= $trip_tab['selected_icon_type'];
 				$trip_tabs[ $tab_key ]['show_in_menu'] = $trip_tab['show_in_menu'] == 'yes' ? true : ( $trip_tab['show_in_menu'] == 'no' || $trip_tab['show_in_menu'] == false || empty( $trip_tab['show_in_menu'] ) ? false : true );
 			}
 			update_post_meta( $trip_id, 'wp_travel_tabs', $trip_tabs );

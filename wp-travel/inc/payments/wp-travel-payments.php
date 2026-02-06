@@ -414,7 +414,16 @@ function wptravel_send_email_payment( $booking_id ) {
 
 	$site_admin_email = get_option( 'admin_email' );
 
-	$admin_email = apply_filters( 'wp_travel_payments_admin_emails', $site_admin_email );
+	$saved_pmt_emails = isset( $settings['wp_travel_payment_notif_emails'] ) && ! empty( $settings['wp_travel_payment_notif_emails'] ) ? $settings['wp_travel_payment_notif_emails'] : array();
+
+	if( apply_filters( 'wp_travel_send_payment_admin_emails_to_admin', true ) == true ){
+		$saved_pmt_emails[] = $site_admin_email; 
+	}
+
+	
+	$admin_email = apply_filters( 'wp_travel_payments_admin_emails', $saved_pmt_emails );
+
+
 
 	// Email Variables.
 	if ( is_multisite() ) {

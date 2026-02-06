@@ -65,6 +65,7 @@ class WP_Travel_Gateway_Paypal_Request {
 			$redirect_uri = esc_url( wptravel_get_paypal_redirect_url() ) . '?' . $paypal_args;
 		}
 		
+
 		wp_redirect( $redirect_uri );
 
 		exit;
@@ -76,6 +77,7 @@ class WP_Travel_Gateway_Paypal_Request {
 	 * @return Array
 	 */
 	private function get_args( $booking_id, $complete_partial_payment = false ) {
+
 
 		// Get settings.
 		$settings = wptravel_get_settings();
@@ -321,4 +323,6 @@ class WP_Travel_Gateway_Paypal_Request {
 }
 
 new WP_Travel_Gateway_Paypal_Request();
+
+
 

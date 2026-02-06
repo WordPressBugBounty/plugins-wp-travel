@@ -227,8 +227,11 @@ if ( ! function_exists( 'wptravel_account_tab_content' ) ) {
 														</div>
 													</td>
 													<td class="payment-mode" data-title="<?php esc_html_e( 'Detail', 'wp-travel' ); ?>">
-															<div class="contact-title">
-																<a href="<?php echo esc_url( $detail_link ); ?>"><?php esc_html_e( 'Detail', 'wp-travel' ); ?></a>
+														<div class="contact-title">
+															<a href="<?php echo esc_url( $detail_link ); ?>" style="margin-bottom: 3px;"><?php esc_html_e( 'Detail', 'wp-travel' ); ?></a>
+															<?php if( apply_filters( 'wp_travel_enable_canceled_booking_for_customer', false ) == true && class_exists( 'WP_Travel_Pro' ) ): ?>
+															<a class="wp-travel-booking-cancel" href="<?php echo esc_url( $detail_link ); ?>" data-booking-id="<?php echo esc_attr($b_id) ?>" data-booking-status="<?php echo esc_attr( get_post_meta( $b_id, 'wp_travel_booking_status' )[0] ); ?>"><?php esc_html_e( 'Cancel Booking', 'wp-travel' ); ?></a>
+															<?php endif;?>
 														</div>
 													</td>
 													<?php do_action( 'wp_travel_dashboard_booking_table_content_after_detail', $b_id, $ordered_data, $payment_info ); ?>

@@ -66,6 +66,7 @@ class WP_Travel_Ajax_Cart {
 		$post_data = json_decode( file_get_contents( 'php://input' ) );
 		$post_data = is_object( $post_data ) ? (array) $post_data : array();
 		$post_data = wptravel_sanitize_array( $post_data );
+
 		$response  = WP_Travel_Helpers_Cart::add_to_cart( $post_data );
 
 		// foreach ($response['cart']['cart_items'] as &$cartItem) {

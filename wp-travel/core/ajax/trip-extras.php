@@ -14,6 +14,18 @@ class WP_Travel_Ajax_Trip_Extras {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get trip extras.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$args = array();
@@ -32,12 +44,23 @@ class WP_Travel_Ajax_Trip_Extras {
 
 	public static function search_trip_extras() {
 
-		$user = wp_get_current_user();
 
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to search trip extras.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$requests = WP_Travel::get_sanitize_request();

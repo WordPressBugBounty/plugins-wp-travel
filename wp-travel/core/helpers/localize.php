@@ -53,7 +53,7 @@ class WpTravel_Helpers_Localize {
 			$_wp_travel                       = array();
 			$_wp_travel['_nonce']             = wp_create_nonce( 'wp_travel_nonce' );
 			$_wp_travel['recaptcha_v2_site_key']    = isset( $settings['recaptcha_v2_site_key'] ) ? $settings['recaptcha_v2_site_key'] : '';
-			$_wp_travel['enable_recaptcha_onpage']  = apply_filters( 'wp_travel_enable_recaptcha_onpage', true );
+			$_wp_travel['enable_recaptcha_onpage']  = apply_filters( 'wp_travel_enable_recaptcha_onpage', false );
 			$_wp_travel['ajax_url']           = admin_url( 'admin-ajax.php' );
 			$_wp_travel['login_required']     = wptravel_get_settings()['enable_checkout_customer_registration'];
 			$_wp_travel['build_path']         = esc_url( trailingslashit( plugin_dir_url( WP_TRAVEL_PLUGIN_FILE ) . 'app/build' ) );
@@ -128,7 +128,17 @@ class WpTravel_Helpers_Localize {
 			
 			$_wp_travel['is_pro_enable']  = class_exists( 'WP_Travel_Pro' ) ? 'yes' : 'no';
 			if ( isset( $settings['mailchimp'] ) && isset( $settings['mailchimp']['enable_subscription'] ) && ( in_array( 'all', $settings['mailchimp']['enable_subscription'], true ) ) ) {
-				$_wp_travel['enable_subscription'] =  'yes';
+				
+				$subscription_label = $settings['mailchimp']['subscription_label'] ?? '';
+				$subscribe_desc     = $settings['mailchimp']['subscribe_desc'] ?? '';
+
+				if ( empty( $subscription_label ) && empty( $subscribe_desc ) ) {
+					$_wp_travel['enable_subscription'] = 'no';
+				} else {
+					$_wp_travel['enable_subscription'] = 'yes';
+				}
+
+				
 
 				if (isset($settings['mailchimp']['api_key'])) {
 					unset($settings['mailchimp']['api_key']);
@@ -143,7 +153,21 @@ class WpTravel_Helpers_Localize {
 
 			if( class_exists( 'WP_Travel_Multiple_Currency_Core' ) ){
 				$_wp_travel['conversion_rate'] = wtmc_get_conversion_rate();
-				$_wp_travel['conversion_rate']  = wtmc_get_conversion_rate();
+				$_wp_travel['conversion_rate'] = wtmc_get_conversion_rate();
+			}
+
+			if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+
+				global $WOOCS;
+
+				$currencies = $WOOCS->get_currencies();
+
+				// Get the current currency code
+				$current_currency = $WOOCS->current_currency;
+
+				// Get the rate for the current currency
+				$_wp_travel['conversion_rate'] = isset( $currencies[$current_currency]['rate'] ) ? $currencies[$current_currency]['rate'] : 1;
+
 			}
 			
 
@@ -193,10 +217,14 @@ class WpTravel_Helpers_Localize {
 				'strings'            => WpTravel_Helpers_Strings::get(),
 				'zoom'               => $settings['google_map_zoom_level'],
 				'cartUrl'            => wptravel_get_cart_url(),
-				'checkoutUrl'        => $settings['enable_woo_checkout'] == 'no' ? wptravel_get_checkout_url() : wc_get_checkout_url(), // @since 4.3.2
+				'checkoutUrl'        => wptravel_get_checkout_url(), 
 				'thankyouPageUrl'    => $thankyou_page_url,
 				'isEnabledCartPage'  => WP_Travel_Helpers_Cart::is_enabled_cart_page(), // @since 4.3.2
 			);
+
+			if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
+				$wp_travel['checkoutUrl'] = wc_get_checkout_url();
+			}
 
 			if ( wptravel_can_load_payment_scripts() ) {
 
@@ -340,6 +368,14 @@ class WpTravel_Helpers_Localize {
 			}
 
 			$_wp_travel_admin['rankmath'] = class_exists( 'RankMath' );
+			$_wp_travel_admin['editor_trip_id'] = get_the_ID() ? get_the_ID() : '' ;
+			$_wp_travel_admin['overview_ai_prompt'] = isset($settings['Trip_Overview_AI_Prompt']) ? $settings['Trip_Overview_AI_Prompt'] : '';
+			$_wp_travel_admin['outline_ai_prompt'] = isset($settings['Trip_Outline_AI_Prompt']) ? $settings['Trip_Outline_AI_Prompt'] : '';
+			$_wp_travel_admin['itinerary_ai_prompt'] = isset($settings['Trip_Itinerary_AI_Prompt']) ? $settings['Trip_Itinerary_AI_Prompt'] : '';
+			$_wp_travel_admin['include_ai_prompt'] = isset($settings['Trip_Include_AI_Prompt']) ? $settings['Trip_Include_AI_Prompt'] : '';
+			$_wp_travel_admin['exclude_ai_prompt'] = isset($settings['Trip_Exclude_AI_Prompt']) ? $settings['Trip_Exclude_AI_Prompt'] : '';
+			$_wp_travel_admin['global_faq_ai_prompt'] = isset($settings['Trip_Global_FAQ_AI_Prompt']) ? $settings['Trip_Global_FAQ_AI_Prompt'] : '';
+			$_wp_travel_admin['faq_ai_prompt'] = isset($settings['Trip_FAQ_AI_Prompt']) ? $settings['Trip_FAQ_AI_Prompt'] : '';
 			
 			$_wp_travel_admin['price_per'] = 'unit';
 
@@ -370,4 +406,5 @@ class WpTravel_Helpers_Localize {
 		}
 	}
 }
+
 

@@ -76,6 +76,7 @@ do_action( 'wp_travel_before_content_start' );
 						</header>
 					<?php endif; ?>					
 					<?php wptravel_do_deprecated_action( 'wp_travel_after_single_title', array( get_the_ID() ), '2.0.4', 'wp_travel_single_trip_after_title' );  // @since 1.0.4 and deprecated in 2.0.4 ?>
+					
 					<?php do_action( 'wp_travel_single_trip_after_title', get_the_ID() ); ?>
 					
 				</div>

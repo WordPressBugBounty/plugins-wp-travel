@@ -23,12 +23,17 @@ if( !wp_is_block_theme() ){
 	while ( have_posts() ) :
 		the_post();
 
-		if( !apply_filters( 'wp_travel_enable_trip_content', false ) ){
+		if ( post_password_required() ) {
+			echo get_the_password_form();
+			break; // stop loop, but keep template running
+		}else{
+			if( !apply_filters( 'wp_travel_enable_trip_content', false ) ){
 			do_action( 'wptravel_single_itinerary_main_content' );
-		}
-		
-		if( apply_filters( 'wp_travel_enable_trip_content', false ) ){
-			the_content();
+			}
+			
+			if( apply_filters( 'wp_travel_enable_trip_content', false ) ){
+				the_content();
+			}
 		}
 
 	endwhile; // end of the loop.
@@ -87,7 +92,13 @@ if( !wp_is_block_theme() ){
 			<?php wp_body_open(); ?>
 			<div class="wp-site-blocks">
 				<header class="wp-block-template-part">
-					<?php echo wp_kses_post( $block_header ); ?>
+					<?php
+						// ✅ Capture the header output and process shortcodes like [woocs].
+						ob_start();
+						block_template_part( 'header' );
+						$header_output = ob_get_clean();
+						echo do_shortcode( $header_output );
+					?>
 				</header>
 				<main class="wptravel-content-wrapper is-layout-constrained" style="padding: 40px 20px 80px 20px;">
 				<div class="wp-block-group alignwide">
@@ -98,13 +109,20 @@ if( !wp_is_block_theme() ){
 					while ( have_posts() ) :
 						the_post();
 
-						if( !apply_filters( 'wp_travel_enable_trip_content', false ) ){
-							do_action( 'wptravel_single_itinerary_main_content' );
+						if ( post_password_required() ) {
+							echo get_the_password_form();
+							break; // stop loop, but keep template running
+						}else{
+							if( !apply_filters( 'wp_travel_enable_trip_content', false ) ){
+								do_action( 'wptravel_single_itinerary_main_content' );
+							}
+							
+							if( apply_filters( 'wp_travel_enable_trip_content', false ) ){
+								the_content();
+							}
 						}
+
 						
-						if( apply_filters( 'wp_travel_enable_trip_content', false ) ){
-							the_content();
-						}
 
 					endwhile; // end of the loop.
 					?>
@@ -114,7 +132,7 @@ if( !wp_is_block_theme() ){
 				</div>
 				</main>
 				<footer class="wp-block-template-part site-footer">
-					<?php echo wp_kses_post( $block_footer ); ?>
+					<?php block_template_part( 'footer' ); ?>
 				</footer>
 			</div>
 			<?php wp_footer(); ?>

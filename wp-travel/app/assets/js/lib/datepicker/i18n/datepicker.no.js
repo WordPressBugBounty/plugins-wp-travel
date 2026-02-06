@@ -1,21 +1,24 @@
-;(function ($) { 
-    var translation = { 
-        days: ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag'], 
-        daysShort: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Løradg'], 
-        daysMin: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø'], 
-        months: ['Januar','Februar','Mars','April','Mai','Juni', 'July','August','September','Oktober','November','Desember'], 
-        monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'], 
-        today: 'I dag', 
-        clear: 'Clear', 
-        dateFormat: 'dd/mm/yyyy', 
-        timeFormat: 'hh:ii aa', 
-        firstDay: 0 
-    };
-
-    if (typeof( $.fn.wpt_datepicker ) !== 'undefined' && $.isFunction($.fn.wpt_datepicker)) {
-        $.fn.wpt_datepicker.language['no'] = translation;
-    } else if (typeof( $.fn.datepicker ) !== 'undefined' && $.isFunction($.fn.datepicker)) {
-        $.fn.datepicker.language['no'] = translation;
+;(function () {
+    if (typeof flatpickr === 'undefined') {
+        return;
     }
 
-})(jQuery);
+    flatpickr.l10ns.no = {
+        weekdays: {
+            shorthand: ['Sø', 'Ma', 'Ti', 'On', 'To', 'Fr', 'Lø'],
+            longhand: ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag']
+        },
+        months: {
+            shorthand: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'],
+            longhand: ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember']
+        },
+        firstDayOfWeek: 0,
+        rangeSeparator: ' til ',
+        weekAbbreviation: 'Uke',
+        scrollTitle: 'Rull for å endre',
+        toggleTitle: 'Klikk for å bytte',
+        amPM: ['AM', 'PM'],
+        yearAriaLabel: 'År',
+        time_24hr: true
+    };
+})();

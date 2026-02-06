@@ -220,11 +220,13 @@ function wptravel_ajax_get_booking_data() {
 
 	if ( ! $permission || is_wp_error( $permission ) ) {
 		WP_Travel_Helpers_REST_API::response( $permission );
+		exit;
 	}
 
 	// Permission check
 	if ( isset($submission_request['booking_intervals']) && !is_super_admin() ) {
 		wp_send_json_error(['message' => 'Permission denied']);
+		exit;
 	}
 
 	

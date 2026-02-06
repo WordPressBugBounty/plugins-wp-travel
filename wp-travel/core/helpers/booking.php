@@ -295,7 +295,6 @@ class WpTravel_Helpers_Booking {
 		ob_start();
 		?>
 		<h2 class="wp-travel-order-heading"><?php esc_html_e( 'Traveler Details', 'wp-travel' ); ?></h2>
-
 		<table class="wp-travel-table-content" cellpadding="0" cellspacing="0" height="100%" width="100%" style="text-align: left;">
 			
 			<tbody>
@@ -312,7 +311,6 @@ class WpTravel_Helpers_Booking {
 				$traveler_locations     = isset( $checkout_form_data['wp_travel_pickup_location'] ) ? $checkout_form_data['wp_travel_pickup_location'] : array();
 		
 				if ( count( $items ) > 1 ) {
-					
 					$indexs = 1;
 					foreach ( $items as $item_key => $trip ) {
 						$trip_id = $trip['trip_id'];
@@ -376,7 +374,7 @@ class WpTravel_Helpers_Booking {
 									}
 
 									if( isset( $checkout_form_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ){
-										$salutation = $checkout_form_data[ 'Salutation' ][ $item_key ][$key] . ' ';
+										$salutation = $checkout_form_data[ 'Salutation' ][$key];
 									}
 
 									?>
@@ -411,11 +409,20 @@ class WpTravel_Helpers_Booking {
 
 										$traveler_phone   = isset( $phone[$indx] ) ? $phone[$indx] : '';
 										$traveler_email   = isset( $email[$indx] ) ? $email[$indx] : '';
-										$traveler_gander  = isset( $gender[$indx] ) ? $gender[$indx] : '';
+										$traveler_gander  = isset( $gender[$indx] ) ? $gender[$indx] : 'N\A';
 										$traveler_dob  = isset( $dob[$indx] ) ? $dob[$indx] : '';
+										
 									?>
 									<tr>
-										<td><?php echo esc_html( $salutation ) . esc_html( $dats ); ?> <?php echo esc_html( $traveler_l_name ); ?></td>
+										<?php 
+											if( isset( $checkout_form_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ){ ?>
+
+												<td><?php echo esc_html( $salutation[$indx] ) . ' ' . esc_html( $dats ); ?> <?php echo esc_html( $traveler_l_name ); ?></td>
+											<?php }else{ ?>
+												<td><?php echo esc_html( $salutation ) . esc_html( $dats ); ?> <?php echo esc_html( $traveler_l_name ); ?></td>
+											<?php }
+										?>
+										
 										<td><?php echo esc_html( $traveler_country ); ?></td>
 										<td><?php echo esc_html( $traveler_phone ); ?></td>
 										<td><?php echo esc_html( $traveler_email ); ?></td>
@@ -440,7 +447,7 @@ class WpTravel_Helpers_Booking {
 									$phone     = isset( $traveler_phones[ $key ] ) ? $traveler_phones[ $key ][0] : '';
 									$email     = isset( $traveler_emails[ $key ] ) ? $traveler_emails[ $key ][0] : '';
 									$dob       = isset( $traveler_dobs[ $key ] ) ? $traveler_dobs[ $key ][0] : '';
-									$gender    = isset( $traveler_genders[ $key ] ) ? $traveler_genders[ $key ][0] : '';
+									$gender    = isset( $traveler_genders[ $key ] ) ? $traveler_genders[ $key ][0] : 'N\A';
 									
 									?>
 									<tr>
@@ -462,6 +469,7 @@ class WpTravel_Helpers_Booking {
 						</tbody>
 					<?php
 				} else { 
+	
 					foreach ( $items as $item_key => $trip ) {
 						$trip_id = $trip['trip_id'];
 						// Values.
@@ -533,7 +541,7 @@ class WpTravel_Helpers_Booking {
 								$phone     = isset( $phones[ $key ] ) ? $phones[ $key ] : '';
 								$email     = isset( $emails[ $key ] ) ? $emails[ $key ] : '';
 								$dob       = isset( $dobs[ $key ] ) ? $dobs[ $key ] : '';
-								$gender    = isset( $genders[ $key ] ) ? $genders[ $key ] : '';
+								$gender    = isset( $genders[ $key ] ) ? $genders[ $key ] : 'N\A';
 								$location   = isset( $locations[ $key ] ) ? $locations[ $key ] : '';
 
 								if( apply_filters( 'wptravel_traveller_salutation', true ) ==  true ){
@@ -549,13 +557,23 @@ class WpTravel_Helpers_Booking {
 									$salutation = '';
 								}
 								
-								if( isset( $checkout_form_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ){
-									$salutation = $checkout_form_data[ 'Salutation' ][ $item_key ][$key] . ' ';
+								if ( isset( $checkout_form_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) ) {
+									// When salutation comes from form data, it is a simple string, not an array.
+									$salutation = isset( $checkout_form_data['Salutation'][ $item_key ] )
+										? $checkout_form_data['Salutation'][ $item_key ]
+										: '';
 								}
 
 								?>
 								<tr>
-									<td><?php echo esc_html( $salutation ) . esc_html( $first_name ); ?> <?php echo esc_html( $last_name ); ?></td>
+									<?php 
+										if ( isset( $checkout_form_data[ apply_filters( 'wptravel_salutation_input_field_name', 'Salutation' ) ] ) == false ) { ?>
+
+											<td><?php echo esc_html( is_array( $salutation ) ? ( $salutation[ $key ] ?? '' ) : $salutation ) . ' ' . esc_html( $first_name ); ?> <?php echo esc_html( $last_name ); ?></td>
+										<?php }else{ ?>
+											<td><?php echo esc_html( $salutation ) . esc_html( $first_name ); ?> <?php echo esc_html( $last_name ); ?></td>
+										<?php }
+									?>
 									<td><?php echo esc_html( $country ); ?></td>
 									<td><?php echo esc_html( $phone ); ?></td>
 									<td><?php echo esc_html( $email ); ?></td>
@@ -564,7 +582,7 @@ class WpTravel_Helpers_Booking {
 									<?php endif;
 									
 									if( apply_filters( 'wp_travel_enable_traveller_gender_booking_email', true ) ): ?>
-										<td><?php echo esc_html( $gender ); ?></td>
+										<td><?php echo $gender ? esc_html( $gender ) : 'N\A'; ?></td>
 									<?php endif;
 
 									if( count( $traveler_locations ) > 0 ): ?>
@@ -589,3 +607,76 @@ class WpTravel_Helpers_Booking {
 		return $content;
 	}
 }
+
+
+add_action('wp_ajax_wp_travel_cancel_booking', 'wp_travel_cancel_booking_callback');
+add_action('wp_ajax_nopriv_wp_travel_cancel_booking', 'wp_travel_cancel_booking_callback');
+
+function wp_travel_cancel_booking_callback() {
+    check_ajax_referer( 'wp_travel_nonce', 'security' );
+
+    $booking_id = intval( $_POST['booking_id'] );
+
+    // Get travel date
+    $travel_date = get_post_meta( $booking_id, 'wp_travel_arrival_date', true );
+
+    if ( empty( $travel_date ) ) {
+        wp_send_json_error( 'Travel date not found.' );
+    }
+
+    // Convert dates to timestamps
+    $travel_timestamp = strtotime( $travel_date );
+    $today_timestamp  = strtotime( current_time( 'Y-m-d' ) );
+
+    // Get cancellation limit (default: 7 days)
+    $cancel_days_limit = apply_filters(
+        'wp_travel_cancel_booking_days_limit',
+        7,
+        $booking_id,
+        $travel_date
+    );
+
+    // Calculate days difference
+    $days_difference = floor( ( $travel_timestamp - $today_timestamp ) / DAY_IN_SECONDS );
+
+    // ❌ Block cancellation
+    if ( $days_difference < $cancel_days_limit ) {
+        wp_send_json_error(
+            sprintf(
+                'Cancellation is not allowed within %d days of the travel date.',
+                $cancel_days_limit
+            )
+        );
+    }
+
+    // Traveler name (safe access)
+    $fname_meta = get_post_meta( $booking_id, 'wp_travel_fname_traveller', true );
+    $lname_meta = get_post_meta( $booking_id, 'wp_travel_lname_traveller', true );
+
+    $traveler_name  = $fname_meta[array_key_first( $fname_meta )][0] ?? '';
+    $traveler_lname = $lname_meta[array_key_first( $lname_meta )][0] ?? '';
+
+    // Cancel booking
+    update_post_meta( $booking_id, 'wp_travel_booking_status', 'canceled' );
+
+    // Email
+    $subject      = __( 'Booking Cancellation Notice', 'wp-travel' );
+    $headers      = "Content-Type: text/html; charset=UTF-8\r\n";
+    $admin_email  = get_option( 'admin_email' );
+
+    $message = "
+        <h2>Booking Cancellation Notice</h2>
+        <p>Booking canceled by customer.</p>
+        <ul>
+            <li><strong>Name:</strong> {$traveler_name} {$traveler_lname}</li>
+            <li><strong>Booking ID:</strong> {$booking_id}</li>
+            <li><strong>Travel Date:</strong> {$travel_date}</li>
+        </ul>
+    ";
+
+    wp_mail( $admin_email, $subject, $message, $headers );
+
+    wp_send_json_success( 'Booking canceled successfully.' );
+}
+
+

@@ -30,7 +30,10 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
+
+		
 
 		$payload     = json_decode( file_get_contents( 'php://input' ) );
 		$payload     = is_object( $payload ) ? (array) $payload : array();
@@ -54,6 +57,18 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get coupon code.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$payload = WP_Travel::get_sanitize_request();
@@ -78,6 +93,18 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to update coupon.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$payload = json_decode( file_get_contents( 'php://input' ) );

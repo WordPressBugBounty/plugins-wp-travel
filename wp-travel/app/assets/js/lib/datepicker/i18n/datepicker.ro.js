@@ -1,21 +1,22 @@
-;(function ($) {
-    var translation = {
-        days: ['Duminică', 'Luni', 'Marţi', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă'],
-        daysShort: ['Dum', 'Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâm'],
-        daysMin: ['D', 'L', 'Ma', 'Mi', 'J', 'V', 'S'],
-        months: ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie'],
-        monthsShort: ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
-        today: 'Azi',
-        clear: 'Şterge',
-        dateFormat: 'dd.mm.yyyy',
-        timeFormat: 'hh:ii',
-        firstDay: 1
+;(function () {
+    if (typeof flatpickr === 'undefined') return;
+
+    flatpickr.l10ns.ro = {
+        weekdays: {
+            shorthand: ['D', 'L', 'Ma', 'Mi', 'J', 'V', 'S'],
+            longhand: ['Duminică', 'Luni', 'Marţi', 'Miercuri', 'Joi', 'Vineri', 'Sâmbătă']
+        },
+        months: {
+            shorthand: ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+            longhand: ['Ianuarie','Februarie','Martie','Aprilie','Mai','Iunie','Iulie','August','Septembrie','Octombrie','Noiembrie','Decembrie']
+        },
+        firstDayOfWeek: 1,
+        rangeSeparator: ' până la ',
+        weekAbbreviation: 'Săpt',
+        scrollTitle: 'Derulează pentru a schimba',
+        toggleTitle: 'Click pentru a comuta',
+        amPM: ['AM', 'PM'],
+        yearAriaLabel: 'An',
+        time_24hr: true
     };
-
-    if (typeof( $.fn.wpt_datepicker ) !== 'undefined' && $.isFunction($.fn.wpt_datepicker)) {
-        $.fn.wpt_datepicker.language['ro'] = translation;
-    } else if (typeof( $.fn.datepicker ) !== 'undefined' && $.isFunction($.fn.datepicker)) {
-        $.fn.datepicker.language['ro'] = translation;
-    }
-
- })(jQuery);
+})();

@@ -21,10 +21,18 @@ class WP_Travel_Admin_Dashboard_Widgets {
 	public function add_widgets() {
 
 		$bookings = wp_count_posts( 'itinerary-booking' );
+		add_meta_box( 'wp-travel-quick-overview', __( 'WP Travel: Quick Overview', 'wp-travel' ), array( $this, 'wp_travel_dashboard_overview' ), 'dashboard', 'side', 'high' );
+
 		// latest Bookings Widget.
 		if ( 0 !== $bookings->publish && current_user_can( 'administrator' ) ) {
-			add_meta_box( 'wp-travel-recent-bookings', __( 'WP Travel: Bookings', 'wp-travel' ), array( $this, 'new_booking_callback' ), 'dashboard', 'side', 'high' );
+			add_meta_box( 'wp-travel-recent-bookings', __( 'WP Travel: Recent Bookings', 'wp-travel' ), array( $this, 'new_booking_callback' ), 'dashboard', 'side', 'high' );
 		}
+
+		$enquiry = wp_count_posts( 'itinerary-enquiries' );
+		if ( 0 !== $bookings->publish && current_user_can( 'administrator' ) ) {
+			add_meta_box( 'wp-travel-recent-enquiries', __( 'WP Travel: Recent Enquiries', 'wp-travel' ), array( $this, 'new_enquiries_callback' ), 'dashboard', 'side', 'high' );
+		}
+
 	}
 
 	public function enqueue_scripts() {
@@ -35,6 +43,148 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			wp_enqueue_style( 'wp-travel-dashboard-widget-styles', $this->assets_path . 'app/assets/css/wp-travel-dashboard-widget.css', array(), WP_TRAVEL_VERSION );
 		}
 
+	}
+
+	public function wp_travel_dashboard_overview() { 
+		// Later replace these with dynamic values
+		$args = array(
+			'post_type'      => 'itinerary-booking',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => array(
+				array(
+					'key'   => 'wp_travel_booking_status',
+					'value' => 'booked',
+				)
+			),
+		);
+
+		$booked_query = new WP_Query( $args );
+		$total_bookings = $booked_query->found_posts;
+
+		global $wpdb;
+		$all_performing_trips = $wpdb->get_results("
+			SELECT 
+				trip_meta.meta_value AS trip_id,
+				order_totals.meta_value AS order_total
+			FROM {$wpdb->posts} AS booking_post
+			INNER JOIN {$wpdb->postmeta} AS booking_status 
+				ON booking_status.post_id = booking_post.ID 
+				AND booking_status.meta_key = 'wp_travel_booking_status' 
+				AND booking_status.meta_value = 'booked'
+			INNER JOIN {$wpdb->postmeta} AS payment_status 
+				ON payment_status.post_id = booking_post.ID 
+				AND payment_status.meta_key = 'wp_travel_payment_status' 
+				AND payment_status.meta_value = 'paid'
+			INNER JOIN {$wpdb->postmeta} AS trip_meta 
+				ON trip_meta.post_id = booking_post.ID 
+				AND trip_meta.meta_key = 'wp_travel_post_id'
+			INNER JOIN {$wpdb->postmeta} AS order_totals 
+				ON order_totals.post_id = booking_post.ID 
+				AND order_totals.meta_key = 'order_totals'
+			WHERE booking_post.post_status = 'publish'
+		", ARRAY_A);
+		$booking_data = [];
+		foreach ( $all_performing_trips as $booking ) {
+			$trip_id = (int) $booking['trip_id'];
+			$order_totals = maybe_unserialize( $booking['order_total'] );
+
+			if ( isset( $order_totals['total'] ) ) {
+				if ( ! isset( $booking_data[ $trip_id ] ) ) {
+					$booking_data[ $trip_id ] = [
+						'total_bookings' => 0,
+						'total_revenue'  => 0,
+					];
+				}
+
+				$booking_data[ $trip_id ]['total_bookings'] += 1;
+				$booking_data[ $trip_id ]['total_revenue']  += floatval( $order_totals['total'] );
+			}
+		}
+		uasort( $booking_data, function ( $a, $b ) {
+			return $b['total_bookings'] <=> $a['total_bookings'];
+		});
+		$all_total_revenue = 0;
+		foreach ( $booking_data as $trip ) {
+			$all_total_revenue += $trip['total_revenue'];
+		}
+		$total_earnings = $all_total_revenue;
+
+		$trip_counts = wp_count_posts( 'itineraries' );
+		$total_trips = isset( $trip_counts->publish ) ? $trip_counts->publish : 0;
+
+		$enquiry_counts = wp_count_posts( 'itinerary-enquiries' );
+		$total_enquiry  = isset( $enquiry_counts->publish ) ? $enquiry_counts->publish : 0;
+
+		$customer_query = new WP_User_Query( array(
+			'role'   => 'wp-travel-customer',
+			'fields' => 'ID',
+		) );
+		$total_customer = $customer_query->get_total();
+
+		?>
+
+		<style>
+			.wptravel-dashboard-box { 
+				padding: 8px 0;
+				margin-bottom: 6px;
+				border-bottom: 1px solid #e1e1e1;
+			}
+			.wptravel-dashboard-box:last-child {
+				border-bottom: none;
+			}
+			.wptravel-dashboard-label {
+				font-weight: 600;
+			}
+			.wptravel-dashboard-value {
+				float: right;
+				font-weight: 700;
+				color: #2271b1;
+			}
+		</style>
+
+		<div class="wptravel-dashboard-widget">
+			<div class="wptravel-dashboard-box">
+				<a href="<?php echo admin_url( 'edit.php?post_type=itinerary-booking' ); ?>" class="wptravel-dashboard-label">
+					<?php _e( 'Total Confirmed Bookings', 'wp-travel' ); ?>
+				</a>
+				<span class="wptravel-dashboard-value">
+					<?php echo esc_html( $total_bookings ); ?>
+				</span>
+			</div>
+
+			<div class="wptravel-dashboard-box">
+				<span class="wptravel-dashboard-label"><?php _e( 'Total Earnings', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-value"><?php echo wptravel_get_formated_price_currency( $total_earnings, true ); ?></span>
+			</div>
+
+			<div class="wptravel-dashboard-box">
+				<span class="wptravel-dashboard-label"><?php _e( 'Total Customers', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_customer); ?></span>
+			</div>
+
+			<div class="wptravel-dashboard-box">
+				<a href="<?php echo admin_url( 'edit.php?post_type=itineraries' ); ?>" 
+				class="wptravel-dashboard-label">
+					<?php _e( 'Published Trips', 'wp-travel' ); ?>
+				</a>
+				<span class="wptravel-dashboard-value">
+					<?php echo esc_html( $total_trips ); ?>
+				</span>
+			</div>
+
+			<div class="wptravel-dashboard-box">
+				<a href="<?php echo admin_url( 'edit.php?post_type=itinerary-booking&page=wp-travel-enquiry-settings' ); ?>" 
+				class="wptravel-dashboard-label">
+					<?php _e( 'Total Enquiries', 'wp-travel' ); ?>
+				</a>
+				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_enquiry ); ?></span>
+			</div>
+
+		</div>
+
+		<?php
 	}
 
 	public function new_booking_callback() {
@@ -50,10 +200,10 @@ class WP_Travel_Admin_Dashboard_Widgets {
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'ID', 'wp-travel' ); ?></th>
-						<th><?php esc_html_e( 'Trip Code', 'wp-travel' ); ?></th>
+						<!-- <th><?php esc_html_e( 'Trip Code', 'wp-travel' ); ?></th> -->
 						<th><?php esc_html_e( 'Contact Name', 'wp-travel' ); ?></th>
 						<th><?php esc_html_e( 'Status', 'wp-travel' ); ?></th>
-						<th><?php esc_html_e( 'Payment', 'wp-travel' ); ?></th>
+						<!-- <th><?php esc_html_e( 'Payment', 'wp-travel' ); ?></th> -->
 						<th><?php esc_html_e( 'Date', 'wp-travel' ); ?></th>
 					</tr>
 			</thead>
@@ -130,10 +280,10 @@ class WP_Travel_Admin_Dashboard_Widgets {
 
 					<tr>
 						<td><a href="<?php echo esc_url( get_edit_post_link( $id ) ); ?>"><?php echo esc_html( $booking_id ); ?></a></td>
-						<td><?php echo esc_html( $trip_code ); ?></td>
+						<!-- <td><?php echo esc_html( $trip_code ); ?></td> -->
 						<td><?php echo esc_html( $name ); ?></td>
 						<td><?php echo '<span class="wp-travel-status wp-travel-booking-status" style="color:#fff;padding:2px 5px;background: ' . esc_attr( $status[ $label_key ]['color'] ) . ' ">' . esc_attr( $status[ $label_key ]['text'] ) . '</span>'; ?></td>
-						<td><?php echo '<span class="wp-travel-status wp-travel-payment-status" style="color:#fff;padding:2px 5px;background: ' . esc_attr( $Pmt_status[ $pmt_label_key ]['color'], 'wp-travel' ) . ' ">' . esc_attr( $Pmt_status[ $pmt_label_key ]['text'], 'wp-travel' ) . '</span>'; ?></td>
+						<!-- <td><?php echo '<span class="wp-travel-status wp-travel-payment-status" style="color:#fff;padding:2px 5px;background: ' . esc_attr( $Pmt_status[ $pmt_label_key ]['color'], 'wp-travel' ) . ' ">' . esc_attr( $Pmt_status[ $pmt_label_key ]['text'], 'wp-travel' ) . '</span>'; ?></td> -->
 						<td><?php echo esc_html( $date ); ?></td>
 					</tr>
 
@@ -150,6 +300,49 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			<?php
 		endif;
 
+	}
+
+	public function new_enquiries_callback() {
+
+		$args = array(
+			'numberposts' => apply_filters( 'wp_travel_dashboard_widget_enquiries', 5 ),
+			'post_type'   => 'itinerary-enquiries',
+			'post_status'    => 'publish',
+		);
+
+		$query = new WP_Query( $args );
+	 	?>
+			<table class="wp_travel_booking_dashboard_widget">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Name', 'wp-travel' ); ?></th>
+						<th><?php esc_html_e( 'Email', 'wp-travel' ); ?></th>
+						<th><?php esc_html_e( 'Message', 'wp-travel' ); ?></th>
+					</tr>
+			</thead>
+			<tbody>
+				<?php 
+					while ( $query->have_posts() ) {
+						$query->the_post();
+						$post_id = get_the_ID();
+						?>
+							<tr>
+								<td><?php echo esc_html( get_post_meta( $post_id, 'wp_travel_enquiry_name', true ) ); ?></td>
+								<td><?php echo esc_html( get_post_meta( $post_id, 'wp_travel_enquiry_email', true ) ); ?></td>
+								<td><?php echo esc_html( get_post_meta( $post_id, 'wp_travel_enquiry_query', true ) ); ?></td>
+							</tr>
+						<?php
+					}
+					wp_reset_postdata();
+				?>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6"><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itinerary-booking&page=wp-travel-enquiry-settings' ) ); ?>" class="button button-primary"><?php esc_html_e( 'View All Enquiries', 'wp-travel' ); ?></a></td>
+				</tr>
+			<tfoot>
+			</table>
+		<?php
 	}
 }
 

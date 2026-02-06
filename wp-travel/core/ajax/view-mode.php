@@ -15,6 +15,7 @@ class WP_Travel_Ajax_View_Mode {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
         $payload = WP_Travel::get_sanitize_request('post');

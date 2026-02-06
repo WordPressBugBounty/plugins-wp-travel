@@ -62,7 +62,8 @@ class WP_Session_Utils {
 			 *
 			 * @param int
 			 */
-			$expires = time() + (int) apply_filters( 'wp_session_expiration', 30 * 60 );
+			// $expires = time() + (int) apply_filters( 'wp_session_expiration', 30 * 60 );
+			$expires = time() + (int) apply_filters( 'wp_session_expiration', 24 * 60 * 60 );
 		}
 
 		$session_id = self::generate_id();

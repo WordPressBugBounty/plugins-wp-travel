@@ -125,19 +125,19 @@ if ( ! class_exists( 'WP_Travel_Coupons_Pro_Install' ) ) :
 					$coupon_status = $coupon->get_coupon_status( $id );
 					if ( 'active' === $coupon_status ) {
 						?>
-							<span class="wp-travel-info-msg">
+							<span class="wp-travel-info-msg coupon Active">
 								<?php echo esc_html__( 'Active', 'wp-travel' ); ?>
 							</span>
 						<?php
 					} elseif ( 'limit_exceed' === $coupon_status ) {
 						?>
-						<span class="wp-travel-error-msg">
+						<span class="wp-travel-error-msg coupon">
 							<?php echo esc_html__( 'Limit Exceed', 'wp-travel' ); ?>
 						</span>
 						<?php
 					} else {
 						?>
-						<span class="wp-travel-error-msg">
+						<span class="wp-travel-error-msg coupon">
 							<?php echo esc_html__( 'Expired', 'wp-travel' ); ?>
 						</span>
 						<?php

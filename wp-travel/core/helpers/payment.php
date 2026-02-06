@@ -114,15 +114,16 @@ class WpTravel_Helpers_Payment { // @phpcs:ignore
 			return;
 		}
 
-		$payment_mode = get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+		$payment_mode_meta = (array) get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+		$payment_mode      = isset( $payment_mode_meta[0] ) ? $payment_mode_meta[0] : '';
 
-		$cart_total = (float) get_post_meta( $booking_id, 'order_totals', true )['sub_total'];
-
-		$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['total_partial'];
+		$order_totals = (array) get_post_meta( $booking_id, 'order_totals', true );
+		$cart_total   = isset( $order_totals['sub_total'] ) ? (float) $order_totals['sub_total'] : 0.0;
+		$cart_sub_total_partial = isset( $order_totals['total_partial'] ) ? (float) $order_totals['total_partial'] : 0.0;
 
 		$remaning_amount = $cart_total - $cart_sub_total_partial;
 		
-		if( $payment_mode[0] == 'full' ){
+		if ( 'full' === $payment_mode ) {
 			$remaning_amount = 0;
 		}
 
@@ -143,12 +144,14 @@ class WpTravel_Helpers_Payment { // @phpcs:ignore
 			return;
 		}
 
-		$payment_mode = get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+		$payment_mode_meta = (array) get_post_meta( $booking_id, 'wp_travel_payment_mode' );
+		$payment_mode      = isset( $payment_mode_meta[0] ) ? $payment_mode_meta[0] : '';
 
-		$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['total_partial'];	
+		$order_totals = (array) get_post_meta( $booking_id, 'order_totals', true );
+		$cart_sub_total_partial = isset( $order_totals['total_partial'] ) ? (float) $order_totals['total_partial'] : 0.0;
 
-		if( $payment_mode[0] == 'full' ){
-			$cart_sub_total_partial = (float) get_post_meta( $booking_id, 'order_totals', true )['cart_total'];
+		if ( 'full' === $payment_mode ) {
+			$cart_sub_total_partial = isset( $order_totals['cart_total'] ) ? (float) $order_totals['cart_total'] : 0.0;
 		}
 
 		ob_start();

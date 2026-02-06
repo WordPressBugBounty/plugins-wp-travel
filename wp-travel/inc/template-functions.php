@@ -471,9 +471,15 @@ function wptravel_get_template_part( $slug, $name = '' ) {
  */
 function wptravel_load_template( $path, $args = array() ) {
 	$template = wptravel_get_template( $path, $args );
+
+	if( $path == 'review.php' && is_plugin_active( 'elementor-pro/elementor-pro.php' ) ){
+		$template = WP_PLUGIN_DIR . '/wp-travel/templates/review.php';
+	}
+
 	if ( $template ) {
 		include $template;
 	}
+	
 }
 
 /**
@@ -965,6 +971,245 @@ function wptravel_single_excerpt( $trip_id ) {
 	</div>
 
 	<div class="booking-form">
+		<?php 
+			$fixed_departure = WP_Travel_Helpers_Trip_Dates::is_fixed_departure( $trip_id );
+			$available_dates = wptravel_get_trip_available_dates( $trip_id );
+
+			// Check if we have at least one date
+			if ( ! empty( $available_dates ) ) {
+				$today = date( 'Y-m-d' ); // Today's date in Y-m-d format
+				
+				if( isset($available_dates[0]['start_date']) ){
+					$first_date = $available_dates[0]['start_date'];
+				}else{
+					$first_date = $available_dates[0];
+				}
+
+				// If the first date is today and a second date exists, use the second one
+				if ( $first_date === $today && isset( $available_dates[1] ) ) {
+					$date_to_use = $available_dates[1]['start_date'];
+				} else {
+					$date_to_use = $first_date;
+				}
+			}
+		
+			
+			if( $settings['enable_trip_date_countdown'] == 'yes' && $fixed_departure ):
+		?>
+		<div class="wptravel-tour-date-countdown" style="margin-top: 20px">
+			<span>
+				<?php
+				echo esc_html( $settings['trip_date_countdown_label'] );
+				?>
+			</span>
+			<div class="tour-date-countdown" data-date="<?php echo date_i18n( 'Y-m-d', strtotime( $date_to_use ) ); ?>">
+				<div class="time-unit"><span class="time-number" id="days">00</span><span class="time-label">Days</span></div>
+				<div class="time-unit"><span class="time-number" id="hours">00</span><span class="time-label">Hours</span></div>
+				<div class="time-unit"><span class="time-number" id="minutes">00</span><span class="time-label">Minutes</span></div>
+				<div class="time-unit"><span class="time-number" id="seconds">00</span><span class="time-label">Seconds</span></div>
+			</div>
+			<style>
+
+                    .wptravel-tour-date-countdown .tour-date-countdown {
+                        display: flex;
+                        gap: 10px;
+						margin-top: 1rem;
+                        margin-bottom: 1rem;
+                        flex-wrap: wrap;
+                    }
+
+                    .wptravel-tour-date-countdown .tour-date-countdown[data-date=""] {
+                        display: none;
+                    }
+
+                    .wptravel-tour-date-countdown .time-unit {
+                        background: rgb(0 0 0 / 25%);
+                        backdrop-filter: blur(10px);
+                        padding: 10px;
+                        border-radius: 15px;
+                        border: 1px solid rgba(255, 255, 255, 0.2);
+                        min-width: 100px;
+                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    }
+
+                    .wptravel-tour-date-countdown .time-number {
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: white;
+						margin-right: 5px;
+                        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+                    }
+
+                    .wptravel-tour-date-countdown .time-label {
+                        font-size: 14px;
+                        color: rgba(255, 255, 255, 0.8);
+                        text-transform: uppercase;
+                        letter-spacing: 1px;
+                        margin-top: 0.5rem;
+                    }
+
+                    @media (max-width: 768px) {
+                        .wptravel-tour-date-countdown .tour-date-countdown { gap: 1rem; }
+                        .wptravel-tour-date-countdown .time-unit { padding: 1rem; min-width: 80px; }
+                        /* .wptravel-tour-date-countdown .time-number { font-size: 2rem; }
+                        .wptravel-tour-date-countdown .email-input { min-width: 280px; } */
+                    }
+
+                    @media (max-width: 480px) {
+                        .wptravel-tour-date-countdown .time-unit { padding: 0.8rem; min-width: 70px; }
+                        /* .wptravel-tour-date-countdown .time-number { font-size: 1.5rem; } */
+                    }
+                </style>
+			<script>
+				
+				const countdown = document.querySelector(".tour-date-countdown");
+
+				const launchDateStr = countdown.getAttribute("data-date");
+				const launchDate = new Date(launchDateStr + "T00:00:00");
+
+				function updateCountdown() {
+					const now = new Date().getTime();
+					const distance = launchDate - now;
+
+					if (distance < 0) {
+						const countdownEl = document.querySelector(".wptravel-tour-date-countdown");
+						if (countdownEl) {
+							countdownEl.style.display = "none";
+						}
+						return;
+					}
+
+					const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+					const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+					const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+					const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+					document.getElementById("days").textContent = days.toString().padStart(2, "0");
+					document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+					document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+					document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
+				}
+
+				setInterval(updateCountdown, 1000);
+				updateCountdown();
+			</script>
+		</div>
+		<?php endif; ?>
+
+
+		<?php
+		if( $settings['enable_trip_booking_close_countdown'] == 'yes' && $fixed_departure ):
+		// Trip start date
+		$trip_start_date = $date_to_use; // e.g., "2026-01-22"
+
+		// Cutoff time in hours before trip start (can be decimal or integer)
+		$cutOffTime = get_post_meta( $trip_id, 'cuttOffTime', true ); // e.g., 48 hours
+
+		if ( empty( $trip_start_date ) ) return;
+
+		// Convert cutoff time to seconds
+		$cutOffSeconds = intval($cutOffTime) * 3600;
+
+		// Get timestamp for trip start date at midnight
+		$trip_start_timestamp = strtotime( $trip_start_date . ' 00:00:00' );
+
+		// Booking close timestamp
+		$booking_close_timestamp = $trip_start_timestamp - $cutOffSeconds;
+
+		// Format date for countdown (Y-m-d H:i:s)
+		$booking_close_date = date_i18n( 'Y-m-d H:i:s', $booking_close_timestamp );
+		?>
+		<div class="wptravel-booking-countdown" style="margin-top: 20px">
+			<span>
+				<?php
+				echo esc_html( $settings['booking_close_countdown_label'] );
+				?>
+			</span>
+			<div class="booking-countdown" data-date="<?php echo esc_attr( $booking_close_date ); ?>">
+				<div class="time-unit"><span class="time-number" id="booking-days">00</span><span class="time-label">Days</span></div>
+				<div class="time-unit"><span class="time-number" id="booking-hours">00</span><span class="time-label">Hours</span></div>
+				<div class="time-unit"><span class="time-number" id="booking-minutes">00</span><span class="time-label">Minutes</span></div>
+				<div class="time-unit"><span class="time-number" id="booking-seconds">00</span><span class="time-label">Seconds</span></div>
+			</div>
+
+			<style>
+				.wptravel-booking-countdown .booking-countdown {
+					display: flex;
+					gap: 10px;
+					margin-top: 1rem;
+					margin-bottom: 1rem;
+					flex-wrap: wrap;
+				}
+				.wptravel-booking-countdown .booking-countdown[data-date=""] {
+					display: none;
+				}
+				.wptravel-booking-countdown .time-unit {
+					background: rgb(0 0 0 / 25%);
+					backdrop-filter: blur(10px);
+					padding: 10px;
+					border-radius: 15px;
+					border: 1px solid rgba(255, 255, 255, 0.2);
+					min-width: 100px;
+					transition: transform 0.3s ease, box-shadow 0.3s ease;
+				}
+				.wptravel-booking-countdown .time-number {
+					font-size: 20px;
+					font-weight: bold;
+					color: white;
+					margin-right: 5px;
+					text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+				}
+				.wptravel-booking-countdown .time-label {
+					font-size: 14px;
+					color: rgba(255,255,255,0.8);
+					text-transform: uppercase;
+					letter-spacing: 1px;
+					margin-top: 0.5rem;
+				}
+				@media (max-width: 768px) {
+					.wptravel-booking-countdown .booking-countdown { gap: 1rem; }
+					.wptravel-booking-countdown .time-unit { padding: 1rem; min-width: 80px; }
+				}
+				@media (max-width: 480px) {
+					.wptravel-booking-countdown .time-unit { padding: 0.8rem; min-width: 70px; }
+				}
+			</style>
+
+			<script>
+				const bookingCountdown = document.querySelector(".booking-countdown");
+				if (bookingCountdown) {
+					const closeDateStr = bookingCountdown.getAttribute("data-date");
+					const closeDate = new Date(closeDateStr);
+
+					function updateBookingCountdown() {
+						const now = new Date().getTime();
+						const distance = closeDate - now;
+
+						if (distance < 0) {
+							const countdownEl = document.querySelector(".wptravel-booking-countdown");
+							if (countdownEl) countdownEl.style.display = "none";
+							return;
+						}
+
+						const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+						const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+						const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+						const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+						document.getElementById("booking-days").textContent = days.toString().padStart(2,"0");
+						document.getElementById("booking-hours").textContent = hours.toString().padStart(2,"0");
+						document.getElementById("booking-minutes").textContent = minutes.toString().padStart(2,"0");
+						document.getElementById("booking-seconds").textContent = seconds.toString().padStart(2,"0");
+					}
+
+					setInterval(updateBookingCountdown, 1000);
+					updateBookingCountdown();
+				}
+			</script>
+		</div>
+		<?php endif; ?>		
+
+
 		<div class="wp-travel-booking-wrapper">
 			<?php
 			$trip_enquiry_text = isset( $strings['trip_enquiry'] ) ? $strings['trip_enquiry'] : __( 'Trip Enquiry', 'wp-travel' );
@@ -1000,6 +1245,46 @@ function wptravel_single_excerpt( $trip_id ) {
 				<?php
 			endif;
 			?>
+
+			<?php 
+				if( $settings['enable_whatsapp_btn'] == 'yes' ){
+
+					$trip_id = get_the_ID();
+					$trip_name = get_the_title( );
+					$trip_link = get_permalink( );
+
+					$raw_message = sprintf(
+						$settings['whatsapp_initial_message'] . "\n%s - %s",
+						$trip_name,
+						$trip_link
+					);
+
+					// Apply filter so developers can modify it
+					$message = apply_filters( 'wptravel_whatsapp_message', $raw_message, $trip_id, $trip_name, $trip_link, $settings,  );
+
+					// Encode for WhatsApp URL
+					$encoded_message = urlencode( $message );
+
+					// Filterable WhatsApp number
+					$phone_number = $settings['whatsapp_number'];
+
+					// Final WhatsApp link
+					$whatsapp_link = apply_filters(
+						'wp_travel_trip_whatsapp_link',
+						"https://api.whatsapp.com/send/?phone={$phone_number}&text={$encoded_message}&type=phone_number&app_absent=0"
+					);
+			?>
+					<a id="wp-travel-send-message-whatsapp" class="wp-travel-message-whatsapp" data-effect="mfp-move-from-top" href="<?php echo $whatsapp_link ?>" target="_blank">
+						<span class="wp-travel-booking-enquiry-message">
+							<span class="wp-travel-whatsapp-icon">
+								<i class="fab fa-whatsapp"></i>
+							</span>
+							<span>
+								<?php echo esc_html( $settings['whatsapp_btn_label'] ); ?>
+							</span>
+						</span>
+					</a>
+			<?php } ?>
 		</div>
 	</div>
 		<?php
@@ -1133,13 +1418,14 @@ function wptravel_single_location( $trip_id ) {
 	if ( $trip_duration_enable == true ) {
 	if ( $fixed_departure ) :
 		$dates = wptravel_get_fixed_departure_date( $trip_id );
+
 		if ( $dates ) {
 			?>
 			<li class="wp-travel-fixed-departure">
 				<div class="travel-info">
 					<strong class="title"><?php echo esc_html( $fixed_departure_text ); ?></strong>
 				</div>
-				<div class="travel-info fixed-date-options">
+				<div class="travel-info fixed-date-options" >
 					<?php echo $dates; // @phpcs:ignore ?>
 				</div>
 
@@ -1342,6 +1628,7 @@ function wptravel_frontend_contents( $trip_id ) {
 	$price_per_text  = wptravel_get_price_per_text( $trip_id );
 
 	$wrapper_class = wptravel_get_theme_wrapper_class();
+
 	?>
 	<div id="wp-travel-tab-wrapper" class="wp-travel-tab-wrapper <?php echo esc_attr( $wrapper_class ); ?>">
 		<?php if ( is_array( $wp_travel_itinerary_tabs ) && count( $wp_travel_itinerary_tabs ) > 0 ) : ?>
@@ -1358,7 +1645,28 @@ function wptravel_frontend_contents( $trip_id ) {
 					endif;
 					$tab_label = $tab_info['label'];
 					?>
-					<li class="wp-travel-ert <?php echo esc_attr( $tab_key ); ?> <?php echo esc_attr( $tab_info['label_class'] ); ?> tab-<?php echo esc_attr( $index ); ?>" data-tab="tab-<?php echo esc_attr( $index ); ?>-cont"><?php echo esc_attr( $tab_label ); ?></li>
+					<li class="wp-travel-ert <?php echo esc_attr( $tab_key ); ?> <?php echo esc_attr( $tab_info['label_class'] ); ?> tab-<?php echo esc_attr( $index ); ?>"
+						data-tab="tab-<?php echo esc_attr( $index ); ?>-cont">
+
+						<?php if ( isset( $tab_info['selected_icon_type'] ) && 'custom-upload' === $tab_info['selected_icon_type'] && ! empty( $tab_info['icon_img'] ) ) : ?>
+						<p style="display: flex;">
+								<img
+									src="<?php echo esc_url( $tab_info['icon_img'] ); ?>"
+									class="wp-travel-tab-icon-img"
+									alt="<?php echo esc_attr( $tab_label ); ?>"
+									style="width: 50px; margin-right:2px;"
+								/>
+
+							<?php elseif ( ! empty( $tab_info['icon'] ) ) : ?>
+
+								<i class="<?php echo esc_attr( $tab_info['icon'] ); ?>" aria-hidden="true" style="margin-right:2px;"></i>
+
+							<?php endif; ?>
+
+							<?php echo esc_html( $tab_label ); ?>
+						</p>
+							
+					</li>
 					<?php
 					$index++;
 				endforeach;
@@ -2264,7 +2572,12 @@ function wptravel_posts_filter( $query ) {
 
 	if ( ! WP_Travel::verify_nonce( true ) && !is_admin()) {	
 
-		$current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+		// $current_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+		$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+		$host     = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+		$uri      = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+		$current_url = $protocol . '://' . $host . $uri;
 		
 		// Check if the URL contains 'tour-extras'
 		if (strpos($current_url, 'tour-extras') !== false) {

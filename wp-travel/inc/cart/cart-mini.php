@@ -326,18 +326,26 @@ if ( wptravel_is_react_version_enabled() ) {
 
 										$min_pax = ! empty( $category['default_pax'] ) ? $category['default_pax'] : 0;
 										$max_pax = ! empty( $cart_pricing['max_pax'] ) ? $cart_pricing['max_pax'] : 999;
+										$pax_increment = apply_filters( 'wptravel_custom_input_increment_pricing_cat', [] );
+
+										if( !$pax_increment ){
+											$pax_increment = apply_filters( 'wp_travel_set_pax_increment_by', 1 );
+										}else{
+											$pax_increment = $pax_increment[ $ctitle ];
+										}
+
 										?>
 										<div class="wp-travel-form-group" data-wpt-category="<?php echo esc_attr( $category_id ); ?>">
 											<label for="adult"><?php echo esc_html( $ctitle ); ?><?php echo $category['price_per'] == 'group' ? '(' . esc_html__( 'Group', 'wp-travel' ) . ')' : ''; ?></label>
 											<div>
 												<div class="qty-spinner input-group bootstrap-touchspin bootstrap-touchspin-injected">
 													<span class="input-group-btn input-group-prepend" >
-														<button data-wpt-count-down class="btn edit-pax-selector-qty" type="button"  data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">-</button>
+														<button data-wpt-count-down data-increment="<?php echo $pax_increment; ?>" class="btn edit-pax-selector-qty" type="button"  data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">-</button>
 													</span>
 													<input type="hidden" class="trip-min-pax" value="<?php $cart_pricing['min_pax'] ?>" >
 													<input readonly type="number" max="<?php echo (int) $max_pax < (int) $min_pax ? 999 : (int) $max_pax; ?>" min="<?php echo (int) $min_pax; ?>" data-wpt-category-count-input="<?php echo esc_attr( $pax ); ?>" name="adult" class="wp-travel-form-control wp-travel-cart-category-qty qty form-control edit-pax-<?php echo esc_attr( $cart_number ) ?>" min="1" value="<?php echo esc_attr( $pax ); ?>">
 													<span class="input-group-btn input-group-prepend">
-														<button data-wpt-count-up class="btn edit-pax-selector-qty" type="button" data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">+</button>
+														<button data-wpt-count-up data-increment="<?php echo $pax_increment; ?>" class="btn edit-pax-selector-qty" type="button" data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">+</button>
 													</span>
 												</div>
 												<span class="prices">

@@ -415,3 +415,133 @@ class WP_Travel_Post_Types {
 
 	}
 }
+
+
+/**
+ * Register Custom Post Type: Temporary Bookings
+ * This Post Type is added to handle unpaid paypal bookings
+ */
+function register_temporary_bookings_post_type() {
+
+	$labels = array(
+		'name'                  => _x( 'Temporary Bookings', 'Post Type General Name', 'textdomain' ),
+		'singular_name'         => _x( 'Temporary Booking', 'Post Type Singular Name', 'textdomain' ),
+		'menu_name'             => __( 'Temp Bookings', 'textdomain' ),
+		'name_admin_bar'        => __( 'Temporary Booking', 'textdomain' ),
+		'add_new'               => __( 'Add New', 'textdomain' ),
+		'add_new_item'          => __( 'Add New Temporary Booking', 'textdomain' ),
+		'edit_item'             => __( 'Edit Temporary Booking', 'textdomain' ),
+		'new_item'              => __( 'New Temporary Booking', 'textdomain' ),
+		'view_item'             => __( 'View Temporary Booking', 'textdomain' ),
+		'search_items'          => __( 'Search Temporary Bookings', 'textdomain' ),
+		'not_found'             => __( 'No temporary bookings found', 'textdomain' ),
+		'not_found_in_trash'    => __( 'No temporary bookings found in Trash', 'textdomain' ),
+	);
+
+	$args = array(
+		'label'                 => __( 'Temporary Bookings', 'textdomain' ),
+		'labels'                => $labels,
+		'description'           => __( 'Stores temporary or pending booking records.', 'textdomain' ),
+		'public'                => false,          // not publicly queryable
+		'show_ui'               => true,           // visible in admin
+		'show_in_menu'          => false,
+		'menu_icon'             => 'dashicons-clock',
+		'supports'              => array( 'title', 'custom-fields' ),
+		'capability_type'       => 'post',
+		'has_archive'           => false,
+		'rewrite'               => false,          // no front-end URLs
+		'publicly_queryable'    => false,
+		'show_in_rest'          => false,          // optional: disable block editor
+		'menu_position'         => 25,
+	);
+
+	register_post_type( 'pending-booking', $args );
+}
+add_action( 'init', 'register_temporary_bookings_post_type' );
+
+
+// Add trip filter dropdown for itinerary bookings
+add_action( 'restrict_manage_posts', 'add_trip_filter_to_itinerary_bookings' );
+function add_trip_filter_to_itinerary_bookings() {
+
+    global $typenow;
+
+    if ( 'itinerary-booking' !== $typenow ) {
+        return;
+    }
+
+    $trips = get_posts( array(
+        'post_type'      => 'itineraries',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'orderby'        => 'title',
+        'order'          => 'ASC',
+    ) );
+
+    $selected_trip = isset( $_GET['booking_trip_id'] ) ? absint( $_GET['booking_trip_id'] ) : '';
+
+    echo '<select name="booking_trip_id">';
+    echo '<option value="">' . esc_html__( 'All Trips', 'wp-travel-pro' ) . '</option>';
+
+    foreach ( $trips as $trip ) {
+        printf(
+            '<option value="%d"%s>%s</option>',
+            esc_attr( $trip->ID ),
+            selected( $selected_trip, $trip->ID, false ),
+            esc_html( $trip->post_title )
+        );
+    }
+
+    echo '</select>';
+}
+
+add_action( 'pre_get_posts', 'filter_itinerary_bookings_by_trip' );
+function filter_itinerary_bookings_by_trip( $query ) {
+
+    global $pagenow;
+
+    if (
+        ! is_admin() ||
+        'edit.php' !== $pagenow ||
+        ! $query->is_main_query() ||
+        empty( $_GET['post_type'] ) ||
+        'itinerary-booking' !== $_GET['post_type'] ||
+        empty( $_GET['booking_trip_id'] )
+    ) {
+        return;
+    }
+
+    $trip_id = absint( $_GET['booking_trip_id'] );
+
+    // Use REGEXP to match the trip_id inside serialized array
+    $query->set( 'meta_query', array(
+        array(
+            'key'     => 'order_items_data',
+            'value'   => 's:7:"trip_id";i:' . $trip_id . ';',
+            'compare' => 'REGEXP',
+        ),
+    ) );
+}
+
+// Remove empty search parameter for itinerary bookings
+add_action( 'admin_footer-edit.php', 'remove_empty_search_param_script_for_bookings' );
+function remove_empty_search_param_script_for_bookings() {
+    global $typenow;
+    if ( $typenow !== 'itinerary-booking' ) return;
+    ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('posts-filter');
+            if (!form) return;
+
+            form.addEventListener('submit', function () {
+                const searchInput = form.querySelector('input[name="s"]');
+                if (searchInput && searchInput.value.trim() === '') {
+                    searchInput.parentNode.removeChild(searchInput);
+                }
+            });
+        });
+    </script>
+    <?php
+}
+

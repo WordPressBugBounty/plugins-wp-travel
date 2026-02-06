@@ -328,6 +328,13 @@ function wptravel_get_currency_symbol( $currency_code = null ) {
 		$currency_code = ( isset( $settings['currency'] ) ) ? $settings['currency'] : 'USD';
 	}
 
+	if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+		$WOOCS = $GLOBALS['WOOCS'];
+		
+		$currency_code = $WOOCS->current_currency;
+
+	}
+
 	/** Added support for displaying currency name like USD, EUR on frontend @since 4.4.5 */
 	$use_currency_name = $settings['use_currency_name'];
 
@@ -339,7 +346,12 @@ function wptravel_get_currency_symbol( $currency_code = null ) {
 	$currency_symbols = wptravel_currency_symbols();
 
 	if ( array_key_exists( $currency_code, $currency_symbols ) ) {
-		return apply_filters( 'wp_travel_currency_symbol', $currency_symbols[ $currency_code ], $currency_code, $currency_symbols );
+		if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+			return $currency_symbols[ $currency_code ];
+		}else{
+			return apply_filters( 'wp_travel_currency_symbol', $currency_symbols[ $currency_code ], $currency_code, $currency_symbols );
+		}
+		
 	}
 	return __( 'N/A', 'wp-travel' );
 

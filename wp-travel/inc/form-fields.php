@@ -189,9 +189,10 @@ function wptravel_get_checkout_form_fields() {
 		$payment       = '';
 
 
-		if ( count( wp_get_post_terms( $trip_ids, 'travel_locations', array( 'fields' => 'all' ) ) ) > 0 ) {
-			$trip_location = wp_get_post_terms( $trip_ids, 'travel_locations', array( 'fields' => 'all' ) )[0]->slug;
+		$trip_terms = wp_get_post_terms( $trip_ids, 'travel_locations', array( 'fields' => 'all' ) );
 
+		if ( ! is_wp_error( $trip_terms ) && ! empty( $trip_terms ) ) {
+			$trip_location = $trip_terms[0]->slug;
 		}
 
 		if ( ( $trip_location !== '' ) && class_exists( 'WP_Travel_Pro' ) && class_exists( 'WP_Travel_Conditional_Payment_Core' ) && wptravel_get_settings()['enable_conditional_payment'] == 'yes' ) {
@@ -561,14 +562,18 @@ function wptravel_get_bank_deposit_form_fields($details = array()) {
 
 		$payment_mode_options = array();
 
-		$payment_mode_options['partial'] = __( 'Partial Payment', 'wp-travel' );
+		// $payment_mode_options['partial'] = __( 'Partial Payment', 'wp-travel' );
 
-		// if( $details['payment_mode'] == 'Full' ){
-		// 	$payment_mode_options['full'] = __( 'Full Payment', 'wp-travel' );
-		// }else{
+		$meta = get_post_meta($_REQUEST['detail_id'], 'wp_travel_bank_payment_mode');
+
+		if (isset($meta[0]) && $meta[0] === 'full') {
+
+			$payment_mode_options['full'] = __( 'Full Payment', 'wp-travel' );
+		}else{
+			
 			$payment_mode_options['partial'] = __( 'Partial Payment', 'wp-travel' );
 			$payment_mode_options['full'] = __( 'Full Payment', 'wp-travel' );
-		// }
+		}
 
 		$fields['payment_mode'] = array(
 			'type'          => 'select',

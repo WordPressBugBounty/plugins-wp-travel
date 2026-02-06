@@ -45,9 +45,6 @@ class WP_Travel_Ajax_Trips {
 
 	public static function get_extra_gallery() {
 
-		$user = wp_get_current_user();
-
-
 		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 			$nonce_trip_extra  = $_POST['nonce'];
 			$gallery_id        = $_POST['id'];
@@ -76,9 +73,11 @@ class WP_Travel_Ajax_Trips {
 
 		if ( is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		} elseif ( false === $permission || null === $permission ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_PERMISSION' );
 			WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 
 		// Nonce already verified.
@@ -88,6 +87,7 @@ class WP_Travel_Ajax_Trips {
 		if ( ! current_user_can( $post_type->cap->edit_post, $trip_id ) ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_PERMISSION' );
 			WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 		
 		/**
@@ -146,16 +146,15 @@ class WP_Travel_Ajax_Trips {
 	 */
 	public static function get_trip() {
 
-		$user = wp_get_current_user();
-
-
 		$permission = self::get_trip_permission_check();
 
 		if ( is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		} elseif ( false === $permission || null === $permission ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_PERMISSION' );
 			WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 
 		$trip_id  = ! empty( $_GET['trip_id'] ) ? absint( $_GET['trip_id'] ) : 0;
@@ -223,9 +222,11 @@ class WP_Travel_Ajax_Trips {
 
 		if ( is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		} elseif ( false === $permission || null === $permission ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_PERMISSION' );
 			WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 		/**
 		 * Return list of filtered trips according to conditions. Nonce already checked.
@@ -257,17 +258,16 @@ class WP_Travel_Ajax_Trips {
 		/**
 		 * Permission Check
 		 */
-
-		$user = wp_get_current_user();
-
 		
 		$permission = self::get_trips_permissions_check();
 
 		if ( is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		} elseif ( false === $permission || null === $permission ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_PERMISSION' );
 			WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 
 		// Empty parameter. Nonce already verified.
@@ -302,6 +302,7 @@ class WP_Travel_Ajax_Trips {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		header( 'Content-Type: application/json' );
@@ -355,6 +356,7 @@ class WP_Travel_Ajax_Trips {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		header( 'Content-Type: application/json' );
@@ -377,6 +379,7 @@ class WP_Travel_Ajax_Trips {
 		if ( ! isset( $_REQUEST['_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ), 'wp_travel_nonce' ) ) {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_NONCE' );
 			return WP_Travel_Helpers_REST_API::response( $error );
+			exit;
 		}
 
 		return true;

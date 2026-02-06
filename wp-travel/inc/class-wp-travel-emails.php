@@ -146,6 +146,9 @@ class WP_Travel_Emails {
 			table[class="wp-travel-content-info"]{margin-bottom: 10px}
 
 		}
+		td:empty {
+			display: none;
+		}
 		</style>';
 
 		return $styles;

@@ -538,6 +538,11 @@ function wptravel_get_cart_attrs( $args, $pax = 0, $price_key = '', $pricing_id 
 		'currency'        => wptravel_get_currency_symbol(), // added in 1.8.4
 	);
 
+	if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+		global $WOOCS;
+		$attrs['used_currency'] = $WOOCS->current_currency;
+	}
+
 	return $attrs;
 
 }
@@ -661,35 +666,72 @@ function wptravel_get_formated_price_currency( $price = 0, $regular_price = fals
 	$filter_name     = 'wp_travel_itinerary_sale_price'; // Filter for customization work support.
 	$price_class     = 'wp-travel-trip-price-figure';
 	$currency_symbol = apply_filters( 'wp_travel_display_currency_symbol', wptravel_get_currency_symbol(), $post_id );
+
+	   
 	if ( $regular_price ) {
 		$filter_name = 'wp_travel_itinerary_price';
 		$price_class = 'wp-travel-regular-price-figure';
 	}
+
 
 	// Price Format Start.
 	$thousand_separator = $settings['thousand_separator'] ? $settings['thousand_separator'] : ',';
 	$decimal_separator  = $settings['decimal_separator'] ? $settings['decimal_separator'] : '.';
 	$number_of_decimals = isset( $settings['number_of_decimals'] ) && ! empty( $settings['number_of_decimals'] ) ? $settings['number_of_decimals'] : 0;
 	$price              = number_format( $price, $number_of_decimals, $decimal_separator, $thousand_separator );
+	
 	// End of Price Format.
 	ob_start();
 	switch ( $currency_position ) {
 		case 'left':
+			
+			
+			if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+				
+				global $WOOCS;
+				$price = str_replace( $thousand_separator, '', $price );
+				$price = number_format( $WOOCS->convert_from_to_currency( $price, $settings['currency'], $WOOCS->current_currency ), $number_of_decimals );
+			}
+
 			?>
-			<span class="wp-travel-trip-currency"><?php echo esc_html( $currency_symbol ); ?></span><span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span>
+			<span class="wp-travel-trip-currency"><?php echo $currency_symbol; ?></span><span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span>
 			<?php
 			break;
 		case 'left_with_space':
+			if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+				
+				global $WOOCS;
+				$price = str_replace( $thousand_separator, '', $price );
+				$price = number_format( $WOOCS->convert_from_to_currency( $price, $settings['currency'], $WOOCS->current_currency ), $number_of_decimals );
+
+	
+			}
 			?>
 			<span class="wp-travel-trip-currency"><?php echo esc_html( $currency_symbol ); ?></span> <span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span>
 			<?php
 			break;
 		case 'right':
+			if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+				
+				global $WOOCS;
+				$price = str_replace( $thousand_separator, '', $price );
+				$price = number_format( $WOOCS->convert_from_to_currency( $price, $settings['currency'], $WOOCS->current_currency ), $number_of_decimals );
+
+	
+			}
 			?>
 			<span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span><span class="wp-travel-trip-currency"><?php echo esc_html( $currency_symbol ); ?></span>
 			<?php
 			break;
 		case 'right_with_space':
+			if ( isset( $GLOBALS['WOOCS'] ) && is_object( $GLOBALS['WOOCS'] ) ) {
+				
+				global $WOOCS;
+				$price = str_replace( $thousand_separator, '', $price );
+				$price = number_format( $WOOCS->convert_from_to_currency( $price, $settings['currency'], $WOOCS->current_currency ), $number_of_decimals );
+
+	
+			}
 			?>
 			<span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span> <span class="wp-travel-trip-currency"><?php echo esc_html( $currency_symbol ); ?></span>
 			<?php

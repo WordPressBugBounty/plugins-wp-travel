@@ -384,7 +384,7 @@ function wptravel_admin_email_template() {
 			<tr class="wp-travel-content" style="background: #fff;">
 				<td align="left" class="wp-travel-content-top" style="background: #fff;box-sizing: border-box;margin: 0;padding: 20px 25px;">
 					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'Hello'; ?> {sitename} <?php echo 'Admin'; ?>,</p>
-					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received bookings from'; ?> {customer_name}:</p>
+					<p style="line-height: 1.55;font-size: 14px;"><?php echo 'You have received sss bookings from'; ?> {customer_name}:</p>
 					<p style="line-height: 1.55;font-size: 14px;"><b><?php echo 'Booking ID'; ?>: <a href="{booking_edit_link}" target="_blank" style="color: #5a418b;text-decoration: none;">#{booking_id}</a> ({booking_arrival_date})</b></p>
 				</td>
 			</tr>

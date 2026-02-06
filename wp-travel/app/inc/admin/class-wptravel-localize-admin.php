@@ -323,6 +323,8 @@ class WpTravel_Localize_Admin {
 			'wp_settings'                   => WP_Travel_Helpers_Settings::get_settings(),
 		);
 
+        
+
         $translation_array['setting_strings'] = array( 
             'unsaved_changes' => __( 'Unsaved changes', 'wp-travel' ),
             'tab_name' => array(
@@ -357,8 +359,11 @@ class WpTravel_Localize_Admin {
                 'advanced_gallery' => __( 'Advanced Gallery', 'wp-travel' ),
                 'recaptcha_v2' => __( 'reCaptcha V2', 'wp-travel' ),
                 'third_party' => __( 'Third Party Integrations', 'wp-travel' ),
+                'google_sheet' => __( 'Integrate Google Sheet', 'wp-travel' ),
                 'modules_settings' => __( 'Modules Settings', 'wp-travel' ),
                 'pwa' => __( 'PWA', 'wp-travel' ),
+                'coming_soon' => __( 'Coming Soon', 'wp-travel' ),
+                'social_login' => __( 'Social Login', 'wp-travel' ),
                 'debug' => __( 'Debug', 'wp-travel' )
             ),
             'currency' => array(
@@ -449,6 +454,11 @@ class WpTravel_Localize_Admin {
                 'custom_trip_codes' => __('Custom Trip Codes', 'wp-travel'),
                 'custom_trip_codes_note' => __('Enable Custom Trip Code Support for Trips.', 'wp-travel'),
                 'enable_trip_enquiry' => __('Enable Trip Enquiry', 'wp-travel'),
+                'enable_trip_date_countdown' => __('Enable Trip Date Countdown', 'wp-travel'),
+                'trip_date_countdown_label' => __('Trip Date Countdown Label', 'wp-travel'),
+                'enable_trip_booking_close_countdown' => __('Enable Trip Booking Close Countdown', 'wp-travel'),
+                'trip_booking_closing_countdown_label' => __('Trip Booking Closing Countdown Label', 'wp-travel'),
+                'enable_whatsapp_btn' => __('Enable Whatsapp Button', 'wp-travel'),
                 'hide_related_trips' => __('Hide related trips', 'wp-travel'),
                 'hide_related_trips_note' => __('This will hide your related trips.', 'wp-travel'),
                 'trip_date_listing' => __('Trip date listing', 'wp-travel'),
@@ -819,6 +829,12 @@ class WpTravel_Localize_Admin {
                 'start_url_note' => __('This sets the start url for the app','wp-travel'),
                 'app_logo' => __('APP Logo','wp-travel'),
                 'app_logo_note' => __('The image must be of size 192px*192px','wp-travel'),
+            ),
+            'coming_soon' => array(
+                'enable_coming_soon' => __('Enable Coming Soon Page', 'wp-travel'),
+            ),
+            'social_login' => array(
+                'enable_social_login' => __('Enable Social Login', 'wp-travel'),
             ),
             'miscellaneous' => array(
                 'miscellaneous_settings' => __('Miscellaneous Settings', 'wp-travel'),

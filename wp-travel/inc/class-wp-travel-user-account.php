@@ -40,12 +40,12 @@ class Wp_Travel_User_Account {
 				'menu_content_cb' => array( __CLASS__, 'dashboard_menu_bookings_tab' ),
 				'priority'        => 20,
 			),
-			'payments'  => array(
-				'menu_title'      => __( 'Payments', 'wp-travel' ),
-				'menu_icon'       => 'wt-icon wt-icon-credit-card',
-				'menu_content_cb' => array( __CLASS__, 'dashboard_menu_payments_tab' ),
-				'priority'        => 20,
-			),
+			// 'payments'  => array(
+			// 	'menu_title'      => __( 'Payments', 'wp-travel' ),
+			// 	'menu_icon'       => 'wt-icon wt-icon-credit-card',
+			// 	'menu_content_cb' => array( __CLASS__, 'dashboard_menu_payments_tab' ),
+			// 	'priority'        => 20,
+			// ),
 			'address'   => array(
 				'menu_title'      => __( 'Address', 'wp-travel' ),
 				'menu_icon'       => 'wt-icon-regular wt-icon-address-book',

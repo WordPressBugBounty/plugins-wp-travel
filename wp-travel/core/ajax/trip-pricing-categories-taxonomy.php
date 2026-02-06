@@ -10,14 +10,23 @@ class WP_Travel_Ajax_Trip_Pricing_Categories_Taxonomy {
 	}
 
 	public static function get_trip_pricing_categories_terms() {
-
-		$user = wp_get_current_user();
-
 		
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get trip pricing categories terms.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$response = WP_Travel_Helpers_Trip_Pricing_Categories_Taxonomy::get_trip_pricing_categories_terms();
@@ -26,13 +35,23 @@ class WP_Travel_Ajax_Trip_Pricing_Categories_Taxonomy {
 
 	public static function get_trip_pricing_categories_term() {
 
-		$user = wp_get_current_user();
-
 		
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get trip categories term.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		WP_Travel::verify_nonce();

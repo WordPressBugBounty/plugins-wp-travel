@@ -20,14 +20,14 @@ class WP_Travel_Review_Admin_Notice {
             add_action( 'admin_notices', array( $this, 'wptravel_review_admin_notice' ) );
         }
 
-        add_action( 'wp_ajax_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
+        // add_action( 'wp_ajax_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
 
-        add_action( 'wp_ajax_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
+        // add_action( 'wp_ajax_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
 
-        add_action( 'wp_ajax_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
+        // add_action( 'wp_ajax_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
 	}  
     
     public function wptravel_review_admin_notice() {
@@ -72,13 +72,15 @@ class WP_Travel_Review_Admin_Notice {
 		$allowed_roles = array( 'editor', 'administrator', 'author' );
 
 		if ( !array_intersect( $allowed_roles, $user->roles ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
+			wp_send_json( array( 'result' => 'Authentication error' ) );
+            exit;
 		}
 
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+            exit;
 		}
 
         update_option( 'wptravel_review_notice_date', gmdate('Y/m/d', strtotime( gmdate('Y/m/d') . ' + 3 days') ) );

@@ -24,7 +24,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $comment;
 $settings = wptravel_get_settings();
 
-
 $rating = intval( get_comment_meta( $comment->comment_ID, '_wp_travel_rating', true ) ); ?>
 
 <li <?php comment_class(); ?> id="li-comment-<?php comment_ID(); ?>">

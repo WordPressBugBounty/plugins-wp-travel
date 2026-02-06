@@ -284,6 +284,7 @@ class WP_Travel_Actions_Activation {
 			trip_id int(11) DEFAULT NULL NULL,
 			title varchar(255) DEFAULT '' NULL,
 			custom_link varchar(255) DEFAULT '' NULL,
+			booking_status varchar(255) DEFAULT '' NULL,
 			recurring varchar(5) DEFAULT '' NULL,
 			years varchar(255) DEFAULT '' NULL,
 			months varchar(255) DEFAULT '' NULL,

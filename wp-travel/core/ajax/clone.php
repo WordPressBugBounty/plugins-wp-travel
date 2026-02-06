@@ -24,6 +24,8 @@ class WpTravel_Ajax_Clone {
 
 	}
 
+	
+
 	/**
 	 * Clone.
 	 *
@@ -35,6 +37,17 @@ class WpTravel_Ajax_Clone {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to clone trips.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		// Nonce already verified above and data will be sanitize with wptravel_sanitize_array function.

@@ -1,21 +1,24 @@
-;(function ($) {
-    var translation = {
-        days: ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota'],
-        daysShort: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
-        daysMin: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
-        months: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'],
-        monthsShort: ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'],
-        today: 'Dnes',
-        clear: 'Vymazat',
-        dateFormat: 'dd.mm.yyyy',
-        timeFormat: 'hh:ii',
-        firstDay: 1
-    };
-    
-    if (typeof( $.fn.wpt_datepicker ) !== 'undefined' && $.isFunction($.fn.wpt_datepicker)) {
-        $.fn.wpt_datepicker.language['cs'] = translation;
-    } else if (typeof( $.fn.datepicker ) !== 'undefined' && $.isFunction($.fn.datepicker)) {
-        $.fn.datepicker.language['cs'] = translation;
+;(function () {
+    if (typeof flatpickr === 'undefined') {
+        return;
     }
-    
-})(jQuery);
+
+    flatpickr.l10ns.cs = {
+        weekdays: {
+            shorthand: ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So'],
+            longhand: ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota']
+        },
+        months: {
+            shorthand: ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'],
+            longhand: ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
+        },
+        firstDayOfWeek: 1,
+        rangeSeparator: ' – ',
+        weekAbbreviation: 'Týd',
+        scrollTitle: 'Rolujte pro změnu',
+        toggleTitle: 'Klikněte pro přepnutí',
+        amPM: ['AM', 'PM'],
+        yearAriaLabel: 'Rok',
+        time_24hr: true
+    };
+})();

@@ -10,16 +10,16 @@ class WP_Travel_Ajax {
 		 *
 		 * @deprecated 5.2.9
 		 */
-		// add_action( 'wp_ajax_wt_add_to_cart', array( $this, 'add_to_cart' ) );
-		// add_action( 'wp_ajax_nopriv_wt_add_to_cart', array( $this, 'add_to_cart' ) );
+		add_action( 'wp_ajax_wt_add_to_cart', array( $this, 'add_to_cart' ) );
+		add_action( 'wp_ajax_nopriv_wt_add_to_cart', array( $this, 'add_to_cart' ) );
 
 		/**
 		 * Update cart ajax callback.
 		 *
 		 * @deprecated 5.2.9
 		 */
-		// add_action( 'wp_ajax_wt_update_cart', array( $this, 'update_cart' ) );
-		// add_action( 'wp_ajax_nopriv_wt_update_cart', array( $this, 'update_cart' ) );
+		add_action( 'wp_ajax_wt_update_cart', array( $this, 'update_cart' ) );
+		add_action( 'wp_ajax_nopriv_wt_update_cart', array( $this, 'update_cart' ) );
 
 		// Apply Coupon
 		add_action( 'wp_ajax_wt_cart_apply_coupon', array( $this, 'apply_coupon' ) );
@@ -67,6 +67,7 @@ class WP_Travel_Ajax {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 		check_ajax_referer( 'wp_travel_nonce', '_nonce' );
 		if ( ! isset( $_POST['CouponCode'] ) ) {
@@ -181,6 +182,7 @@ class WP_Travel_Ajax {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$http_post_data = wptravel_sanitize_array( $_POST ); // phpcs:ignore
@@ -428,6 +430,7 @@ class WP_Travel_Ajax {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 		check_ajax_referer( 'wp_travel_nonce', '_nonce' );
 		if ( ! isset( $_POST['update_cart_fields'] ) || count( $_POST['update_cart_fields'] ) < 1 ) {
@@ -465,6 +468,7 @@ class WP_Travel_Ajax {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 		check_ajax_referer( 'wp_travel_nonce', '_nonce' );
 		if ( ! isset( $_REQUEST['cart_id'] ) ) {

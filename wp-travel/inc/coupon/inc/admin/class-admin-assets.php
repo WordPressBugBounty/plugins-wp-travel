@@ -32,7 +32,9 @@ if ( ! class_exists( 'WP_Travel_Coupons_Pro_Admin_Assets' ) ) :
 
 			if ( in_array( $screen->id, $allowed_screen, true ) ) {
 
-				wp_enqueue_script( 'wp-travel-coupons-backend-js', $this->assets_path . 'assets/js/wp-travel-coupons-backend.js', array( 'jquery', 'jquery-ui-tabs', 'tooltipster-min-js', 'jquery-datepicker-lib', 'jquery-datepicker-lib-eng' ), WP_TRAVEL_VERSION, true );
+				// wp_enqueue_script( 'wp-travel-coupons-backend-js', $this->assets_path . 'assets/js/wp-travel-coupons-backend.js', array( 'jquery', 'jquery-ui-tabs', 'tooltipster-min-js', 'jquery-datepicker-lib', 'jquery-datepicker-lib-eng' ), WP_TRAVEL_VERSION, true );
+
+				wp_enqueue_script( 'wp-travel-coupons-backend-js', $this->assets_path . 'assets/js/wp-travel-coupons-backend.js', array( 'jquery', 'jquery-ui-tabs', 'tooltipster-min-js', 'jquery-datepicker-lib' ), WP_TRAVEL_VERSION, true );
 
 				wp_enqueue_script( 'tooltipster-min-js', $this->assets_path . 'assets/js/lib/tooltipster/js/tooltipster.bundle' . $suffix . '.js', array( 'jquery', 'jquery-ui-tabs' ), WP_TRAVEL_VERSION, true );
 

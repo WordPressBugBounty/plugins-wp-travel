@@ -128,3 +128,5 @@ class Wp_Travel_Taxonomies { // @phpcs:ignore
 		register_taxonomy( 'activity', apply_filters( 'wp_travel_activity_post_types', array( WP_TRAVEL_POST_TYPE ) ), $args ); // @phpcs:ignore
 	}
 }
+
+

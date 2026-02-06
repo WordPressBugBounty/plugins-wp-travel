@@ -7,6 +7,13 @@
 
 function wptravel_book_now() {
 
+	// This condition is added to fix Paypal unpaid bookings 
+	if( isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'paypal' ){	
+		$booking_post_type = 'pending-booking';
+	}else{
+		$booking_post_type = 'itinerary-booking';
+	}
+
 	global $wt_cart;
 	$items = $wt_cart->getItems();
 
@@ -26,15 +33,18 @@ function wptravel_book_now() {
 		if ( ! WP_Travel::verify_nonce( true ) || ! isset( $_POST['wp_travel_book_now'] ) ) {
 			return;
 		}
-	
-		if( $discount_coupon_data['type'] !== 'percentage' && $discount_coupon_data['value'] !== '100' ){
-			if( $_POST['wp_travel_booking_option'] == 'booking_with_payment' && !isset( $_POST['wp_travel_payment_gateway'] ) ){
+		// Safely inspect coupon data and payment gateway.
+		$discount_type  = isset( $discount_coupon_data['type'] ) ? $discount_coupon_data['type'] : '';
+		$discount_value = isset( $discount_coupon_data['value'] ) ? $discount_coupon_data['value'] : '';
+
+		if ( $discount_type !== 'percentage' && $discount_value !== '100' ) {
+			if ( isset( $_POST['wp_travel_booking_option'] ) && $_POST['wp_travel_booking_option'] === 'booking_with_payment' && ! isset( $_POST['wp_travel_payment_gateway'] ) ) {
 				return;
 			}
 		}
 		
 	}
-
+	
 	/**
 	 * Trigger any action before Booking Process.
 	 *
@@ -42,7 +52,7 @@ function wptravel_book_now() {
 	 * @since 4.4.2
 	 */
 	do_action( 'wp_travel_action_before_booking_process' ); // phpcs:ignore
-	do_action( 'wptravel_action_before_booking_process' );	
+	// do_action( 'wptravel_action_before_booking_process' );	
 
 
 	if ( ! count( $items ) ) {
@@ -87,6 +97,13 @@ function wptravel_book_now() {
 	$trip_id     = isset( $trip_ids[0] ) ? $trip_ids[0] : 0;
 	$new_trip_id = $trip_ids;
 
+
+	// This condition is added to fix Paypal unpaid bookings
+	$payment_gateway = isset( $_POST['wp_travel_payment_gateway'] ) ? sanitize_text_field( wp_unslash( $_POST['wp_travel_payment_gateway'] ) ) : '';
+	if ( 'paypal' === $payment_gateway ) {	
+		$_POST['new_trip_id'] = $new_trip_id;
+	}
+
 	if ( empty( $trip_id ) ) {
 		return;
 	}
@@ -99,9 +116,12 @@ function wptravel_book_now() {
 		'post_content' => '',
 		'post_status'  => 'publish',
 		'post_slug'    => uniqid(),
-		'post_type'    => 'itinerary-booking',
+		'post_type'    => $booking_post_type,
 	);
 	$booking_id = wp_insert_post( $post_array );
+	
+
+	
 
 	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
 		update_post_meta( $booking_id, 'refrence_woo_order_details', ( (int) $booking_id -1 ) );
@@ -179,6 +199,7 @@ function wptravel_book_now() {
 	}
 	do_action( 'wpcrm_post_booking_user', $sanitized_data );
 	// Updating Booking Metas.
+
 	update_post_meta( $booking_id, 'order_data', $sanitized_data );
 	update_post_meta( $booking_id, 'order_items_data', $items ); // @since 1.8.3
 	update_post_meta( $booking_id, 'order_totals', $wt_cart->get_total() );
@@ -352,20 +373,61 @@ function wptravel_book_now() {
 	 * @since 5.0.0
 	 */
 
-	do_action( 'wptravel_action_send_booking_email', $booking_id, wptravel_sanitize_array( $_POST ), $new_trip_id );
-	/**
-	 * Hook used to add payment and its info.
-	 *
-	 * @since 1.0.5 // For Payment.
-	 */
+	// This condition is added to fix Paypal unpaid bookings
+	$payment_gateway = isset( $_POST['wp_travel_payment_gateway'] ) ? sanitize_text_field( wp_unslash( $_POST['wp_travel_payment_gateway'] ) ) : '';
+	if ( 'paypal' !== $payment_gateway ) {	
+
+		do_action( 'wptravel_action_send_booking_email', $booking_id, $sanitized_data, $new_trip_id );
+		/**
+		 * Hook used to add payment and its info.
+		 *
+		 * @since 1.0.5 // For Payment.
+		 */
+		
+		do_action( 'wp_travel_after_frontend_booking_save', $booking_id, $first_key ); // phpcs:ignore
+		do_action( 'wptravel_after_frontend_booking_save', $booking_id, $first_key );
+	}
+
+	$require_login_to_checkout = isset( $settings['enable_checkout_customer_registration'] ) ? $settings['enable_checkout_customer_registration'] : 'no'; // if required login then there is registration option as well. so we continue if this is no.
+	$create_user_while_booking = isset( $settings['create_user_while_booking'] ) ? $settings['create_user_while_booking'] : 'no';
+
+	if ( is_user_logged_in() ) {
+		$user    = wp_get_current_user();
+		$user_id = $user->ID;
+	} elseif ( 'no' === $require_login_to_checkout && 'yes' === $create_user_while_booking && ! is_user_logged_in() ) {
+		
+		$user_id = wptravel_create_new_customer( $customer_email );
+
+		$data_array = array(
+			'billing_address'  => $sanitized_data['wp_travel_address'],
+			'billing_city'     => $sanitized_data['billing_city'],
+			'billing_company'  => '',
+			'billing_zip_code' => $sanitized_data['billing_postal'],
+			'billing_country'  => $sanitized_data['wp_travel_country'],
+			'billing_phone'    => $sanitized_data['wp_travel_phone_traveller'][array_key_first($sanitized_data['wp_travel_phone_traveller'])][0]
+		);
+		
+		update_user_meta( $user_id, 'first_name', $sanitized_data['wp_travel_fname_traveller'][array_key_first($sanitized_data['wp_travel_fname_traveller'])][0] );
+		update_user_meta( $user_id, 'last_name', $sanitized_data['wp_travel_lname_traveller'][array_key_first($sanitized_data['wp_travel_lname_traveller'])][0] );
+		update_user_meta( $user_id, 'wp_travel_customer_billing_details', $data_array );
+
+
+	} else {
+		$user_id = null;
+	}
+	if ( $user_id && ! is_wp_error( $user_id ) ) {
+		$saved_booking_ids = get_user_meta( $user_id, 'wp_travel_user_bookings', true );
+		$saved_booking_ids = ! $saved_booking_ids ? array() : $saved_booking_ids;
+		array_push( $saved_booking_ids, $booking_id );
+		update_user_meta( $user_id, 'wp_travel_user_bookings', $saved_booking_ids );
+	}
 	
-	do_action( 'wp_travel_after_frontend_booking_save', $booking_id, $first_key ); // phpcs:ignore
-	do_action( 'wptravel_after_frontend_booking_save', $booking_id, $first_key );
 	
-	if( $_POST['wp_travel_payment_gateway'] == 'paypal' ){
-	
+	if ( 'paypal' === $payment_gateway ) {	
 		do_action( 'wp_travel_standard_paypal_payment_process', $booking_id, $_POST['complete_partial_payment'] );
 	}
+
+
 	
 	// Temp fixes [add payment id in case of booking only].
 
@@ -384,23 +446,7 @@ function wptravel_book_now() {
 	}
 
 
-	$require_login_to_checkout = isset( $settings['enable_checkout_customer_registration'] ) ? $settings['enable_checkout_customer_registration'] : 'no'; // if required login then there is registration option as well. so we continue if this is no.
-	$create_user_while_booking = isset( $settings['create_user_while_booking'] ) ? $settings['create_user_while_booking'] : 'no';
-
-	if ( is_user_logged_in() ) {
-		$user    = wp_get_current_user();
-		$user_id = $user->ID;
-	} elseif ( 'no' === $require_login_to_checkout && 'yes' === $create_user_while_booking && ! is_user_logged_in() ) {
-		$user_id = wptravel_create_new_customer( $customer_email );
-	} else {
-		$user_id = null;
-	}
-	if ( $user_id && ! is_wp_error( $user_id ) ) {
-		$saved_booking_ids = get_user_meta( $user_id, 'wp_travel_user_bookings', true );
-		$saved_booking_ids = ! $saved_booking_ids ? array() : $saved_booking_ids;
-		array_push( $saved_booking_ids, $booking_id );
-		update_user_meta( $user_id, 'wp_travel_user_bookings', $saved_booking_ids );
-	}
+	
 	// Clear Transient To update booking Count.
 
 	delete_post_meta( $trip_id, 'wp_travel_booking_count' );
@@ -423,7 +469,9 @@ function wptravel_book_now() {
 	$booking_paid   = get_post_meta( $booking_id, 'wp_travel_payment_status', true );
 	$partial_enable = get_post_meta( $payment_id, 'wp_travel_is_partial_payment', true );
 
-	if( $discount_coupon_data['type'] == 'percentage' && $discount_coupon_data['value'] == '100' ){
+	$discount_type  = isset( $discount_coupon_data['type'] ) ? $discount_coupon_data['type'] : '';
+	$discount_value = isset( $discount_coupon_data['value'] ) ? $discount_coupon_data['value'] : '';
+	if ( 'percentage' === $discount_type && '100' === $discount_value ) {
 		update_post_meta( $payment_id, 'wp_travel_payment_status', 'full_discount' );
 		update_post_meta( $payment_id, 'wp_travel_payment_mode', 'full' );
 	}
@@ -466,6 +514,17 @@ function wptravel_book_now() {
 		}
 		update_option('wp_travel_reserve_date', $reserved_booking_dates);
 	}
+
+
+	if ( 'bank_deposit' === $payment_gateway && isset( $_POST['wp_travel_payment_mode'] ) ) { 
+		update_post_meta( $booking_id, 'wp_travel_bank_payment_mode', sanitize_text_field( wp_unslash( $_POST['wp_travel_payment_mode'] ) ) );
+	}
+
+	if ( 'paypal' !== $payment_gateway ) {	  
+		do_action( 'wptravel_save_bookings_data_google_sheet', $booking_id );
+	}
+
+	do_action( 'wptravel_send_booking_conformation_on_whatsapp', $booking_id );
 
 	if( apply_filters( 'wp_travel_disable_default_thankyoupage', false ) == false ){
 		if( apply_filters( 'wp_travel_woo_enable_onapage', false ) == false ){

@@ -31,10 +31,10 @@ class WP_Travel_Setup_Page {
 			'/trip-import',
 			array(
 				'methods'             => 'POST',
-				'permission_callback' => function ($request) {
-						if (current_user_can('edit_others_posts'))
-						return true;
-					},
+				'permission_callback' => function ( WP_REST_Request $request ) {
+					return current_user_can( 'manage_options' );
+				},
+
 				'callback'            => array( $this, 'wp_travel_import_trip' ),
 			)
 		);

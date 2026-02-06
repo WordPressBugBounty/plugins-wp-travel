@@ -2,9 +2,9 @@
 Contributors: wptravel, suascat_wp
 Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 10.5.0
+Stable tag: 11.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,112 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.1.1 =
+Release Date: 02nd February 2026
+
+Fixes:
+* Added proper permission check on the wp_travel_update_settings AJAX request.
+* Added proper permission check on the wptravel_get_settings AJAX request.
+* Added proper nonce check and permission check on the wp_travel_reset_cached_page_list AJAX request.
+
+
+= 11.1.0 =
+Release Date: 26th January 2026
+
+Fixes:
+* Identified and fixed an issue with the pax selector on the checkout page.
+* Fixed an issue where the pax selector could not be unselected in the OnPage Booking modal.
+* Fixed PHP warnings generated during booking in “booking only” scenarios.
+* Fixed an issue with the date picker in the search form filter.
+
+Enhancements:
+* Added Quick Overview admin dashboard widget.
+* Added Recent Inquiries admin dashboard widget.
+* Added the wp_travel_block_bookings_date_range hook to restrict bookings form by a given date range.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-1-0-update-release-note).**
+
+= 11.0.0 =
+Release Date: 29th December 2025
+
+Fixes:
+* Fixed an issue where the Subscribe label and Subscribe text were automatically reset on page refresh, even when set to empty.
+
+Enhancements:
+* Added a “Select Location” option to the pickup location dropdown on the checkout page.
+* Added a new hook wp_travel_send_booking_admin_emails_to_admin to disable booking emails for the admin and send them to secondary email addresses instead.
+* Added a new hook wp_travel_send_payment_admin_emails_to_admin to disable payment emails for the admin and send them to secondary email addresses instead.
+* Added a new hook wp_travel_trip_enquiry_emails_to_admin to disable enquiry emails for the admin and send them to secondary email addresses instead.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-0-0-update-release-note).**
+
+= 10.9.0 =
+Release Date: 09th December 2025
+
+Fixes:
+* Resolved deprecated PHP warnings to ensure better compatibility with the latest PHP versions.
+* Fixed the salutation issue occurring in the multicart checkout scenario.
+* Fixed header and footer rendering issues on the default Single Trip and Trip Archive templates, particularly for FSE themes.
+* Added logic to block all booking-related actions (such as booking emails and other processes) for incomplete bookings made via Standard PayPal.
+
+Enhancements:
+* Added a WhatsApp button on the Single Trip template to allow users to send trip enquiries directly via WhatsApp.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-9-0-update-release-note).**
+
+= 10.8.0 =
+Release Date: 18th November 2025
+
+Fixes:
+* Made missing strings translation-ready on the customer dashboard page.
+* Added a condition to validate whether the privacy policy checkbox is selected.
+* Fixed the issue where emails were not being sent to customers after completing payments via PayPal from the dashboard.
+* Resolved a console error related to the date picker.
+
+Enhancements:
+* Added functionality to display a required message when the privacy policy checkbox is not selected before payment.
+* Introduced a new "Coming Soon" page feature.
+* Implemented necessary code to enable translation support for the date picker.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-8-0-update-release-note).**
+
+= 10.7.0 =
+Release Date: 03rd November 2025
+
+Fixes:
+* Fixed: Fatal error occurring when adding a booking manually from the dashboard.
+* Fixed: Partial payment emails are now sent correctly when the remaining payment is made from the customer dashboard.
+* Added: "Partial Payment Success" notice for PayPal partial payments and Bank Deposit transactions.
+
+Enhancements:
+* Modified: Booking logic to display the Bank Deposit option only for bookings made using the Bank Deposit payment method.
+* Added: Hook to define pricing category values used for controlling pax selector increments during trip booking.
+* Added: "Set to Trip" option for Trip Extras with conditional logic to display only extras associated with each trip, also added a direct link in Trip Settings for easier Trip Extras management.
+* Added: Google login options
+* Added: New feature "Tour Date Countdown".
+* Added: Background color highlights for Active and Expired coupon statuses in the backend listing table.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-7-0-update-release-note).**
+
+= 10.6.0 =
+Release Date: 08th September 2025
+
+Fixes:
+* Fixed undefined key issue in report page in case there is no booking in system.
+* Fixed issue where users were not created when "Create customer on booking" was enabled for PayPal bookings.
+* Fixed the trip id conflict issue on enquiry data.
+
+Enhancements:
+* Modified trip edit page to display initial pricing and pricing category options without clicking "Add Price".
+* Added Total Pax, Total Amount, Paid Amount Column of admin bookings table.
+* Added Total Pax, Total Amount, Paid Amount Column on export booking file.
+* Added a support hook to change the email footer of New User added email and Password Reset email.
+* Added necessary code to enable translation of the date picker.
+* Beta Release of a “Coming Soon” page.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v10-6-0-update-release-note).**
+
 
 = 10.5.0 =
 Release Date: 04th August 2025

@@ -23,12 +23,24 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 	 */
 	public static function get_enquiry_details() {
 
-		$user = wp_get_current_user();
+		// $user = wp_get_current_user();
 
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get trip enquiry.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$payload = WP_Travel::get_sanitize_request();
@@ -47,13 +59,25 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 	public static function update_enquiry_details() {
 		
 
-		$user = wp_get_current_user();
+		// $user = wp_get_current_user();
 
 		
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to update trip enquiry.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$payload = json_decode( file_get_contents( 'php://input' ) );

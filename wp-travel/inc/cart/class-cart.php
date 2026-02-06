@@ -72,8 +72,8 @@ class WP_Travel_Cart {
 	public function __construct() {
 		$this->cart_id = 'wp_travel_cart';
 
-		// Read cart data on load.
-		add_action( 'plugins_loaded', array( $this, 'read_cart_onload' ), 1 );
+		// Read cart data on init to avoid early translation loading notices.
+		add_action( 'init', array( $this, 'read_cart_onload' ), 1 );
 	}
 
 	/**

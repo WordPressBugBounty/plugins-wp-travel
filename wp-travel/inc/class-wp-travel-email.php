@@ -143,9 +143,29 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 		 * @since 5.0.0
 		 */
 		public function send_booking_email( $booking_id, $request_data, $new_trip_id ) {
-	
 
-			$this->admin_email = apply_filters( 'wp_travel_booking_admin_emails', get_option( 'admin_email' ) ); // @phpcs:ignore
+			if ( function_exists( 'wptravel_get_settings' ) ) {
+				$settings = wptravel_get_settings();
+			} else {
+				$settings = wp_travel_get_settings();
+			}
+
+			
+			$saved_bk_emails = isset( $settings['wp_travel_booking_notif_emails'] ) && ! empty( $settings['wp_travel_booking_notif_emails'] ) ? $settings['wp_travel_booking_notif_emails'] : array();
+
+			if ( is_array( $saved_bk_emails ) && ! empty( $saved_bk_emails ) ) {
+				$admin_email = $saved_bk_emails;
+			}
+
+			if( apply_filters( 'wp_travel_send_booking_admin_emails_to_admin', true ) == true ){
+				$admin_email[] = get_option( 'admin_email' );
+			}
+
+			
+			
+			$this->admin_email = apply_filters( 'wp_travel_booking_admin_emails', $admin_email ); // @phpcs:ignore
+			
+			
 
 			$customer_email_ids = isset( $request_data['wp_travel_email_traveller'] ) ? $request_data['wp_travel_email_traveller'] : array();
 
@@ -232,10 +252,44 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 					// To send HTML mail, the Content-type header must be set.
 					$headers = $email->email_headers( $reply_to_email, $customer_email );
 
+					if( apply_filters( 'wptravel_removed_traveler_text_from_checkout_data' , false )  == true ){
+						foreach ( $email_tags as $key => $value ) {
+							if ( is_string( $value ) ) {
+
+								// remove "Traveler 1", "Traveler 2", etc.
+								$cleaned = trim( preg_replace( '/^Traveler\s*\d+\s*/', '', $value ) );
+
+								// only process specific keys
+								if ( in_array( $key, array( 
+									'{wp_travel_airline_name}', 
+									'{Airline_Flight_Number}', 
+									'{wp_travel_pick_up_time}', 
+									'{Address}', 
+									'{Additional_Info}' 
+								), true ) ) {
+
+									// now do all replacements on the cleaned string
+									$cleaned = str_replace( 
+										array( 'Address', 'Additional_Info', 'Airline Name', 'Airline Flight Number', 'Pick Up Time' ),
+										array( 'Address:-', 'Additional Info:-', 'Airline Name:-', 'Airline Flight Number:-', 'Pick Up Time:-' ),
+										$cleaned
+									);
+
+									// assign back
+									$email_tags[$key] = $cleaned;
+								} else {
+									$email_tags[$key] = $cleaned;
+								}
+							}
+						}
+					}
+
 					// Email Subject.
 					$email_subject = str_replace( array_keys( $email_tags ), $email_tags, $email_template['subject'] ); // Added email tag support from ver 4.1.5.
+
 					// Email Content.
 					$email_content      = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
+					
 					$amdin_send_booking = apply_filters( 'wp_travel_booking_mail_sent_to_admin', true );
 					if ( $amdin_send_booking == true ) {
 						if ( ! wp_mail( $this->admin_email, $email_subject, $email_content, $headers, $attachment ) ) {
@@ -244,7 +298,26 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 					}
 				}
 
+				
+				// if ( apply_filters( 'wptravel_send_booking_email_to_guide', false ) == true ) { 
+					
+					do_action( 'wptravel_send_email_to_guide', $booking_id, $email_tags, $headers );
 
+
+					// $email_content      = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
+					// $order_items_data = get_post_meta( $booking_id, 'order_items_data' )[0];
+					// $guide_ids = [];
+					// foreach( $order_items_data as $data ){
+					// 	$trip_id = (int)$data['trip_id'];
+					// 	$get_guide_ids = maybe_unserialize( get_post_meta( $trip_id )['selected_guides'][0] );
+					// 	foreach( $get_guide_ids as $guide_id ){
+					// 		if ( ! wp_mail( get_userdata(  (int)$guide_id )->data->user_email, $email_subject, $email_content, $headers, $attachment ) ) {
+					// 			WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
+					// 		}
+					// 	}
+					// }
+					
+				// }
 
 				/**
 				 * Hooks to enable/disable booking email to client.
@@ -543,7 +616,7 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				do_action( 'wp_travel_after_payment_email_sent', $booking_id, $email_data, $email_tags ); // @since 3.0.6 for invoice.
 			}
 			
-			
+
 			return $email_tags;
 
 		}

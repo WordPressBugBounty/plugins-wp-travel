@@ -110,8 +110,9 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 										</div>
 										<div class="payment-traveller">
 											<?php
+					
 											if ( 0 === $i ) {
-									
+												
 												foreach ( $wptravel_traveller_fields as $wptravel_field_group => $wptravel_field ) :
 													
 													$wptravel_field_name = '';
@@ -128,7 +129,7 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 														$wptravel_field['default'] = ''; // make empty default if other than lead traveler.
 													}
 													if( isset( $wptravel_field['validations']['specific_trip'] ) && $wptravel_field['validations']['specific_trip'] == '1'  ){
-			
+														
 														if( isset( $wptravel_field['trip_ids'] ) && in_array( $wptravel_trip_id, explode( ',', $wptravel_field['trip_ids'] ) ) ){
 															if ( ! $wptravel_all_travelers_fields_require && $wptravel_field['validations']['specific_trip'] !== '1' ) {
 																// Added to control over required fields for travellers @since 3.1.3.
@@ -144,6 +145,25 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 															}
 															$wptravel_form_field->init( array( $wptravel_field ) )->render( $wptravel_trips );
 														}
+
+														$terms = wp_get_post_terms( $wptravel_trip_id, 'itinerary_types' );
+
+														$term_ids = wp_list_pluck( $terms, 'term_id' );
+
+														if ( in_array( (int)$wptravel_field['trip_types'], $term_ids ) ) { 
+				
+															if ( isset( $wptravel_field['validations']['required_for_all'] ) && $wptravel_field['validations']['required_for_all'] ) {
+																	
+																	$wptravel_field['validations']['required'] = $i == 0 ? true : $wptravel_field['validations']['required'];
+																
+															} else {
+																// Set required false to extra travellers.
+																$wptravel_field['validations']['required'] = ! empty( $wptravel_field['validations']['required'] ) ? $wptravel_field['validations']['required'] : false;
+																$wptravel_field['validations']['required'] = $i > 0 ? false : $wptravel_field['validations']['required'];
+															}
+															$wptravel_form_field->init( array( $wptravel_field ) )->render( $wptravel_trips );
+														}
+
 													}else{
 														if ( ! $wptravel_all_travelers_fields_require ) {
 															// Added to control over required fields for travellers @since 3.1.3.
@@ -192,6 +212,24 @@ $wptravel_form_fw->init_validation( 'wp-travel-booking' );
 																		$wptravel_field['validations']['required'] = ! empty( $wptravel_field['validations']['required'] ) ? $wptravel_field['validations']['required'] : false;
 																		$wptravel_field['validations']['required'] = $i > 0 ? false : $wptravel_field['validations']['required'];
 																	}
+																}
+																$wptravel_form_field->init( array( $wptravel_field ) )->render( $wptravel_trips );
+															}
+
+															$terms = wp_get_post_terms( $wptravel_trip_id, 'itinerary_types' );
+
+															$term_ids = wp_list_pluck( $terms, 'term_id' );
+
+															if ( in_array( (int)$wptravel_field['trip_types'], $term_ids ) ) { 
+					
+																if ( isset( $wptravel_field['validations']['required_for_all'] ) && $wptravel_field['validations']['required_for_all'] ) {
+																		
+																		$wptravel_field['validations']['required'] = $i == 0 ? true : $wptravel_field['validations']['required'];
+																	
+																} else {
+																	// Set required false to extra travellers.
+																	$wptravel_field['validations']['required'] = ! empty( $wptravel_field['validations']['required'] ) ? $wptravel_field['validations']['required'] : false;
+																	$wptravel_field['validations']['required'] = $i > 0 ? false : $wptravel_field['validations']['required'];
 																}
 																$wptravel_form_field->init( array( $wptravel_field ) )->render( $wptravel_trips );
 															}

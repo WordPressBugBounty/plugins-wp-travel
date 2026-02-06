@@ -44,9 +44,12 @@ class WpTravel_Frontend_Assets {
 		$all_localized = WpTravel_Helpers_Localize::get();
 
 		$wp_travel     = isset( $all_localized['wp_travel'] ) ? $all_localized['wp_travel'] : array(); // localized data for WP Travel below V 4.0.
-
+		
 		$settings     = wptravel_get_settings();
 		$switch_to_v4 = wptravel_is_react_version_enabled();
+
+		// Avoid undefined index notice when the option is missing.
+		$wp_travel['stripe_new_ui'] = isset( $settings['stripe_new_payment_ui'] ) ? $settings['stripe_new_payment_ui'] : 'no';
 
 		if ( ! wptravel_can_load_bundled_scripts() ) {
 			wp_enqueue_style( 'wp-travel-frontend' );
@@ -184,6 +187,18 @@ class WpTravel_Frontend_Assets {
 		wp_localize_script( 'wp-travel-script', '_wp_travel_check_cp_enable', array( 'is_enable' => isset( wptravel_get_settings()['enable_conditional_payment'] ) ? wptravel_get_settings()['enable_conditional_payment']: '' ) );
 		wp_localize_script( 'wp-travel-script', '_wp_travel_conditional_payment_list', isset( wptravel_get_settings()['conditional_payment_list'] ) ? wptravel_get_settings()['conditional_payment_list'] : array() );
 		wp_localize_script( 'wp-travel-script', '_wp_travel_active_payment', wptravel_get_active_gateways()['active'] );
+
+		$language_tag = get_bloginfo('language');
+		$flatpickr_locale = strtolower(substr($language_tag, 0, 2));
+		if ( $flatpickr_locale !== 'en' ) { // Flatpickr default is English
+			wp_enqueue_script(
+				'flatpickr-locale',
+				'https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/' . $flatpickr_locale . '.js',
+				array(),
+				null,
+				true
+			);
+		}
 	}
 
 	/**
@@ -225,6 +240,12 @@ class WpTravel_Frontend_Assets {
 				'ver'       => WP_TRAVEL_VERSION,
 				'in_footer' => true,
 			),
+			// 'jquery-datepicker-lib-eng'   => array(
+			// 	'src'       => $datepicker_i18n_file,
+			// 	'deps'      => array( 'jquery' ),
+			// 	'ver'       => WP_TRAVEL_VERSION,
+			// 	'in_footer' => true,
+			// ),
 			'jquery-datepicker-lib-eng'   => array(
 				'src'       => $datepicker_i18n_file,
 				'deps'      => array( 'jquery' ),
@@ -461,12 +482,23 @@ class WpTravel_Frontend_Assets {
 			if ( '' !== $api_key && true === $show_google_map ) {
 				$bundle_deps[] = 'jquery-gmaps';
 			}
-			$scripts['wp-travel-frontend-bundle'] = array(
-				'src'       => self::$app_path . '/assets/js/wp-travel-frontend.bundle.js',
-				'deps'      => $bundle_deps,
-				'ver'       => WP_TRAVEL_VERSION,
-				'in_footer' => true,
-			);
+
+			if( apply_filters( 'wp_travel_load_old_frontend_js', false ) == true ){
+				$scripts['wp-travel-frontend-bundle'] = array(
+					'src'       => self::$app_path . '/assets/js/wp-travel-frontend.bundle-old.js',
+					'deps'      => $bundle_deps,
+					'ver'       => WP_TRAVEL_VERSION,
+					'in_footer' => true,
+				);
+			}else{
+				$scripts['wp-travel-frontend-bundle'] = array(
+					'src'       => self::$app_path . '/assets/js/wp-travel-frontend.bundle.js',
+					'deps'      => $bundle_deps,
+					'ver'       => WP_TRAVEL_VERSION,
+					'in_footer' => true,
+				);
+			}
+		
 			$scripts['wp-travel-maps']            = array(
 				'src'       => self::$app_path . '/assets/js/wp-travel-front-end-map.js',
 				'deps'      => array( 'jquery', 'jquery-gmaps' ),

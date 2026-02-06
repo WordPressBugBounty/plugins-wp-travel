@@ -100,7 +100,7 @@ function wptravel_submit_bank_deposit_slip() {
 			
 			$booking_id = absint( $_POST['booking_id'] );
 			$txn_id     = isset( $_POST['wp_travel_bank_deposit_transaction_id'] ) ? sanitize_text_field( $_POST['wp_travel_bank_deposit_transaction_id'] ) : '';
-			$data       = wptravel_booking_data( $booking_id );
+			$data       = wptravel_booking_data( $booking_id );	
 			
 			$payment_id     = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
 			$payment_id = $payment_id[count(get_post_meta( $booking_id, 'wp_travel_payment_id', true ))-1];
@@ -132,6 +132,7 @@ function wptravel_submit_bank_deposit_slip() {
 			}
 			
 			
+			
 			$payment_method = get_post_meta( $payment_id, 'wp_travel_payment_gateway', true );
 			update_post_meta( $payment_id, 'wp_travel_payment_gateway', sanitize_text_field( $payment_method ) );
 			update_post_meta( $payment_id, 'wp_travel_payment_slip_name', sanitize_text_field( $filename ) );
@@ -141,6 +142,130 @@ function wptravel_submit_bank_deposit_slip() {
 
 			update_post_meta( $payment_id, 'wp_travel_payment_amount', sanitize_text_field( $detail['amount'] ) );
 			
+
+
+			if ( function_exists( 'wptravel_get_settings' ) ) {
+				$settings = wptravel_get_settings();
+			} else {
+				$settings = wp_travel_get_settings();
+			}
+
+			$send_email_to_admin = ( isset( $settings['send_booking_email_to_admin'] ) && '' !== $settings['send_booking_email_to_admin'] ) ? $settings['send_booking_email_to_admin'] : 'yes';
+
+			$current_user = wp_get_current_user();
+
+			$client_email = $current_user->user_email;
+			$admin_email  = get_option( 'admin_email' );
+
+			// Email Variables.
+			if ( is_multisite() ) {
+				$sitename = get_network()->site_name;
+			} else {
+				$sitename = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+			}
+			
+			$email_tags = array(
+				'{sitename}'      => $sitename,
+				'{booking_id}'    => $booking_id,
+				'{customer_name}' => $current_user->display_name,
+				// '{amount}'        => wptravel_get_currency_symbol() . ' ' . $amount,
+				'{amount}'        => wptravel_get_formated_price_currency( $detail['amount'], false, '', $booking_id ), // @since 1.0.5,
+			);
+
+			$email = new WP_Travel_Emails();
+
+			$admin_template = $email->wptravel_get_email_template( 'partial_payment', 'admin' );
+
+			if( get_post_meta( $booking_id, 'wp_travel_bank_payment_mode' )[0] == 'full' ){
+				$admin_template['mail_header'] = str_replace( 'Partial Payment', 'Full Payment', $admin_template['mail_header'] );
+				$admin_template['mail_content'] = str_replace( 'partial payment', 'payment', $admin_template['mail_content'] );
+				$admin_template['subject'] = 'Full Payment';
+			}
+
+			$admin_message_data  = $admin_template['mail_header'];
+			$admin_message_data .= $admin_template['mail_content'];
+			$admin_message_data .= $admin_template['mail_footer'];
+
+			// Admin message.
+			$admin_message = str_replace( array_keys( $email_tags ), $email_tags, $admin_message_data );
+			// Admin Subject.
+			$admin_subject = $admin_template['subject'];
+
+			// Client Template.
+			$client_template = $email->wptravel_get_email_template( 'partial_payment', 'client' );
+
+			if( get_post_meta( $booking_id, 'wp_travel_bank_payment_mode' )[0] == 'full' ){
+				$client_template['mail_header'] = str_replace( 'Partial Payment', 'Full Payment', $client_template['mail_header'] );
+				$client_template['mail_content'] = str_replace( 'partial payment', 'payment', $client_template['mail_content'] );
+				$client_template['subject'] = 'Full Payment Received';
+			}
+
+			$client_message_data  = $client_template['mail_header'];
+			$client_message_data .= $client_template['mail_content'];
+			$client_message_data .= $client_template['mail_footer'];
+
+			// Client message.
+			$client_message = str_replace( array_keys( $email_tags ), $email_tags, $client_message_data );
+
+			// Client Subject.
+			$client_subject = $client_template['subject'];
+
+			$reply_to_email = isset( $settings['wp_travel_from_email'] ) ? $settings['wp_travel_from_email'] : $admin_email;
+
+			// Send mail to admin if booking email is set to yes.
+			if ( 'yes' === $send_email_to_admin ) {
+
+				// To send HTML mail, the Content-type header must be set.
+				$headers = $email->email_headers( $reply_to_email, $client_email );
+
+				if ( ! wp_mail( $admin_email, $admin_subject, $admin_message, $headers ) ) {
+					WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel-pro' ) . '</strong> ' . __( 'Email could not be sent.', 'wp-travel-pro' ), 'error' );
+				}
+			}
+
+			// Send email to client.
+			// To send HTML mail, the Content-type header must be set.
+			$headers = $email->email_headers( $reply_to_email, $reply_to_email );
+
+			if ( ! wp_mail( $client_email, $client_subject, $client_message, $headers ) ) {
+				WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel-pro' ) . '</strong> ' . __( 'Email could not be sent.', 'wp-travel-pro' ), 'error' );
+			}
+
+			if( get_post_meta( $booking_id, 'wp_travel_bank_payment_mode' )[0] == 'full' ){ 
+				WP_Travel()->notices->add( __( 'Full Payment Success.', 'wp-travel-pro' ), 'success' );
+			}else{
+				WP_Travel()->notices->add( __( 'Partial Payment Success.', 'wp-travel-pro' ), 'success' );
+			}
+			
+
+			if ( function_exists(  'slicewp_get_setting' ) ) {
+				$slicewp_settings = slicewp_get_setting( 'active_integrations' );
+				if ( in_array( 'wptravel', $slicewp_settings ) ){
+					global $wpdb;
+
+					$reference_value = $booking_id;
+					$new_status = 'pending';
+
+					if( wptravel_booking_data( $booking_id )['payment_status'] == 'paid' ){
+						$new_status = 'unpaid';
+					}
+
+					$wpdb->update(
+						"{$wpdb->prefix}slicewp_commissions",
+						array( 'status' => $new_status ),        
+						array( 'reference' => $reference_value ),
+						array( '%s' ),
+						array( '%s' )
+					);
+				}
+			}
+
+			// global $wp;
+			// $thankyou_page = home_url( $wp->request );
+
+			// wp_redirect( $thankyou_page );
+			// die;
+
 			do_action( 'wp_travel_after_successful_payment', $booking_id );
 
 			// if( is_array( $payment_id ) ){

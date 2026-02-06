@@ -338,6 +338,7 @@ class WP_Travel_Default_Form_Fields { // @phpcs:ignore
 		
 				if( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )  ){
 					$locations = array();
+					$locations[] =  __( 'Select Location', 'wp-travel' );
 					$required = false;
 					foreach( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true  ) as $point ){
 						$locations[$point] = $point;
@@ -368,6 +369,7 @@ class WP_Travel_Default_Form_Fields { // @phpcs:ignore
 				if( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )  ){
 				
 					$locations = array();
+					$locations[] =  __( 'Select Location', 'wp-travel' );
 					$required = false;
 					foreach( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true  ) as $point ){
 						$locations[$point] = $point;

@@ -59,6 +59,7 @@ class WP_Travel_FW_Field_Date extends WP_Travel_FW_Field_Text {
 		if ( ! $display ) {
 			return $output;
 		}
+		
 
 		echo esc_html( $output );
 	}

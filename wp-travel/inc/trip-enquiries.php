@@ -122,9 +122,10 @@ function wptravel_get_enquiries_form( $trips_dropdown = false ) {
 			'type'    => 'hidden',
 			'name'    => 'wp_travel_enquiry_post_id',
 			'id'      => 'wp-travel-enquiry-post-id',
-			'default' => $post->ID,
+			'default' => apply_filters( 'wp_travel_set_trip_id_on_enquiry_form', $post->ID ),
 		);
 	}
+
 	$policy_link = wptravel_privacy_link();
 	if ( $policy_link && apply_filters( 'wptravel_enable_privacy_policy_checkout_box_enquiry_form', true ) == true ) {
 		// GDPR Compatibility for enquiry.
@@ -321,7 +322,7 @@ function wptravel_save_user_enquiry() {
 
 		wp_send_json_error( $errors );
 
-		return;
+		exit;
 
 	}
 
@@ -330,7 +331,7 @@ function wptravel_save_user_enquiry() {
 	if ( ! empty( $validation_check ) && false === $validation_check['status'] ) {
 		$errors['message'] = $validation_check['message'];
 		wp_send_json_error( $errors );
-		return;
+		exit;
 	}
 
 	$settings = wptravel_get_settings();
@@ -389,6 +390,8 @@ function wptravel_save_user_enquiry() {
 			update_post_meta( $new_enquiry, $field['name'], sanitize_text_field( $meta_val ) );
 			$enquiry_data[ $field['name'] ] = $meta_val;
 		endforeach;
+
+		do_action( 'wptravel_save_enquiries_data_google_sheet', $enquiry_data );
 	
 		$enquiry_data = apply_filters( 'wp_travel_frontend_enquiry_data', $enquiry_data );
 
@@ -437,6 +440,8 @@ function wptravel_save_user_enquiry() {
 	$enquiry_subject = $enquiry_template['subject'];
 
 	$reply_to_email = isset( $settings['wp_travel_from_email'] ) ? $settings['wp_travel_from_email'] : $site_admin_email;
+	
+	
 
 	do_action( 'wp_travel_before_enquiries_email_sent', $admin_email, $customer_email, $formdata, $enquiry_id );
 

@@ -204,6 +204,8 @@ class WP_Travel_Helpers_Settings {
 		$settings        = wptravel_get_settings();
 		$settings_fields = array_keys( wptravel_settings_default_fields() );
 
+		
+
 		$ignore_fields = array( 'wp_travel_trip_facts_settings', 'global_tab_settings', 'sorted_gateways', 'wp_travel_bank_deposits' );
 		foreach ( $settings_fields as $settings_field ) {
 			if ( in_array( $settings_field, $ignore_fields ) ) {
@@ -257,6 +259,11 @@ class WP_Travel_Helpers_Settings {
 			foreach ( $settings_data['global_tab_settings'] as  $global_tab ) {
 				$tab_key                                 = $global_tab['tab_key']; // quick fix.
 				$global_tabs[ $tab_key ]['label']        = $global_tab['label'];
+				$global_tabs[ $tab_key ]['icon']        = $global_tab['icon'];
+				$global_tabs[ $tab_key ]['icon']         = $global_tab['icon'];
+				$global_tabs[ $tab_key ]['icon_img']         = $global_tab['icon_img'];
+				$global_tabs[ $tab_key ]['icon_img_id']         = $global_tab['icon_img_id'];
+				$global_tabs[ $tab_key ]['selected_icon_type']         = $global_tab['selected_icon_type'];
 				$global_tabs[ $tab_key ]['show_in_menu'] = $global_tab['show_in_menu'];
 			}
 			$settings['global_tab_settings'] = $global_tabs;
@@ -382,7 +389,10 @@ class WP_Travel_Helpers_Settings {
 		$settings['enable_one_page_booking'] = isset( $settings_data['enable_one_page_booking'] ) ? $settings_data['enable_one_page_booking'] : false;
 		// unset( $settings['modules'] );
 
-	
+		if( isset( $settings_data['google_account_service_json'] ) ){
+			$settings['google_account_service_json'] = $settings_data['google_account_service_json'];
+		}
+		
 		update_option( 'wp_travel_settings', $settings );
 		/**
 		 * Hook to trigger after settings saved.

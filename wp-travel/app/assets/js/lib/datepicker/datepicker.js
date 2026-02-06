@@ -1707,17 +1707,75 @@
     );
 });
 
-jQuery(function($) {
-    $(".wp-travel-datepicker, .date input").each(function() {
-        if (this._flatpickr) {
-            this._flatpickr.destroy(); // destroy existing flatpickr
-        }
 
-        flatpickr(this, {
+jQuery(function ($) {
+    if (typeof flatpickr === 'undefined') {
+        return;
+    }
+
+    const wpLang = document.documentElement.lang || 'en-US';
+    const flatpickrLocale = wpLang.slice(0, 2).toLowerCase();
+
+    const initFlatpickr = function ($elements, options) {
+        if (!$elements.length) return;
+
+        $elements.each(function () {
+            if (this._flatpickr) {
+                this._flatpickr.destroy();
+            }
+
+            flatpickr(this, options);
+        });
+    };
+
+    initFlatpickr(
+        $(".wp-travel-datepicker, .date input"),
+        {
             dateFormat: "Y-m-d",
             minDate: "1900-01-01",
-            maxDate: "2100-12-31",
-            allowInput: true
-        });
-    });
+            maxDate: "2200-12-31",
+            locale: flatpickrLocale
+        }
+    );
+
+    initFlatpickr(
+        $("[id^='wp-travel-date-of-birth-']"),
+        {
+            dateFormat: "Y-m-d",
+            minDate: "1900-01-01",
+            maxDate: new Date(),
+            locale: flatpickrLocale
+        }
+    );
+
+    initFlatpickr(
+        $(".date input.future-date"),
+        {
+            dateFormat: "Y-m-d",
+            minDate: new Date(),
+            maxDate: "2200-12-31",
+            locale: flatpickrLocale
+        }
+    );
+
+    initFlatpickr(
+        $(".date input.past-date"),
+        {
+            dateFormat: "Y-m-d",
+            minDate: "1900-01-01",
+            maxDate: new Date(),
+            locale: flatpickrLocale
+        }
+    );
+
+    initFlatpickr(
+        $(".wp-travel-trip-duration input"),
+        {
+            dateFormat: "Y-m-d",
+            minDate: "1900-01-01",
+            maxDate: new Date(),
+            locale: flatpickrLocale
+        }
+    );
 });
+

@@ -44,6 +44,7 @@ class WpTravel_Helpers_Strings {
 			'alert'                     => self::alert_strings(),
 			'book_n_pay'                => __( 'Book and Pay', 'wp-travel' ),
 			'book_now'                  => __( 'Book Now', 'wp-travel' ),
+			'is_pro_enable'             => class_exists( 'WP_Travel_Pro' ) ? 'yes' : 'no',
 			'booking_tab_content_label' => apply_filters( 'wp_travel_booking_section_main_title', __( 'Select Date and Pricing Options for this trip in the Trip Options setting.', 'wp-travel' ) ),
 			'bookings'                  => self::booking_strings(),
 			'category'                  => __( 'Category', 'wp-travel' ),
@@ -177,6 +178,7 @@ class WpTravel_Helpers_Strings {
 			'booking_start_date_info'   => apply_filters( 'booking_start_date_info', __( 'Booking will start from ', 'wp-travel' ) ),
 			'booking_offset'            => apply_filters( 'wptravel_booking_offset', 0 ),
 			'exclude_date'            	=> apply_filters( 'wptravel_exclude_booking_dates', array() ),
+			'exclude_date_range'        => apply_filters( 'wptravel_exclude_booking_dates_range_for_all_trips', array() ),
 			'current_year'            	=> gmdate("Y"),
 			'booking_start_date_label'  => __( 'Booking Start', 'wp-travel' ),
 			'trip_pricing_options'			=> apply_filters( 'wptravel_trip_pricing_options',
@@ -288,6 +290,9 @@ class WpTravel_Helpers_Strings {
 
 		$localized_strings['add_to_cart_notice'] = apply_filters( 'wp_travel_add_to_cart_notice_delay_time', 3000 );
 
+		// $localized_strings['wp_travel_blocking_date_range'] = array( '2025-12-05','2025-12-10') ;
+		$localized_strings['wp_travel_blocking_date_range'] = apply_filters( 'wp_travel_block_bookings_date_range', array( '' ) );
+
 
 		if( get_option( 'wptravel_reserve_date' ) == 'yes' ){
 			$localized_strings['reserved_booking_dates'] = get_option('wp_travel_reserve_date');
@@ -344,6 +349,24 @@ class WpTravel_Helpers_Strings {
 			'person'                        =>  __( 'Person', 'wp-travel' ),
 			'departure_custom_label'        =>  __( 'Bookings', 'wp-travel' ),
 			'departure_custom_links'		=> apply_filters( 'wp_travel_enable_custom_links_departure', false ),
+			'custom_booking_status_field'		=> apply_filters( 'wp_travel_enable_custom_booking_status_field', false ),
+			'custom_booking_status'			=> apply_filters(
+												'wp_travel_enable_custom_booking_status',
+													array(
+														array(
+															'label' => __( 'Seats Available', 'wp-travel' ),
+															'value' => 'seats_available',
+														),
+														array(
+															'label' => __( 'Close to Full', 'wp-travel' ),
+															'value' => 'close_full',
+														),
+														array(
+															'label' => __( 'Sold Out', 'wp-travel' ),
+															'value' => 'sold_out',
+														),
+													)
+												),
 			'departure_custom_links_label'  => __( 'Book Now', 'wp-travel' ),
 			'date'                          => __( 'Date', 'wp-travel' ),
 			'trip_extras'                   => __( 'Trip Extras', 'wp-travel' ),
@@ -359,7 +382,8 @@ class WpTravel_Helpers_Strings {
 				'payment_id'			=> __( 'Payment ID / Txn ID', 'wp-travel' ),
 				'payment_methode'		=> __( 'Payment Method', 'wp-travel' ),
 				'payment_amount'		=> __( 'Payment Amount', 'wp-travel' ),
-			]
+			],
+			'pricing_cat_increment'		=> apply_filters( 'wptravel_custom_input_increment_pricing_cat', [] ),
 		);
 	}
 
@@ -505,3 +529,4 @@ class WpTravel_Helpers_Strings {
 		return $strings;
 	}
 }
+

@@ -7,20 +7,39 @@ class WP_Travel_Ajax_Settings {
 	public static function init() {
 		 // get settings.
 		add_action( 'wp_ajax_wptravel_get_settings', array( __CLASS__, 'get_settings' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_get_settings', array( __CLASS__, 'get_settings' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_get_settings', array( __CLASS__, 'get_settings' ) );
 
 		// Update settings.
 		add_action( 'wp_ajax_wp_travel_update_settings', array( __CLASS__, 'update_settings' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_update_settings', array( __CLASS__, 'update_settings' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_update_settings', array( __CLASS__, 'update_settings' ) );
 
 		add_action( 'wp_ajax_wp_travel_reset_cached_page_list', array( __CLASS__, 'reset_cached_page_list' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_reset_cached_page_list', array( __CLASS__, 'reset_cached_page_list' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_reset_cached_page_list', array( __CLASS__, 'reset_cached_page_list' ) );
 
 		add_action( 'wp_ajax_wptravel_wpml_migrate', array( __CLASS__, 'force_migrate_wpml' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_wpml_migrate', array( __CLASS__, 'force_migrate_wpml' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_wpml_migrate', array( __CLASS__, 'force_migrate_wpml' ) );
 	}
 
 	public static function reset_cached_page_list() { 
+	
+
+		$permission = WP_Travel::verify_nonce();
+	
+		if ( ! $permission || is_wp_error($permission) ) {
+			WP_Travel_Helpers_REST_API::response($permission);
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to reset page lists.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
+		}
 
 		delete_transient( 'wp_travel_cached_page_list' );
 		
@@ -32,13 +51,22 @@ class WP_Travel_Ajax_Settings {
 		 * Permission Check
 		 */
 
-		$user = wp_get_current_user();
-
-
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to get settings.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 
 		$response = WP_Travel_Helpers_Settings::get_settings();
@@ -51,12 +79,23 @@ class WP_Travel_Ajax_Settings {
 		/**
 		 * Permission Check
 		 */
-		$user = wp_get_current_user();
 	
 		$permission = WP_Travel::verify_nonce();
 	
 		if ( ! $permission || is_wp_error($permission) ) {
-			return WP_Travel_Helpers_REST_API::response($permission);
+			WP_Travel_Helpers_REST_API::response($permission);
+			exit;
+		}
+		
+		if ( ! current_user_can( 'manage_options' ) ) {      
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to update settings.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
 		}
 	
 		/**
@@ -66,19 +105,24 @@ class WP_Travel_Ajax_Settings {
 		if ( empty($post_data) ) {
 			return wp_send_json_error(array('result' => 'No data received'));
 		}
+
+		
 	
 		$new_post_data = json_decode($post_data, true);
 		if ( json_last_error() !== JSON_ERROR_NONE ) {
 			return wp_send_json_error(array('result' => 'Invalid JSON data'));
 		}
-	
+
+		
 		$new_post_data = wptravel_sanitize_array($new_post_data, true);
+		
 	
+
 		// Ensure sanitized data is valid
 		if ( empty($new_post_data) || ! is_array($new_post_data) ) {
 			return wp_send_json_error(array('result' => 'Invalid settings data'));
 		}
-	
+		
 		$response = WP_Travel_Helpers_Settings::update_settings($new_post_data);
 	
 		// Assuming `WP_Travel_Helpers_Settings::update_settings` handles errors internally
@@ -101,15 +145,24 @@ class WP_Travel_Ajax_Settings {
 		 * Permission Check
 		 */
 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			return wp_send_json( array( 'result' => 'Authentication error' ) );
-		}
-
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {      
+			WP_Travel_Helpers_REST_API::response(
+				new WP_Error(
+					'forbidden',
+					__( 'You are not allowed to migrate wmpl.', 'wp-travel' ),
+					array( 'status' => 403 )
+				)
+			);
+			exit;
+		}
+	
 
 		$post_data = json_decode( file_get_contents( 'php://input' ), true ); // Added 2nd Parameter to resolve issue with objects.
 		$post_data = wptravel_sanitize_array( $post_data, true );
