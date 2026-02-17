@@ -4,7 +4,7 @@ class WP_Travel_Ajax_Trip_Dates {
 		// Get Cart items.
 
 		add_action( 'wp_ajax_wp_travel_remove_trip_date', array( __CLASS__, 'remove_trip_date' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_remove_trip_date', array( __CLASS__, 'remove_trip_date' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_remove_trip_date', array( __CLASS__, 'remove_trip_date' ) );
 	}
 
 

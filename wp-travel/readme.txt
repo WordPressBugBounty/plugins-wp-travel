@@ -427,6 +427,21 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 11.2.0 =
+Release Date: 17th February 2026
+
+Fixes:
+* Resolved the issue with the pax selector on the checkout page.
+* Fixed the pax selector issue on the trip page.
+* Corrected the issue where custom field data was not working in emails for payments made via PayPal.
+* Fixed the issue where the pax selector could not be unselected in the On-Page booking modal.
+* Resolved PHP warnings generated during “booking only” bookings.
+
+Enhancements:
+* Added an icon option in Trip Tab settings.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-2-0-update-release-note).**
+
 = 11.1.1 =
 Release Date: 02nd February 2026
 

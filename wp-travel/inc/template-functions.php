@@ -2418,6 +2418,7 @@ function wptravel_archive_filter_by( $submission_get = array() ) {
 					'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 					'selected'          => $type,
 					'value_field'       => 'slug',
+					'hierarchical' 		=> true
 				)
 			);
 			?>
@@ -2431,9 +2432,10 @@ function wptravel_archive_filter_by( $submission_get = array() ) {
 					'class'             => 'wp_travel_input_filters location',
 					'show_option_none'  => esc_html( $location_text ),
 					'option_none_value' => '',
-					'hide_empty'      => apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
+					'hide_empty'      	=> apply_filters( 'wptravel_hide_empty_taxonomies_search_form', true ),
 					'selected'          => $location,
 					'value_field'       => 'slug',
+					'hierarchical' 		=> true
 				)
 			);
 			?>

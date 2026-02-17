@@ -60,6 +60,7 @@ class WP_Travel_Ajax_Cart {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -107,6 +108,7 @@ class WP_Travel_Ajax_Cart {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		$request = WP_Travel::get_sanitize_request();
@@ -125,6 +127,7 @@ class WP_Travel_Ajax_Cart {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		$request   = WP_Travel::get_sanitize_request();
@@ -147,6 +150,7 @@ class WP_Travel_Ajax_Cart {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		global $wt_cart;

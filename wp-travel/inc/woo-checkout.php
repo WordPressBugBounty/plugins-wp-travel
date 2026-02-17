@@ -302,3 +302,36 @@ if( apply_filters( 'wp_travel_woo_enable_onapage', false ) == true ){
 	}
 }
 
+
+add_action(
+    'woocommerce_admin_order_data_after_order_details',
+    'wp_travel_show_booking_link_below_order_details'
+);
+
+function wp_travel_show_booking_link_below_order_details( $order ) {
+    if ( ! $order ) {
+        return;
+    }
+
+    // Order ID
+    $order_id = $order->get_id();
+
+    // Booking ID = Order ID + 1
+    $booking_id = $order_id + 1;
+
+    // Booking edit link
+    $booking_url = admin_url(
+        'post.php?post=' . $booking_id . '&action=edit'
+    );
+
+    echo '<p class="form-field form-field-wide">';
+
+    echo '<span  style="
+        margin-top:12px;
+    "><strong>Booking Link:</strong> ';
+    echo '<a href="' . esc_url( $booking_url ) . '">';
+    echo 'View Booking #' . esc_html( $booking_id );
+    echo '</a></span>';
+
+    echo '</p>';
+}

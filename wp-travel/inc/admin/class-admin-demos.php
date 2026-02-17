@@ -7,7 +7,7 @@ class WP_Travel_Demos_Lists {
 	public function __construct() {
 
 		// Hook into the submenu filter
-		add_filter( 'wp_travel_submenus', [ $this, 'add_enquiry_settings_submenu' ] );
+		// add_filter( 'wp_travel_submenus', [ $this, 'add_enquiry_settings_submenu' ] );
 		
         add_action( 'wp_ajax_wptravel_install_theme', [ $this, 'install_theme' ] );
         add_action( 'wp_ajax_wptravel_activate_theme', [ $this, 'activate_theme' ] );

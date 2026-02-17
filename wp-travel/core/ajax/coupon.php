@@ -13,11 +13,11 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 
 		// For admin Get coupon.
 		add_action( 'wp_ajax_wptravel_get_coupon', array( __CLASS__, 'get_coupon_code' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_get_coupon', array( __CLASS__, 'get_coupon_code' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_get_coupon', array( __CLASS__, 'get_coupon_code' ) );
 
 		// For admin Update coupon.
 		add_action( 'wp_ajax_wptravel_update_coupon', array( __CLASS__, 'update_coupon_code' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_update_coupon', array( __CLASS__, 'update_coupon_code' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_update_coupon', array( __CLASS__, 'update_coupon_code' ) );
 	}
 
 	/**

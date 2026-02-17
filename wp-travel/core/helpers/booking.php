@@ -665,18 +665,24 @@ function wp_travel_cancel_booking_callback() {
     $admin_email  = get_option( 'admin_email' );
 
     $message = "
-        <h2>Booking Cancellation Notice</h2>
-        <p>Booking canceled by customer.</p>
-        <ul>
-            <li><strong>Name:</strong> {$traveler_name} {$traveler_lname}</li>
-            <li><strong>Booking ID:</strong> {$booking_id}</li>
-            <li><strong>Travel Date:</strong> {$travel_date}</li>
-        </ul>
-    ";
+		<h2>Booking Cancellation Notice</h2>
+		<p>Dear Admin,</p>
+		<p>This is to inform you that a booking has been <strong>canceled by the customer</strong>.</p>
+		<p><strong>Details:</strong></p>
+		<ul>
+			<li><strong>Customer Name:</strong> {$traveler_name} {$traveler_lname}</li>
+			<li><strong>Booking ID:</strong> {$booking_id}</li>
+		</ul>
+		<p>Please review the booking in your admin dashboard and take the necessary action.</p>
+		<p>Thank you.</p>
+	";
 
-    wp_mail( $admin_email, $subject, $message, $headers );
+	$message = apply_filters( 'wptravel_email_content_for_booking_cancelation', $message, $traveler_name, $traveler_lname, $booking_id );
 
-    wp_send_json_success( 'Booking canceled successfully.' );
+	// Send email to admin
+	if ( wp_mail( $admin_email, $subject, $message, $email_headers ) ) {
+		 wp_send_json_success('Booking canceled');
+	}
 }
 
 

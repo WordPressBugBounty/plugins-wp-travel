@@ -359,7 +359,7 @@ class Wp_Travel_Shortcodes {
 
 		// Convert string attr into bool.
 		if ( 'string' === gettype( $atts['hide_empty'] ) ) {
-			$atts['hide_empty'] = 'true' === $atts['hide_empty'] ? true : false;
+			$atts['hide_empty'] = ( 'true' === $atts['hide_empty'] );
 		}
 
 		$args = array(
@@ -375,70 +375,109 @@ class Wp_Travel_Shortcodes {
 		$the_query = new WP_Term_Query( $args );
 		$terms     = $the_query->get_terms();
 
+		// Recursive function to calculate total count including children
+		if ( ! function_exists( 'wptravel_get_term_total_count' ) ) {
+			function wptravel_get_term_total_count( $term_id, $taxonomy ) {
+
+				$term = get_term( $term_id, $taxonomy );
+
+				if ( is_wp_error( $term ) || ! $term ) {
+					return 0;
+				}
+
+				$count = (int) $term->count;
+
+				$children = get_terms( array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => false,
+					'parent'     => $term_id,
+					'fields'     => 'ids',
+				) );
+
+				if ( ! empty( $children ) && ! is_wp_error( $children ) ) {
+					foreach ( $children as $child_id ) {
+						$count += wptravel_get_term_total_count( $child_id, $taxonomy );
+					}
+				}
+
+				return $count;
+			}
+		}
+
 		ob_start();
 
-		if ( count( $terms ) > 0 ) {
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) :
 			?>
-				<div class="wp-travel-itinerary-items">
-					<div class="wp-travel-itinerary-items wptravel-archive-wrapper grid-view itinerary-3-per-row" >
-						<?php
-						foreach ( $terms as $term ) {
-							if ( $atts['child'] === 'yes' ) {
-								if ( $term->parent > 0 ) {
-									?>
-									<div class="taxonomy-item-wrapper">
-										<div class="taxonomy-thumb">
-											<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo wptravel_get_term_thumbnail( $term->term_id ); // @phpcs:ignore ?></a>
-										</div>
-										<div class="taxonomy-content">
-											<h4 class="taxonomy-title"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo esc_html( $term->name ); ?></a></h4>
-											<div class="taxonomy-meta">
-												<span><i class="fas fa-suitcase-rolling"></i> <?php printf( _n( '%s Trip available', '%s Trips available', $term->count, 'wp-travel' ), esc_html( $term->count ) ); // @phpcs:ignore ?></span>
-												<div class="taxonomy-read-more-link"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php esc_html_e( 'View', 'wp-travel' ); ?></a></div></div></div>
-											</div>
-									<?php
-								}
-							} elseif ( $atts['parent'] === 'yes' ) {
-								if ( $term->parent === 0 ) {
-									?>
-									<div class="taxonomy-item-wrapper">
-										<div class="taxonomy-thumb">
-											<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo wptravel_get_term_thumbnail( $term->term_id ); // @phpcs:ignore ?></a>
-										</div>
-										<div class="taxonomy-content">
-											<h4 class="taxonomy-title"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo esc_html( $term->name ); ?></a></h4>
-											<div class="taxonomy-meta">
-												<span><i class="fas fa-suitcase-rolling"></i> <?php printf( _n( '%s Trip available', '%s Trips available', $term->count, 'wp-travel' ), esc_html( $term->count ) ); // @phpcs:ignore ?></span>
-												<div class="taxonomy-read-more-link"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php esc_html_e( 'View', 'wp-travel' ); ?></a></div></div></div>
-											</div>
-									<?php
-								}
-							} else {
-								?>
-								<div class="taxonomy-item-wrapper">
-									<div class="taxonomy-thumb">
-										<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo wptravel_get_term_thumbnail( $term->term_id ); // @phpcs:ignore ?></a>
-									</div>
-									<div class="taxonomy-content">
-										<h4 class="taxonomy-title"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php echo esc_html( $term->name ); ?></a></h4>
-										<div class="taxonomy-meta">
-											<span><i class="fas fa-suitcase-rolling"></i> <?php printf( _n( '%s Trip available', '%s Trips available', $term->count, 'wp-travel' ), esc_html( $term->count ) ); // @phpcs:ignore ?></span>
-											<div class="taxonomy-read-more-link"><a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>"><?php esc_html_e( 'View', 'wp-travel' ); ?></a></div></div></div>
-										</div>
-								<?php
-							}
+
+			<div class="wp-travel-itinerary-items">
+				<div class="wp-travel-itinerary-items wptravel-archive-wrapper grid-view itinerary-3-per-row">
+
+					<?php foreach ( $terms as $term ) :
+
+						// Apply parent/child filtering
+						if (
+							( $atts['child'] === 'yes' && $term->parent == 0 ) ||
+							( $atts['parent'] === 'yes' && $term->parent != 0 )
+						) {
+							continue;
 						}
+
+						// Get corrected total count
+						$count = wptravel_get_term_total_count( $term->term_id, $atts['taxonomy'] );
 						?>
-					</div>
+
+						<div class="taxonomy-item-wrapper">
+							<div class="taxonomy-thumb">
+								<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>">
+									<?php echo wptravel_get_term_thumbnail( $term->term_id ); ?>
+								</a>
+							</div>
+
+							<div class="taxonomy-content">
+								<h4 class="taxonomy-title">
+									<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>">
+										<?php echo esc_html( $term->name ); ?>
+									</a>
+								</h4>
+
+								<div class="taxonomy-meta">
+									<span>
+										<i class="fas fa-suitcase-rolling"></i>
+										<?php
+										printf(
+											_n(
+												'%s Trip available',
+												'%s Trips available',
+												$count,
+												'wp-travel'
+											),
+											esc_html( $count )
+										);
+										?>
+									</span>
+
+									<div class="taxonomy-read-more-link">
+										<a href="<?php echo esc_url( get_term_link( $term->term_id ) ); ?>">
+											<?php esc_html_e( 'View', 'wp-travel' ); ?>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					<?php endforeach; ?>
+
 				</div>
+			</div>
+
 			<?php
-		} else {
+		else :
 			echo esc_html__( 'Trips not found !!', 'wp-travel' );
-		}
-		$content = ob_get_contents();
-		ob_end_clean();
-		return $content;
+		endif;
+
+		return ob_get_clean();
 	}
+
 
 	/**
 	 * Adding itinerary shortcode

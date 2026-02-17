@@ -9,7 +9,7 @@ class WP_Travel_Ajax_Payments { // @phpcs:ignore
 
 		// For admin Get  enquiry details
 		add_action( 'wp_ajax_wptravel_get_payment_details_html', array( __CLASS__, 'get_payment_details_html' ) );
-		add_action( 'wp_ajax_wptravel_get_payment_details_html', array( __CLASS__, 'get_payment_details_html' ) );
+		// add_action( 'wp_ajax_wptravel_get_payment_details_html', array( __CLASS__, 'get_payment_details_html' ) );
 	}
 
 	/**

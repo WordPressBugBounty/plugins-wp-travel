@@ -3,10 +3,10 @@ class WP_Travel_Ajax_Pricings {
 	public static function init() {
 		// Get Pricings.
 		add_action( 'wp_ajax_wp_travel_get_pricings', array( __CLASS__, 'get_pricings' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_get_pricings', array( __CLASS__, 'get_pricings' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_get_pricings', array( __CLASS__, 'get_pricings' ) );
 
 		add_action( 'wp_ajax_wp_travel_remove_trip_pricing', array( __CLASS__, 'remove_trip_pricing' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_remove_trip_pricing', array( __CLASS__, 'remove_trip_pricing' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_remove_trip_pricing', array( __CLASS__, 'remove_trip_pricing' ) );
 	}
 
 	public static function get_pricings() {

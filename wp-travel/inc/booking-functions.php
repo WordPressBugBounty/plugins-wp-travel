@@ -213,8 +213,18 @@ function wptravel_book_now() {
 	if( !empty( $checkout_default_country ) ){
 		update_post_meta( $booking_id, 'wp_travel_country', $checkout_default_country );
 	}
-
-	update_post_meta( $booking_id, 'wp_travel_booking_status', 'pending' );
+	
+	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){ 
+		if( wc_get_order(wc_get_order_id_by_order_key($_REQUEST['key']))->data['status'] == 'completed' ){
+			update_post_meta( $booking_id, 'wp_travel_booking_status', 'booked' );
+		}else{
+			update_post_meta( $booking_id, 'wp_travel_booking_status', 'pending' );
+		}
+		
+	}else{
+		update_post_meta( $booking_id, 'wp_travel_booking_status', 'pending' );
+	}
+	
 
 	update_post_meta( $booking_id, 'wp_travel_trip_code', wptravel_get_trip_code( $trip_id ) );
 

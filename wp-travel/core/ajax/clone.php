@@ -20,7 +20,7 @@ class WpTravel_Ajax_Clone {
 
 		// Clone Trip @since 1.7.6.
 		add_action( 'wp_ajax_wp_travel_clone_trip', array( __CLASS__, 'clone_trip' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_clone_trip', array( __CLASS__, 'clone_trip' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_clone_trip', array( __CLASS__, 'clone_trip' ) );
 
 	}
 
@@ -37,6 +37,7 @@ class WpTravel_Ajax_Clone {
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
 			WP_Travel_Helpers_REST_API::response( $permission );
+			exit;
 		}
 
 		if ( ! current_user_can( 'manage_options' ) ) {

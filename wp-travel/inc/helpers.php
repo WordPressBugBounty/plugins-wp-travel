@@ -191,6 +191,7 @@ function wptravel_settings_default_fields() {
 		
 		'enable_coming_soon'                    => 'no',
 		'default_coming_soon'					=> 'yes',
+		'coming_soon_design'					=> 'design-one',
 		'coming_soon_page_id'					=> '',
 		'coming_soon_title'                    	=>  'Coming Soon',	
 		'coming_soon_description'               =>  'Something amazing is brewing! We are working hard to bring you an incredible 	experience. Stay tuned for the big reveal.',	
@@ -200,6 +201,10 @@ function wptravel_settings_default_fields() {
 		'insta_social_url'						=> '',
 		'linkedin_social_url'					=> '',
 		'coming_soon_logo'                    	=>  plugin_dir_url( dirname(__FILE__) ) . 'assets/images/logo.png',
+		'coming_soon_bg_color'					=> '',
+		'coming_soon_bg_color_two'				=> '',
+		'social_icon_color'						=> '',
+		'social_icon_bg_color'					=> '',
 		
 		'enable_social_login'					=> 'no',
 		'google_client_id'						=> '',

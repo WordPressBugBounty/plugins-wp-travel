@@ -36,7 +36,7 @@ class WpTravel_Helpers_Payment { // @phpcs:ignore
 			$payment_id   = wptravel_get_payment_id( $booking_id );
 			$payment_slip = get_post_meta( $payment_id, 'wp_travel_payment_slip_name', true );
 			?>
-			<h3><?php esc_html_e( 'Payment Details', 'wp-travel' ); ?></h3>
+			<h3 class="payment-detail-heading"><?php esc_html_e( 'Payment Details', 'wp-travel' ); ?></h3>
 			<table class="wp-travel-table-content my-order-payment-details"  cellpadding="0" cellspacing="0" height="100%" width="100%" style="text-align: left;">
 				<thead>
 					<tr>

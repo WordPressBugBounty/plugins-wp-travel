@@ -9,11 +9,11 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 
 	    // For admin Get  enquiry details
 		add_action( 'wp_ajax_wptravel_get_enquiry', array( __CLASS__, 'get_enquiry_details' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_get_enquiry', array( __CLASS__, 'get_enquiry_details' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_get_enquiry', array( __CLASS__, 'get_enquiry_details' ) );
 
 		// For admin Update enquiry details.
 		add_action( 'wp_ajax_wptravel_update_enquiry', array( __CLASS__, 'update_enquiry_details' ) );
-		add_action( 'wp_ajax_nopriv_wptravel_update_enquiry', array( __CLASS__, 'update_enquiry_details' ) );
+		// add_action( 'wp_ajax_nopriv_wptravel_update_enquiry', array( __CLASS__, 'update_enquiry_details' ) );
 	}
 
 	/**
