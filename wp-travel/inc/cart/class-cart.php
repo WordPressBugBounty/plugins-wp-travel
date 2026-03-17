@@ -170,6 +170,7 @@ class WP_Travel_Cart {
 	 * @return boolean
 	 */
 	public function add( $args, $trip_price = 0, $trip_price_partial = 0, $pax = 1, $price_key = '', $attrs = array() ) {
+
 		global $wpdb;
 		$table = $wpdb->prefix . 'wt_dates';
 
@@ -250,8 +251,11 @@ class WP_Travel_Cart {
 			$this->items[ $cart_item_id ]['trip_price'] = $trip_price;
 			$this->items[ $cart_item_id ]['pax']        = $pax;
 			$this->items[ $cart_item_id ]['price_key']  = $price_key;
-
 		endif;
+
+		// $this->items[ $cart_item_id ]['pickup_location']  = isset( $args['pickup_location'] ) ? $args['pickup_location'] : 'N/A';
+
+		
 		$this->clear_discount_values();
 		$this->update_partials(); // Partial Payout percent figure may be different if we calculate this befeore adding item to cart because partial payout figure may differ as per item count.
 		$this->write();

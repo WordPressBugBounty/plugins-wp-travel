@@ -376,6 +376,7 @@ class WP_Travel_Ajax {
 		$attrs['date_id']   	= isset($post_data['date_id'][0]) ? (int)$post_data['date_id'][0] : '';
 		$attrs['departure_date'] = $departure_date;
 		$attrs['trip_extras']    = $trip_extras;
+		$attrs['pickup_location']    = isset($post_data['pickup_location']) ? $post_data['pickup_location'] : '';
 
 		$attrs = apply_filters( 'wp_travel_cart_attributes', $attrs, $post_data ); // @phpcs:ignore
 		
@@ -397,6 +398,7 @@ class WP_Travel_Ajax {
 			'price_key'          => $price_key,
 			'attrs'              => $attrs,
 		);
+		
 		if ( true === $update_cart_on_add ) {
 			$items = $wt_cart->getItems();
 

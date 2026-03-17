@@ -1578,3 +1578,116 @@ function wptravel_payment_email_template_customer() {
 	ob_end_clean();
 	return $content;
 }
+
+
+function wptravel_trip_reminder_email_template() {
+
+	ob_start();
+	?>
+
+		<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0"> 
+			<tr>
+				<td class="wp-travel-content">
+
+					<p>Hi there,</p>
+
+					<p>
+						This is a friendly reminder that your tour "{trip_name}" starts on {start_date}.
+					</p>
+
+					<p>
+						Please arrive 10–15 minutes early.
+					</p>
+
+					<p>
+						Booking Reference: #{booking_id}
+					</p>
+
+					<p>
+						If you have any questions, simply reply to this email.
+					</p>
+
+					<p>
+						We look forward to seeing you!
+					</p>
+
+					<p>
+						Best regards,<br>
+						{site_name}
+					</p>
+
+				</td>
+			</tr>
+
+			<tr class="wp-travel-footer">
+				<td>
+					<p>{site_name} - <?php echo 'Powered By'; ?>: <a href="http://wptravel.io/" target="_blank"> WP Travel </a></p>
+				</td>
+			</tr>
+
+		</table>
+
+
+	<?php
+	$content = ob_get_contents();
+	ob_end_clean();
+
+	return $content;
+}
+
+function wptravel_trip_review_email_template() {
+
+	ob_start();
+	?>
+
+	<table class="wp-travel-wrapper" width="600" cellpadding="0" cellspacing="0"> 
+		<tr>
+			<td class="wp-travel-content">
+
+				<p>Hi there,</p>
+
+				<p>
+					We hope you enjoyed your recent tour "{trip_name}".
+				</p>
+
+				<p>
+					We would love to hear about your experience! Your feedback helps us improve and also helps other travelers make better decisions.
+				</p>
+
+				<p>
+					<a href="{review_link}" target="_blank" style="display:inline-block;padding:10px 20px;background:#2d89ef;color:#ffffff;text-decoration:none;border-radius:4px;">
+						Leave a Review
+					</a>
+				</p>
+
+				<p>
+					Booking Reference: #{booking_id}
+				</p>
+
+				<p>
+					Thank you again for choosing us. We hope to see you on another adventure soon!
+				</p>
+
+				<p>
+					Best regards,<br>
+					{site_name}
+				</p>
+
+			</td>
+		</tr>
+
+		<tr class="wp-travel-footer">
+			<td>
+				<p>{site_name} - Powered By: <a href="http://wptravel.io/" target="_blank"> WP Travel </a></p>
+			</td>
+		</tr>
+
+	</table>
+
+	<?php
+
+	$content = ob_get_contents();
+	ob_end_clean();
+
+	return $content;
+}

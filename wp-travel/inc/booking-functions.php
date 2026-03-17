@@ -7,6 +7,7 @@
 
 function wptravel_book_now() {
 
+
 	// This condition is added to fix Paypal unpaid bookings 
 	if( isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'paypal' ){	
 		$booking_post_type = 'pending-booking';
@@ -44,6 +45,7 @@ function wptravel_book_now() {
 		}
 		
 	}
+
 	
 	/**
 	 * Trigger any action before Booking Process.
@@ -73,6 +75,7 @@ function wptravel_book_now() {
 	$pricing_id             = array(); // @since v4.0
 	$trip_time              = array(); // @since v4.0
 	foreach ( $items as $key => $item ) {
+	
 		// @since 3.1.3
 		$email_travel_date = apply_filters( 'wp_travel_email_travel_date', $item['arrival_date'], $item ); // phpcs:ignore
 		$email_travel_date = apply_filters( 'wptravel_email_travel_date', $email_travel_date, $item );
@@ -85,6 +88,7 @@ function wptravel_book_now() {
 		$pricing_id[]             = isset( $item['pricing_id'] ) ? $item['pricing_id'] : 0; // @since v4.0
 		$trip_time[]              = isset( $item['trip_time'] ) ? $item['trip_time'] : ''; // @since v4.0
 		$total_pax               += $item['pax'];
+		$pickup_location          =  $item['pickup_location'];
 	}
 
 	if ( ! $allow_multiple_items || ( 1 === count( $items ) ) ) {
@@ -126,6 +130,7 @@ function wptravel_book_now() {
 	if( class_exists( 'WooCommerce' ) && $settings['enable_woo_checkout'] == 'yes' ){
 		update_post_meta( $booking_id, 'refrence_woo_order_details', ( (int) $booking_id -1 ) );
 		update_post_meta( $booking_id, 'booking_invoice_key', 'incoice'.( $booking_id - 5 ) );
+		update_post_meta( $booking_id, 'pickup_location', $pickup_location );
 	}
 	
 	// Update Booking Title.

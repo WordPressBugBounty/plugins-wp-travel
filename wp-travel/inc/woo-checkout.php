@@ -72,6 +72,7 @@ function wp_travel_booking_info_after_customer_order_table( $order, $sent_to_adm
             $trip_name   = get_the_title( $trip_id );
             $travel_date = $item['trip_start_date'];
 			$travel_time = isset( $item['trip_time'] ) ? $item['trip_time'] : '';
+			$pickup_location = isset( $item['pickup_location'] ) ? $item['pickup_location'] : '';
         }
 
 		// $invoice_url = trailingslashit( site_url() ) . 'wp-json/wp-travel/v1/invoice/invoice'.$order_id+1;
@@ -95,6 +96,10 @@ function wp_travel_booking_info_after_customer_order_table( $order, $sent_to_adm
 
 			<?php if($travel_time): ?>
 				<p><strong><?php echo esc_html__( 'Travel Time: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $travel_time ); ?></p>
+			<?php endif; ?>
+
+			<?php if($pickup_location): ?>
+				<p><strong><?php echo esc_html__( 'Pickup Location: ', 'wp-travel' ); ?></strong> <?php echo esc_html( $pickup_location ); ?></p>
 			<?php endif; ?>
         </div>
 		<?php

@@ -29,6 +29,11 @@ class WP_Travel_Helpers_Trip_Extras {
 			if ( false !== $tour_extras_metas && is_array( $tour_extras_metas ) ) {
 				$_trip_extras[ $index ]['content'] = isset( $tour_extras_metas['extras_item_description'] ) ? $tour_extras_metas['extras_item_description'] : '';
 				$_trip_extras[ $index ]['excerpt'] = isset( $tour_extras_metas['extras_item_description'] ) ? wp_trim_words( $tour_extras_metas['extras_item_description'], 15 ) : '';
+				
+				if( apply_filters( 'wp_travel_force_enable_tour_extras_meta', false ) == true ){
+					$_trip_extras[ $index ]['tour_extras_metas'] = $tour_extras_metas;
+				}
+
 				if ( class_exists( 'WP_Travel_Tour_Extras_Core' ) ) {
 					$price      = isset( $tour_extras_metas['extras_item_price'] ) ? $tour_extras_metas['extras_item_price'] : 0;
 					$sale_price = isset( $tour_extras_metas['extras_item_sale_price'] ) ? $tour_extras_metas['extras_item_sale_price'] : 0;

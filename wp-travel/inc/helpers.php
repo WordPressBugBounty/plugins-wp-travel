@@ -78,6 +78,20 @@ function wptravel_settings_default_fields() {
 		'from_email'         => get_option( 'admin_email' ),
 	);
 
+	$trip_reminder_admin_email_defaults = array(
+		'email_subject'      => 'Trip Reminder',
+		'email_title'        => 'Trip Reminder',
+		'email_content'      => wptravel_trip_reminder_email_template(),
+		'from_email'         => get_option( 'admin_email' ),
+	);
+
+	$trip_review_admin_email_defaults = array(
+		'email_subject'      => 'Trip Review',
+		'email_title'        => 'Trip Review',
+		'email_content'      => wptravel_trip_review_email_template(),
+		'from_email'         => get_option( 'admin_email' ),
+	);
+
 	$settings_fields = array(
 		// General Settings Fields.
 		'currency'                                => 'USD',
@@ -123,6 +137,12 @@ function wptravel_settings_default_fields() {
 		'payment_admin_template_settings'         => $payment_admin_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
 		'payment_client_template_settings'        => $payment_client_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
 		'enquiry_admin_template_settings'         => $enquiry_admin_email_defaults, // _settings appended in legacy version <= 1.8.9 settings.
+
+		'send_trip_reminder_email_to_client'      => 'no',
+		'trip_reminder_admin_template_settings'   => $trip_reminder_admin_email_defaults,
+
+		'send_trip_review_email_to_client'      => 'no',
+		'trip_review_admin_template_settings'   => $trip_review_admin_email_defaults,
 
 		// Account Settings Fields.
 		'enable_checkout_customer_registration'   => 'no',
@@ -2868,6 +2888,10 @@ function wptravel_view_booking_details_table( $booking_id, $hide_payment_column 
 							?>
 						</div>
 					</div>
+					<?php if( get_post_meta( $booking_id, 'pickup_location', true ) ): ?>
+						<span class="my-order-pickup-location"><b><?php echo esc_html__( 'Pickup Location :', 'wp-travel' ); ?></b> <?php echo esc_html( get_post_meta( $booking_id, 'pickup_location', true ) ); ?></span>
+					<?php endif; ?>
+					
 					<?php
 
 					// Travelers info.
@@ -4830,8 +4854,8 @@ add_shortcode( 'wptravel_cart_icon', 'wptravel_cart_icon' );
 function wp_travel_search_join( $join ) {
     global $wpdb;
 
-    if ( is_search() ) {    
-        $join .=' LEFT JOIN '.$wpdb->postmeta. ' ON '. $wpdb->posts . '.ID = ' . $wpdb->postmeta . '.post_id ';
+   	if ( is_search() ) {    
+        $join .= " LEFT JOIN {$wpdb->postmeta} AS wptravel_meta ON {$wpdb->posts}.ID = wptravel_meta.post_id ";
     }
 
     return $join;
@@ -4847,11 +4871,13 @@ function wp_travel_search_where( $where ) {
     global $pagenow, $wpdb;
 
 	
-    if ( is_search() ) {
-
+    if ( is_search() ) {		
         $where = preg_replace(
-            "/\(\s*".$wpdb->posts.".post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
-            "(".$wpdb->posts.".post_title LIKE $1) OR (".$wpdb->postmeta.".meta_value LIKE $1)", $where ?? '' );
+            "/\(\s*{$wpdb->posts}.post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
+            "({$wpdb->posts}.post_title LIKE $1) 
+             OR (wptravel_meta.meta_value LIKE $1)",
+            $where ?? ''
+        );
     }
 
     return $where;

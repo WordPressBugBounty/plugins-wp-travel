@@ -55,6 +55,7 @@ class WP_Travel_Ajax_Cart {
 	 * Add to cart ajax request.
 	 */
 	public static function add_to_cart() {
+
 		$settings = wptravel_get_settings();
 		$permission = WP_Travel::verify_nonce();
 

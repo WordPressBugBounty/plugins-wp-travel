@@ -278,7 +278,10 @@ class WpTravel_Helpers_Strings {
 			'set_swift'					=> __( 'Swift', 'wp-travel'),
 			'set_routing_number'		=> __( 'Routing Number', 'wp-travel'),
 			'set_add_to_cart'			=> __('Add to Cart', 'wp-travel'),
-			'trip_price_per'			=> apply_filters( 'wp_travel_trip_price_per', $price_per )
+			'trip_price_per'			=> apply_filters( 'wp_travel_trip_price_per', $price_per ),
+			'enable_pickup_location_woo_checkout' =>  apply_filters( 'wp_travel_enable_pickup_location_woo_checkout', false ),
+			'trip_pickup_location'		=> get_post_meta( get_the_id(), 'wp_travel_trip_pickup_points', true ),
+			'trip_pickup_location_label'		=> __('Select Pickup Location', 'wp-travel'),
 		);
 
 		$localized_strings['price_per_labels'] = array(

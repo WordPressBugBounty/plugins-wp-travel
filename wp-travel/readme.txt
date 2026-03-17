@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 11.1.1
+Stable tag: 11.3.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,26 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.3.0 =
+Release Date: 17th March 2026
+
+Fixes:
+* Resolved incompatibility issue between Coming Soon setup and Classic Theme.
+* Fixed the translation issue with date picker.
+* Fixed the issue with pax selector of pricing category with trip extras.
+* Fixed issue with wp_travel_send_payment_admin_emails_to_admin filter.
+* Fixed issue with date picker of trip search form.
+* Fixed SMTP compatibility issue where emails were bypassing plugins like WP Mail SMTP and Gravity SMTP due to early loading of the demo importer.
+
+Enhancements:
+* Added a hook 'wp_travel_cancel_booking_days_limit' to change interval value for the booking cancelation.
+* Added a hook 'wp_travel_label_for_no_trip_date' to change label form 'N/A' to custom label if no trip dates available.
+* Added a condition to disable booking cancelation before a certain days before travel date.
+* Added a hook "wptravel_exclude_booking_dates_range_for_all_trips" to block booking date form given range for all trips.
+* Refined and improved the Setup Page design layout for better structure and user experience.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-3-0-update-release-note).**
 
 = 11.2.0 =
 Release Date: 17th February 2026
