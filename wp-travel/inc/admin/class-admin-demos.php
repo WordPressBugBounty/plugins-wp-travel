@@ -1,16 +1,16 @@
 <?php 
 
-if (
-    is_admin() &&
-    isset($_GET['post_type']) &&
-    isset($_GET['page']) &&
-    $_GET['post_type'] === 'itinerary-booking' &&
-    $_GET['page'] === 'wp-travel-demos-lists'
-) {
+// if (
+//     is_admin() &&
+//     isset($_GET['post_type']) &&
+//     isset($_GET['page']) &&
+//     $_GET['post_type'] === 'itinerary-booking' &&
+//     $_GET['page'] === 'wp-travel-demos-lists'
+// ) {
+    
+    // require WP_TRAVEL_ABSPATH . '/inc/admin/importer/importer.php';
 
-    require WP_TRAVEL_ABSPATH . '/inc/admin/importer/importer.php';
-
-}
+// }
 
 
 class WP_Travel_Demos_Lists {
@@ -63,7 +63,6 @@ class WP_Travel_Demos_Lists {
 
         include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 
-        // 🔕 Silence output
         $skin     = new Automatic_Upgrader_Skin();
         $upgrader = new Theme_Upgrader( $skin );
 
@@ -108,6 +107,8 @@ class WP_Travel_Demos_Lists {
 
      /* ---------------- AJAX: IMPORT DEMO ---------------- */
     public function import_demo() {
+
+        require WP_TRAVEL_ABSPATH . '/inc/admin/importer/importer.php';
         
         if ( ! check_ajax_referer( 'wptravel_demo_nonce', false, false ) ) {
             wp_send_json_error( 'Invalid nonce.', 403 );
@@ -167,7 +168,9 @@ class WP_Travel_Demos_Lists {
             if ( file_exists( $class_wp_importer ) ) {
                 require $class_wp_importer;
             }            
-        }       
+        }
+        
+        
 
         // Download the XML file to a temporary location
         $tmp_file = "https://wpdemo.wensolutions.com/demo-data/fse-demo/{$slug}/content.xml";
@@ -178,6 +181,7 @@ class WP_Travel_Demos_Lists {
             exit;
         }
 
+    
         // Initialize the importer object
         $importer = new WP_Demo_Import();
 
@@ -224,7 +228,7 @@ class WP_Travel_Demos_Lists {
         </script>
 
         <div id="wptravel-demo-lists-page">
-            <h1 class="wp-heading-inline">Travel Demo Sites</h1>
+            <h1 class="wp-heading-inline">FSE Travel Site Demos</h1>
             <hr class="wp-header-end">
 
             <div class="demo-grid">
@@ -430,7 +434,7 @@ class WP_Travel_Demos_Lists {
                             // Show the success message
                             const doneMsg = importModal.querySelector('.import-done');
                             doneMsg.style.display = 'block';
-                            doneMsg.textContent = '✅ Demo Imported Successfully. Redirecting to homepage…';
+                            doneMsg.textContent = 'Demo Imported Successfully. Redirecting to homepage…';
 
                             // Redirect after 2 seconds (2000 ms)
                             setTimeout(() => {

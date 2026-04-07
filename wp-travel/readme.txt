@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 11.3.0
+Stable tag: 11.4.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,24 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.4.0 =
+Release Date: 7th April 2026
+
+Fixes:
+* Resolved SQL error caused by multiple joins on wp_postmeta.
+* Added a unique alias (wptravel_meta) to the postmeta join in the search query.
+* Updated the posts_where filter to reference the alias instead of the default table name.
+* Fixed booking issue occurring when trip start and end dates were the same.
+
+Enhancements:
+* Added support to display label “N/A” when trip start and end dates are not set.
+* Introduced an Admin Demo Lists page to showcase all FSE demos.
+* Added one-click import functionality for FSE demos.
+* Added two new design layouts for the Coming Soon page.
+* Added a layout selection option to choose a preferred Coming Soon design.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-4-0-update-release-note).**
 
 = 11.3.0 =
 Release Date: 17th March 2026

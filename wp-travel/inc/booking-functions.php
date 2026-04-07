@@ -1071,26 +1071,30 @@ function wptravel_get_booking_chart() {
 				</h3>
 
 				<h4>
-					<?php if($best_selling_trip['trip_id']): ?>
+					<?php if( !empty( $best_selling_trip['trip_id'] ) ): ?>
 						<a href="<?php echo esc_url( get_the_permalink( $best_selling_trip['trip_id'] ) );?>" target="_blank"><?php echo esc_html( get_the_title( $best_selling_trip['trip_id'] ) );?></a>
 						<?php else: ?>
 						-
 					<?php endif; ?>
 					 
 				</h4>
-				<p>( <?php echo esc_html__( 'Total Bookings ' ) . $best_selling_trip['total_bookings']; ?> )</p>
+				<?php if ( ! empty($best_selling_trip) && ! empty($best_selling_trip['total_bookings']) ): ?>
+					<p>( <?php echo esc_html__( 'Total Bookings ' ) . $best_selling_trip['total_bookings']; ?> )</p>
+				<?php endif; ?>
 			</div>
 			<div class="grid-item">
 				<h3><?php esc_html_e( "Highest Revenue Trip", 'wp-travel' ); ?></h3>
 				<h4>
-					<?php if($top_revenue_trip_data['trip_id']): ?>
+					<?php if(! empty($top_revenue_trip_data['trip_id'])): ?>
 						<a href="<?php echo esc_url( get_the_permalink( $top_revenue_trip_data['trip_id'] ) );?>" target="_blank"><?php echo esc_html( get_the_title( $top_revenue_trip_data['trip_id'] ) );?></a>
 						<?php else: ?>
 						-
 					<?php endif; ?>
 					  
 				</h4>
-				<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_trip_data['total_revenue'] ); ?> )</p>
+				<?php if ( ! empty($top_revenue_trip_data) && ! empty($top_revenue_trip_data['total_revenue']) ): ?>
+					<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_trip_data['total_revenue'] ); ?> )</p>
+				<?php endif; ?>
 			</div>
 			<div class="grid-item">
 				<h3><?php esc_html_e( "Best Destination", 'wp-travel' ); ?></h3>

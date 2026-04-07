@@ -20,13 +20,13 @@ class WP_Travel_Review_Admin_Notice {
             add_action( 'admin_notices', array( $this, 'wptravel_review_admin_notice' ) );
         }
 
-        // add_action( 'wp_ajax_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
+        add_action( 'wp_ajax_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
 		// add_action( 'wp_ajax_nopriv_wptravel_review_later', array( $this, 'wptravel_review_later' ) );
 
-        // add_action( 'wp_ajax_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
+        add_action( 'wp_ajax_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
 		// add_action( 'wp_ajax_nopriv_wptravel_gave_review_already', array( $this, 'wptravel_gave_review_already' ) );
 
-        // add_action( 'wp_ajax_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
+        add_action( 'wp_ajax_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
 		// add_action( 'wp_ajax_nopriv_wptravel_review_now', array( $this, 'wptravel_review_now' ) );
 	}  
     

@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 11.3.0
+ * Version: 11.4.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -39,7 +39,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '11.3.0';
+		public $version = '11.4.0';
 
 		/**
 		 * WP Travel API version.
@@ -1060,3 +1060,67 @@ function wptravel() {
 }
 
 wptravel();
+
+
+
+// // Replace these with your actual WhatsApp Business API credentials
+// $phone_number_id = '918112281387632';      // WhatsApp Business phone number ID
+// $access_token    = 'EAAp3d1ybMxwBQaopQFZCJQskRfyMr7ZBwXA9EWhjUxqcUA9nTeehRGaZBLGU8qhVKfuXxotVg3DXWMgWZBxgEtubGi9gjmLKN0JA1u8P3ZCabWvtdCrtyOAqOwp5qZArbVRmHZAkx8tQBDKoEDRs8xJUgH4W67luOTZCsqgTeM2UCHCsz3VeZBOiIq5GnCwFZCywwd3Vh2H6gyAs7EaVWAhUT2boF97yHg6ZAjMNfqeXBP8H8sR2vHnrvvLYZAZCZA6UdH4CaWv5AoUDK4mPEKQP5y1af1NryQSQZDZD'; // Your permanent token
+
+// // Recipient number in E.164 format (Nepal +977)
+// $to = '9779860335147';
+
+// // Text you want to send in the template
+// $text = 'Hello! Your booking is confirmed.';
+
+// // WhatsApp template name (must be approved in WhatsApp Business Manager)
+// $template_name = 'jaspers_market_order_confirmation_v1';
+
+// $url = "https://graph.facebook.com/v19.0/{$phone_number_id}/messages";
+
+// $params = [
+//     'Prashant',           // {{1}} -> recipient name
+//     'Kathmandu Trip',     // {{2}} -> trip name
+//     '14 Jan 2026'         // {{3}} -> date
+// ];
+
+// $body = [
+//     'messaging_product' => 'whatsapp',
+//     'to'                => '9779860335147',
+//     'type'              => 'template',
+//     'template'          => [
+//         'name'     => $template_name,
+//         'language' => ['code' => 'en_US'],
+//         'components' => [
+//             [
+//                 'type' => 'body',
+//                 'parameters' => array_map(function($text) {
+//                     return [
+//                         'type' => 'text',
+//                         'text' => (string) $text,
+//                     ];
+//                 }, $params),
+//             ],
+//         ],
+//     ],
+// ];
+
+
+// // Send the request
+// $response = wp_remote_post($url, [
+//     'headers' => [
+//         'Authorization' => 'Bearer ' . $access_token,
+//         'Content-Type'  => 'application/json',
+//     ],
+//     'body'    => wp_json_encode($body),
+//     'timeout' => 20,
+// ]);
+
+// // Handle response
+// if (is_wp_error($response)) {
+//     echo 'Error sending message: ' . $response->get_error_message();
+// } else {
+//     echo 'Message sent successfully! Response: ';
+//     print_r(json_decode(wp_remote_retrieve_body($response), true));
+// }
+

@@ -106,7 +106,7 @@ function wptravel_settings_default_fields() {
 
 		'cart_page_id'                            => wptravel_get_page_id( 'wp-travel-cart' ),
 		'checkout_page_id'                        => wptravel_get_page_id( 'wp-travel-checkout' ),
-		'dashboard_page_id'                       => wptravel_get_page_id( 'wp-travel-dash   board' ),
+		'dashboard_page_id'                       => wptravel_get_page_id( 'wp-travel-dashboard' ),
 
 		// Trip Settings Fields.
 		'enable_trip_date_countdown'              => 'no',
@@ -378,32 +378,73 @@ function wptravel_get_dropdown_list( $args = array() ) {
  * @param mixed $array input data
  * @param bool  $wp_kses_post if data need wp keses or not.
  */
+// function wptravel_sanitize_array( $array, $wp_kses_post = false ) {
+// 	if ( is_string( $array ) ) {
+// 		if ( $wp_kses_post ) {
+// 			$array = wp_kses_post( $array );
+// 		} else {
+// 			$array = sanitize_text_field( $array );
+// 		}
+// 	} elseif ( is_array( $array ) || is_object( $array ) ) {
+// 		if ( $wp_kses_post ) { // Multiple foreach loop to reduce if condition checks.
+// 			foreach ( $array as $key => &$value ) {
+// 				if ( is_object( $value ) ) {
+// 					$value = (array) $value;
+// 				}
+// 				if ( is_array( $value ) ) {
+// 					$value = wptravel_sanitize_array( $value, $wp_kses_post );
+// 				} else {
+// 					$value = wp_kses_post( $value );
+// 				}
+// 			}
+// 		} else {
+// 			foreach ( $array as $key => &$value ) {
+// 				if ( is_object( $value ) ) {
+// 					$value = (array) $value;
+// 				}
+// 				if ( is_array( $value ) ) {
+// 					$value = wptravel_sanitize_array( $value, $wp_kses_post );
+// 				} else {
+// 					$value = sanitize_text_field( $value );
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	return $array;
+// }
+
 function wptravel_sanitize_array( $array, $wp_kses_post = false ) {
-	if ( is_string( $array ) ) {
+
+	if ( is_string( $array ) || is_null( $array ) ) {
+
+		$array = $array ?? ''; // ✅ convert NULL → empty string
+
 		if ( $wp_kses_post ) {
 			$array = wp_kses_post( $array );
 		} else {
 			$array = sanitize_text_field( $array );
 		}
+
 	} elseif ( is_array( $array ) || is_object( $array ) ) {
-		if ( $wp_kses_post ) { // Multiple foreach loop to reduce if condition checks.
-			foreach ( $array as $key => &$value ) {
-				if ( is_object( $value ) ) {
-					$value = (array) $value;
-				}
-				if ( is_array( $value ) ) {
-					$value = wptravel_sanitize_array( $value, $wp_kses_post );
-				} else {
-					$value = wp_kses_post( $value );
-				}
+
+		foreach ( $array as $key => &$value ) {
+
+			if ( is_object( $value ) ) {
+				$value = (array) $value;
 			}
-		} else {
-			foreach ( $array as $key => &$value ) {
-				if ( is_object( $value ) ) {
-					$value = (array) $value;
-				}
-				if ( is_array( $value ) ) {
-					$value = wptravel_sanitize_array( $value, $wp_kses_post );
+
+			if ( is_array( $value ) ) {
+
+				$value = wptravel_sanitize_array( $value, $wp_kses_post );
+
+			} else {
+
+				// ✅ critical fix here
+				$value = $value ?? '';
+
+				if ( $wp_kses_post ) {
+					$value = wp_kses_post( $value );
 				} else {
 					$value = sanitize_text_field( $value );
 				}
@@ -5091,6 +5132,19 @@ function wt_add_custom_link_column() {
     global $wpdb;
 
     $table_name = $wpdb->prefix . 'wt_dates';
+
+    // Check if table exists
+    $table_exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $table_name
+        )
+    );
+
+    if ($table_exists !== $table_name) {
+        // Table does not exist — stop execution
+        return;
+    }
 
     // Add custom_link column if not exists
     $column_exists = $wpdb->get_results(
