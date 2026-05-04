@@ -243,6 +243,25 @@ function wptravel_book_now() {
 	update_post_meta( $booking_id, 'wp_travel_arrival_date_email_tag', sanitize_text_field( $arrival_date_email_tag ) ); // quick fix arrival date with time.
 
 
+	if ( get_post_meta( $trip_id, 'wp_travel_fixed_departure', true ) == 'no' ) {
+
+		$arrival_date = sanitize_text_field( $arrival_date );
+
+		$duration = get_post_meta( $trip_id, 'wp_travel_trip_duration_formating', true );
+		$days = isset($duration['days']) ? (int) $duration['days'] : 0;
+
+		// Create DateTime object
+		$date = new DateTime($arrival_date);
+
+		// Add days
+		$date->modify("+{$days} days");
+
+		// Get new date
+		$new_date = $date->format('Y-m-d');
+
+		update_post_meta( $booking_id, 'wp_travel_departure_date', $new_date );
+	}
+
 	if( apply_filters( 'wptravel_checkout_enable_media_input', false ) == true ){
 		require_once( ABSPATH . 'wp-admin/includes/file.php' );
 

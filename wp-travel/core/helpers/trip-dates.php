@@ -148,9 +148,55 @@ class WpTravel_Helpers_Trip_Dates {
 		$date_id     = ! empty( $date['id'] ) ? $date['id'] : '';
 		$pricing_ids = ! empty( $date['pricing_ids'] ) ? $date['pricing_ids'] : '';
 		
-		if ( $pricing_ids ) { // Need to sort pricing id in dates table to display pricing as per sorted.
-			$result      = $wpdb->get_row( $wpdb->prepare( "SELECT GROUP_CONCAT( id ORDER BY sort_order ASC ) AS pricing_ids FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d AND id IN( $pricing_ids )", $trip_id ) ); // @phpcs:ignore
-			$pricing_ids = $result->pricing_ids;
+		$pricing_ids = ! empty( $date['pricing_ids'] ) ? $date['pricing_ids'] : [];
+
+		// Convert to array if string
+		if ( is_string( $pricing_ids ) ) {
+			$pricing_ids = explode( ',', $pricing_ids );
+		}
+
+		// Step 1: sanitize input (VERY IMPORTANT)
+		$pricing_ids = array_values( array_filter( array_map( 'absint', (array) $pricing_ids ) ) );
+
+		if ( ! empty( $pricing_ids ) ) {
+
+			// Step 2: validate IDs belong to this trip
+			$valid_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT id FROM {$wpdb->prefix}wt_pricings WHERE trip_id = %d",
+					$trip_id
+				)
+			);
+
+			$pricing_ids = array_intersect( $pricing_ids, $valid_ids );
+
+			if ( ! empty( $pricing_ids ) ) {
+
+				// Step 3: safe SQL with placeholders
+				$placeholders = implode( ',', array_fill( 0, count( $pricing_ids ), '%d' ) );
+
+				$sql = "
+					SELECT GROUP_CONCAT(id ORDER BY sort_order ASC) AS pricing_ids
+					FROM {$wpdb->prefix}wt_pricings
+					WHERE trip_id = %d
+					AND id IN ($placeholders)
+				";
+
+				$prepared = $wpdb->prepare(
+					$sql,
+					array_merge( [ $trip_id ], $pricing_ids )
+				);
+
+				$result = $wpdb->get_row( $prepared );
+
+				// Final safe string for DB
+				$pricing_ids = $result ? $result->pricing_ids : '';
+			} else {
+				$pricing_ids = '';
+			}
+
+		} else {
+			$pricing_ids = '';
 		}
 		$dates_data = array(
 			'trip_id'     => $trip_id,

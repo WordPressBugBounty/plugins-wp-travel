@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 11.4.0
+Stable tag: 11.5.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,20 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.5.0 =
+Release Date: 4th May 2026
+
+Fixes:
+* Fixed minor deprecated PHP warnings.
+* Audited AJAX requests related to coupons and added proper security validations to help protect against potential attacks.
+* Updated Archive Search Form to display Trip Types taxonomy in a parent–child hierarchical format for select options.
+
+Enhancements:
+* Added a new feature to trigger trip reminder emails.
+* Added a new feature to trigger trip review emails.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-5-0-update-release-note).**
 
 = 11.4.0 =
 Release Date: 7th April 2026

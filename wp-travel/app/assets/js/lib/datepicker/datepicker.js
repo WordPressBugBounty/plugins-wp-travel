@@ -1773,7 +1773,7 @@ jQuery(function ($) {
         {
             dateFormat: "Y-m-d",
             minDate: "1900-01-01",
-            maxDate: new Date(),
+            maxDate: "2200-12-31",
             locale: flatpickrLocale
         }
     );

@@ -281,11 +281,11 @@ function trip_review_send_emails() {
                 'type'    => 'DATE'
             ],
             [
-                'key'     => 'reminder_sent',
+                'key'     => 'review_reminder_sent',
                 'compare' => 'NOT EXISTS'
             ],
             [
-                'key'     => 'reminder_lock',
+                'key'     => 'review_reminder_lock',
                 'compare' => 'NOT EXISTS'
             ]
         ]

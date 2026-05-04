@@ -13,12 +13,17 @@ class WP_Travel_Admin_Dashboard_Widgets {
 	var $assets_path;
 
 	public function __construct() {
+	
 		$this->assets_path = plugin_dir_url( WP_TRAVEL_PLUGIN_FILE );
 		add_action( 'wp_dashboard_setup', array( $this, 'add_widgets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
 
 	public function add_widgets() {
+
+	 	if ( ! current_user_can( 'edit_theme_options' ) ) {
+            return;
+        }
 
 		$bookings = wp_count_posts( 'itinerary-booking' );
 		add_meta_box( 'wp-travel-quick-overview', __( 'WP Travel: Quick Overview', 'wp-travel' ), array( $this, 'wp_travel_dashboard_overview' ), 'dashboard', 'side', 'high' );
@@ -36,6 +41,10 @@ class WP_Travel_Admin_Dashboard_Widgets {
 	}
 
 	public function enqueue_scripts() {
+
+	 	if ( ! current_user_can( 'edit_theme_options' ) ) {
+            return;
+        }
 
 		$screen = get_current_screen();
 

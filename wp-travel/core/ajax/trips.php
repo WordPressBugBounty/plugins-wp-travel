@@ -16,7 +16,7 @@ class WP_Travel_Ajax_Trips {
 	public static function init() {
 		// Remove item from cart.
 		add_action( 'wp_ajax_wp_travel_update_trip', array( __CLASS__, 'update_trip' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_update_trip', array( __CLASS__, 'update_trip' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_update_trip', array( __CLASS__, 'update_trip' ) );
 
 		// Get item from trip.
 		add_action( 'wp_ajax_wp_travel_get_trip', array( __CLASS__, 'get_trip' ) );
@@ -99,6 +99,8 @@ class WP_Travel_Ajax_Trips {
 		$new_post_data = wptravel_sanitize_array( $new_post_data, true );
 
 		$new_post_data = apply_filters( 'wptravel_new_trip_data', $new_post_data, $trip_id  );
+
+		
 
 		$response  = WP_Travel_Helpers_Trips::update_trip( $trip_id, $new_post_data );
 

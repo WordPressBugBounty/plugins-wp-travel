@@ -56,47 +56,154 @@ class WpTravel_Helpers_Schema {
 	 * @since 5.0.0
 	 * @return string
 	 */
+	// public static function get_trip_schema() {
+	// 	if ( ! self::$trip ) {
+	// 		return;
+	// 	}
+	// 	$trip    = self::$trip;
+	// 	$trip_id = $trip['id'];
+
+	// 	$schema = array(
+	// 		'@context' => 'https://schema.org',
+	// 		'@type'    => 'Trip', // Fixed.
+	// 		'name'     => isset( $trip['title'] ) ? ucwords( $trip['title'] ) : '',
+	// 	);
+
+	// 	if ( isset( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) && count( $trip['itineraries'] ) > 0 ) {
+	// 		$itineraries         = $trip['itineraries'];
+	// 		$schema['itinerary'] = array(
+	// 			'@type'         => 'ItemList',
+	// 			'numberOfItems' => count( $itineraries ),
+	// 		);
+
+	// 		$i = 1;
+	// 		foreach ( $itineraries as $itinerary ) {
+	// 			$schema['itinerary']['itemListElement'][] = array(
+	// 				'@type'    => 'ListItem', // Fixed.
+	// 				'position' => $i,
+	// 				'item'     => array(
+	// 					'@type'       => 'TouristAttraction', // Fixed.
+	// 					'name'        => sprintf( '%s - %s', $itinerary['label'], $itinerary['title'] ),
+	// 					'description' => $itinerary['desc'],
+	// 				),
+	// 			);
+	// 			$i++;
+	// 		}
+	// 	}
+	// 	/**
+	// 	 * Trip schema structure.
+	// 	 *
+	// 	 * @param array $schema Schema data for trip.
+	// 	 * @since 5.0.0
+	// 	 */
+	// 	$schema = apply_filters( 'wptravel_trip_schema', $schema, $trip_id, $trip );
+
+	// 	self::generate_schema( $schema );
+	// }
+
 	public static function get_trip_schema() {
+
 		if ( ! self::$trip ) {
 			return;
 		}
+
 		$trip    = self::$trip;
 		$trip_id = $trip['id'];
 
+		/**
+		 * Base schema (UPGRADED)
+		 */
 		$schema = array(
 			'@context' => 'https://schema.org',
-			'@type'    => 'Trip', // Fixed.
-			'name'     => isset( $trip['title'] ) ? ucwords( $trip['title'] ) : '',
+			'@type'    => 'TouristTrip',
+
+			'name'        => isset( $trip['title'] )
+				? ucwords( $trip['title'] )
+				: '',
+
+			'description' => isset( $trip['trip_overview'] )
+				? wp_strip_all_tags( $trip['trip_overview'] )
+				: '',
+
+			'url' => isset( $trip['url'] ) ? $trip['url'] : '',
+
+			'identifier' => array(
+				'@type' => 'PropertyValue',
+				'name'  => 'Trip ID',
+				'value' => $trip_id,
+			),
+
+			'sku' => isset( $trip['trip_code'] ) ? $trip['trip_code'] : '',
 		);
 
+		/**
+		 * TOURIST TYPE (from itinerary_types taxonomy)
+		 */
+		$terms = wp_get_post_terms( $trip_id, 'itinerary_types' );
+
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+
+			$schema['touristType'] = array_map( function ( $term ) {
+				return $term->name;
+			}, $terms );
+
+		} else {
+			$schema['touristType'] = array( 'General Tourism' );
+		}
+
+		/**
+		 * ITINERARY STRUCTURE
+		 */
 		if ( isset( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) && count( $trip['itineraries'] ) > 0 ) {
-			$itineraries         = $trip['itineraries'];
+
 			$schema['itinerary'] = array(
 				'@type'         => 'ItemList',
-				'numberOfItems' => count( $itineraries ),
+				'numberOfItems' => count( $trip['itineraries'] ),
+				'itemListElement' => array()
 			);
 
 			$i = 1;
-			foreach ( $itineraries as $itinerary ) {
+
+			foreach ( $trip['itineraries'] as $itinerary ) {
+
 				$schema['itinerary']['itemListElement'][] = array(
-					'@type'    => 'ListItem', // Fixed.
-					'position' => $i,
+					'@type'    => 'ListItem',
+					'position' => $i++,
 					'item'     => array(
-						'@type'       => 'TouristAttraction', // Fixed.
-						'name'        => sprintf( '%s - %s', $itinerary['label'], $itinerary['title'] ),
-						'description' => $itinerary['desc'],
+						'@type'       => 'TouristAttraction',
+						'name'        => trim(
+							( $itinerary['label'] ?? '' ) . ' - ' . ( $itinerary['title'] ?? '' )
+						),
+						'description' => wp_strip_all_tags( $itinerary['desc'] ?? '' ),
 					),
 				);
-				$i++;
 			}
 		}
+
 		/**
-		 * Trip schema structure.
-		 *
-		 * @param array $schema Schema data for trip.
-		 * @since 5.0.0
+		 * OPTIONAL: IMAGE (if available)
 		 */
-		$schema = apply_filters( 'wptravel_trip_schema', $schema, $trip_id, $trip );
+		if ( ! empty( $trip['featured_image_data'] ) ) {
+			$schema['image'] = $trip['featured_image_data'];
+		}
+
+		/**
+		 * OPTIONAL: GROUP SIZE
+		 */
+		if ( ! empty( $trip['group_size'] ) ) {
+			$schema['maximumAttendeeCapacity'] = (int) $trip['group_size'];
+		}
+
+		/**
+		 * FILTER (WP TRAVEL HOOK)
+		 */
+		$schema = apply_filters(
+			'wptravel_trip_schema',
+			$schema,
+			$trip_id,
+			$trip
+		);
+
 		self::generate_schema( $schema );
 	}
 
