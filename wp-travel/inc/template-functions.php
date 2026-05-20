@@ -947,15 +947,30 @@ function wptravel_single_excerpt( $trip_id ) {
 											'</span>
 										</div>
 									</li>', $trip_id ) ) : '' ),
-					'reviews'    => apply_filters( 'wp_travel_single_archive_review', '<li>
-									<div class="travel-info">
-										<strong class="title">' . esc_html( $reviews_text ) . '</strong>
-									</div>
-									<div class="travel-info">
-										<span class="value"> <a href="#review" class="wp-travel-count-info">' . esc_html( $count ) . __( ' Reviews', 'wp-travel' ) .
-										'</a></span>
-									</div>
-								</li>', $trip_id ),
+					'reviews' => apply_filters( 'wp_travel_single_archive_review',
+						'<li>
+							<div class="travel-info">
+								<strong class="title">' . esc_html( $reviews_text ) . '</strong>
+							</div>
+							<div class="travel-info">
+								' . ( $count < 1
+									? '<span class="value">
+											<a href="#review" class="wp-travel-count-info">'
+											. esc_html__( 'Be the first to review this trip', 'wp-travel' ) .
+										'</a>
+										</span>'
+									: '<span class="value">
+											<a href="#review" class="wp-travel-count-info">'
+											. sprintf(
+												esc_html__( '%s Reviews', 'wp-travel' ),
+												esc_html( $count )
+											) .
+										'</a>
+										</span>'
+								) . '
+							</div>
+						</li>',
+					$trip_id ),
 				);
 
 				$wptravel_after_excerpt_single_trip_page = apply_filters( 'wptravel_after_excerpt_single_trip_page', $wptravel_after_excerpt_single_trip_page, $trip_id );
@@ -1209,6 +1224,40 @@ function wptravel_single_excerpt( $trip_id ) {
 		</div>
 		<?php endif; ?>		
 
+		<?php 
+		if ( $settings['enable_trip_book_count'] == 'yes' ) :
+
+			// Default booking count from DB
+			$booking_count = absint( get_post_meta( $trip_id, 'wp_travel_booking_count', true ) );
+
+			if ( $settings['enable_custom_booking_count'] == 'yes' ){
+				// Allow override via filter
+				$custom_counts = apply_filters( 'wp_travel_custom_trip_booking_count', [] );
+
+				if ( isset( $custom_counts[ $trip_id ] ) ) {
+					$booking_count = absint( $custom_counts[ $trip_id ] );
+				}
+			}
+
+			$booking_count_label = $settings['book_count_label'];
+			$booking_count_label_non_booked = $settings['book_count_label_with_zero_booking'];
+		?>
+			<div class="wp-travel-booking-count">
+				<?php if ( $booking_count > 0 ) : 
+
+					echo str_replace(
+						['{count}'],
+						[$booking_count],
+						$booking_count_label
+					);
+
+				else : 
+
+					echo $booking_count_label_non_booked;
+
+				endif; ?>
+			</div>
+		<?php endif; ?>		
 
 		<div class="wp-travel-booking-wrapper">
 			<?php
@@ -1319,7 +1368,7 @@ function wptravel_single_keywords( $trip_id ) {
 	if ( is_array( $terms ) && count( $terms ) > 0 && $trip_keyword_enable == true ) :
 		?>
 		<div class="wp-travel-keywords">
-			<span class="label"><?php echo esc_html( $keywords ); ?></span>
+			<span class="label"><?php echo esc_html( $keywords ); ?> :</span>
 			<?php
 			$i = 0;
 			foreach ( $terms as $term ) :
@@ -1341,14 +1390,15 @@ function wptravel_single_keywords( $trip_id ) {
 	if ( is_singular( WP_TRAVEL_POST_TYPE ) && $trip_code_enable == true ) :
 		$trip_code_label = isset( $strings['trip_code'] ) ? $strings['trip_code'] : __( 'Trip codes', 'wp-travel' );
 		?>
-		<div class="wp-travel-trip-code"><span><?php echo esc_html( $trip_code_label ); ?> </span><code><?php echo esc_html( $wp_travel_itinerary->get_trip_code() ); ?></code></div>
+		<div class="wp-travel-trip-code"><span><?php echo esc_html( $trip_code_label ); ?> :</span><code><?php echo esc_html( $wp_travel_itinerary->get_trip_code() ); ?></code></div>
 		<?php
 	endif; 
 	if( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true ) ){
+		$pickup_location_text = apply_filters( 'wp_travel_pickup_locations_label', 'Pickup Locations:', $trip_id );
 	?>
 	<div id="wp-travel-trip-pickup-location">
 
-		<span><?php echo esc_html__( 'Pickup Locations: ', 'wp-travel' ) . esc_html( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )[0] ); ?></span>
+		<span><?php echo esc_html( $pickup_location_text ) . ' '  . esc_html( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true )[0] ); ?></span>
 		<ul class="location-lists">
 			<?php foreach( get_post_meta( $trip_id, 'wp_travel_trip_pickup_points', true ) as $location ): ?>
 				<li class="location">

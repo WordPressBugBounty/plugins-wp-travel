@@ -468,6 +468,10 @@ class WpTravel_Localize_Admin {
                 'if_expired_trip_set_to_expired_delete' => __('If expired, trip set to expired/delete', 'wp-travel'),
                 'disable_star_rating_for_admin' => __('Disable Star Rating For Admin', 'wp-travel'),
                 'disable_star_rating_for_admin_note' => __('Enable to not allow star rating to admin', 'wp-travel'),
+                'enable_trip_book_count' => __('Enable Booking Count', 'wp-travel'),
+                'book_count_label'      => __('Booking Count Label', 'wp-travel'),
+                'book_count_label_with_zero_booking'      => __('Booking Count Label For Zero Booking', 'wp-travel'),
+                'enable_custom_booking_count'      => __('Enable Custom Booking Count', 'wp-travel'),
             ),
             'field_editor' => array(
                 'field_editor' => __('Field Editor', 'wp-travel'),

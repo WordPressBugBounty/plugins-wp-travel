@@ -125,6 +125,10 @@ function wptravel_settings_default_fields() {
 		'enable_woo_checkout'              		  => 'no',
 		'enable_multiple_category_on_pricing'     => 'yes', // This settings isn't visible for new user. So, it is always on for new settings. it means only new category layout will show in the admin and frontend.
 		'trip_pricing_options_layout'             => 'by-pricing-option',
+		'enable_trip_book_count'                  => 'no',
+		'book_count_label'						  => '{count} people have booked this trip.',
+		'book_count_label_with_zero_booking'      => 'Be the first to book this trip.',
+		'enable_custom_booking_count'		      => 'no',
 
 		// Email Settings Fields.
 		'wp_travel_from_email'                    => get_option( 'admin_email' ),

@@ -194,6 +194,20 @@ function wptravel_marketplace_page() {
 	);
 
 	$themes_fse_data = array(
+		'wens-travelx'     => array(
+			'name'       => __( 'WENS Travelx', 'wp-travel' ),
+			'type'       => 'free',
+			'img_url'    => 'https://wensolutions.com/wp-content/uploads/2026/05/WENS-TravelX-05-08-2026_11_25_AM-1.png',
+			'demo_url'   => 'https://wpdemo.wensolutions.com/wens-travelx/',
+			'detail_url' => 'https://wensolutions.com/themes/wens-travelx/',
+		),
+		'wens-travel-studio'     => array(
+			'name'       => __( 'WENS Travel Studio', 'wp-travel' ),
+			'type'       => 'free',
+			'img_url'    => 'https://wensolutions.com/wp-content/uploads/2026/03/WENS-Travel-Studio-03-25-2026_03_39_PM-1.png',
+			'demo_url'   => 'https://wpdemo.wensolutions.com/wens-travel-studio/',
+			'detail_url' => 'https://wensolutions.com/themes/wens-travel-studio/',
+		),
 		'wens-adventure'     => array(
 			'name'       => __( 'WENS Adventure', 'wp-travel' ),
 			'type'       => 'free',

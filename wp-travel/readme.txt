@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 11.5.0
+Stable tag: 11.6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,19 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.6.0 =
+Release Date: 20th May 2026
+
+Fixes:
+* Updated the Archive Page Search Form so that the Location taxonomy is displayed in a parent–child hierarchical structure within select options.
+* Audited AJAX requests and added appropriate security validations to help protect against potential attacks.
+
+Enhancements:
+* Added a condition to make the dashboard widget visible only to site admins.
+* Added the wp_travel_load_text_domain_from_mo_files filter to control loading translations from .mo files.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-6-0-update-release-note).**
 
 = 11.5.0 =
 Release Date: 4th May 2026
