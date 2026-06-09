@@ -2,9 +2,9 @@
 Contributors: wptravel, suascat_wp
 Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 11.6.0
+Stable tag: 11.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,20 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.7.0 =
+Release Date: 9th June 2026
+
+Fixes:
+* Fixed an issue where the WP Travel Dashboard page was not automatically set during the initial setup process.
+* Resolved a plugin activation issue that triggered a database error when the wp_wt_dates table was missing.
+* Fixed a deprecation warning caused by passing null to preg_replace() during WP Travel settings sanitization in AJAX requests.
+
+Enhancements:
+* Extended Trip Schema data with additional fields ( Trip Description, Trip Link, Trip Code, Trip Group Size, Trip image link ).
+* Updated the schema type from Trip to TouristTrip for improved structured data compliance.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-7-0-update-release-note).**
 
 = 11.6.0 =
 Release Date: 20th May 2026

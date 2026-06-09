@@ -75,7 +75,7 @@ function wptravel_get_enquiries_form( $trips_dropdown = false ) {
 	if ( class_exists( 'WpTravel_Helpers_Strings' ) ) {
 		$string = WpTravel_Helpers_Strings::get(); 
 	}
-	$strings = isset( $string['enquiry'] ) ? $string['enquiry'] : apply_filters( 'wp_travel_trip_enquiry_label', __( 'Enquiry', 'wp-travel' ) ) ;
+	$strings = apply_filters( 'wp_travel_trip_enquiry_label', __( 'Submit Enquiry', 'wp-travel' ) ) ;
 
 	$form_options = array(
 		'id'            => 'wp-travel-enquiries',
@@ -85,7 +85,7 @@ function wptravel_get_enquiries_form( $trips_dropdown = false ) {
 			'name'  => 'wp_travel_enquiry_submit',
 			'class' => 'button wp-block-button__link',
 			'id'    => 'wp-travel-enquiry-submit',
-			'value' => apply_filters( 'wp_travel_enquiry_submit_button_label', __( 'Submit ', 'wp-travel' ) ) . $strings,
+			'value' => $strings,
 		),
 		'nonce'         => array(
 			'action' => 'wp_travel_security_action',

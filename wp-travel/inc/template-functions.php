@@ -619,6 +619,7 @@ function wptravel_trip_price( $trip_id, $hide_rating = false ) {
 	);
 
 	$strings = WpTravel_Helpers_Strings::get();
+	
 
 	do_action( 'wp_travel_single_before_trip_price', $trip_id, $hide_rating ); // @phpcs:ignore
 	if ( ! $trip_price ) {

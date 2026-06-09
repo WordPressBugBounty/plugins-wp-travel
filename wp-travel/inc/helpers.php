@@ -2724,7 +2724,7 @@ function wptravel_get_search_filter_form( $args ) {
 					<input class="wp-travel-widget-filter-view-mode" type="hidden" name="view_mode" data-mode="<?php echo esc_attr( $view_mode ); ?>" value="<?php echo esc_attr( $view_mode ); ?>" >
 
 					<input type="hidden" class="wp-travel-widget-filter-archive-url" value="<?php echo esc_url( get_post_type_archive_link( WP_TRAVEL_POST_TYPE ) ); ?>" />
-					<input type="submit" id="wp-travel-filter-search-submit" class="button wp-block-button__link button-primary wp-travel-filter-search-submit" value="<?php echo 'Search'; ?>">
+					<input type="submit" id="wp-travel-filter-search-submit" class="button wp-block-button__link button-primary wp-travel-filter-search-submit" value="<?php echo __( 'Search', 'wp-travel' ); ?>">
 				</div>
 			</div>
 		</div>

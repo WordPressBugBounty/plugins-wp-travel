@@ -347,7 +347,7 @@ class WpTravel_Helpers_Strings {
 			'group_discount_tooltip'        => __( 'Group Discounts', 'wp-travel' ),            
 			'view_group_discount'           => __( 'Discounts', 'wp-travel' ),
 			'pricings_list_label'           => __( 'Pricings', 'wp-travel' ),
-			'same_day_booking'           	=> apply_filters( 'wp_travel_same_day_booking', false ),
+			'same_day_booking'           	=> apply_filters( 'wp_travel_same_day_booking', true ),
 			'pricings_not_found'           => __( 'Sorry!! Pricing not found for selected date. Please select another date.', 'wp-travel' ),
 			'person'                        =>  __( 'Person', 'wp-travel' ),
 			'departure_custom_label'        =>  __( 'Bookings', 'wp-travel' ),

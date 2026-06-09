@@ -327,7 +327,7 @@ class WpTravel_Helpers_Pricings {
 	 * @return Number
 	 */
 	public static function get_price( $args = array() ) {
-
+		
 		$trip_id = isset( $args['trip_id'] ) ? $args['trip_id'] : get_the_ID();
 		if ( ! $trip_id ) {
 			return 0;
@@ -357,7 +357,7 @@ class WpTravel_Helpers_Pricings {
 	 * @return Number
 	 */
 	public static function get_price_legacy( $args = array() ) {
-
+		
 		$trip_id = isset( $args['trip_id'] ) ? $args['trip_id'] : get_the_ID();
 		if ( ! $trip_id ) {
 			return false;
@@ -473,6 +473,8 @@ class WpTravel_Helpers_Pricings {
 				}
 			}
 		}
+
+	
 		return $price;
 	}
 
@@ -485,7 +487,7 @@ class WpTravel_Helpers_Pricings {
 	 * @return Number
 	 */
 	public static function get_price_v4( $args = array() ) {
-
+		
 		$trip_id = isset( $args['trip_id'] ) ? $args['trip_id'] : get_the_ID();
 		if ( ! $trip_id ) {
 			return false;
@@ -500,7 +502,7 @@ class WpTravel_Helpers_Pricings {
 		$highest_price = get_post_meta( $trip_id, 'wp_travel_show_highest_price', true );
 
 		if ( ! empty( $pricing_id ) && ! empty( $category_id ) && is_array( $pricings_data ) ) { // Quick Fix here. Pricing data may be WP Error object.
-
+			
 			$pricings = array_filter(
 				$pricings_data['pricings'],
 				function( $p ) use ( $pricing_id ) {
@@ -526,7 +528,7 @@ class WpTravel_Helpers_Pricings {
 			}
 			
 		} else {
-	
+			
 			// Min price.
 			if ( is_array( $pricings_data ) && isset( $pricings_data['pricings'] ) && count( $pricings_data['pricings'] ) ) {
 
@@ -539,6 +541,7 @@ class WpTravel_Helpers_Pricings {
 					 * @version 6.0.0
 					 */
 					if ( 'yes' == $highest_price ) {
+						
 						foreach ( $category_data as $pricing_categories ) {
 							foreach ( $pricing_categories as $pricing_category ) {
 								$current_price = ( $pricing_category['is_sale'] && $pricing_category['sale_price'] > 0 ) ? $pricing_category['sale_price'] : $pricing_category['regular_price'];
@@ -553,23 +556,55 @@ class WpTravel_Helpers_Pricings {
 						}
 					} else {
 						
-						foreach ( $category_data as $pricing_categories ) {
-							foreach ( $pricing_categories as $pricing_category ) {
-								$current_price = ( $pricing_category['is_sale'] && $pricing_category['sale_price'] > 0 ) ? $pricing_category['sale_price'] : $pricing_category['regular_price'];
-								if ( ! (float) $price || (float) $current_price < (float) $price && (float) $current_price > 0 ) { // init / update min price.
-									
-									$price   = $current_price;
-									if( $pricing_category['is_sale'] && isset($pricing_category['is_sale_percentage']) && $pricing_category['is_sale_percentage'] && $pricing_category['sale_percentage_val'] > 0 ){
-										$price   = ( $pricing_category['sale_percentage_val']/100 ) * $pricing_category['regular_price'];
+						$selected_price = apply_filters( 'wp_travel_show_min_price_from_selected_pricing_cat_single_trip_template', false );
+						
+						if( !$selected_price ){
+							foreach ( $category_data as $pricing_categories ) {
+								foreach ( $pricing_categories as $pricing_category ) {
+									$current_price = ( $pricing_category['is_sale'] && $pricing_category['sale_price'] > 0 ) ? $pricing_category['sale_price'] : $pricing_category['regular_price'];
+									if ( ! (float) $price || (float) $current_price < (float) $price && (float) $current_price > 0 ) { // init / update min price.
+										
+										$price   = $current_price;
+										if( $pricing_category['is_sale'] && isset($pricing_category['is_sale_percentage']) && $pricing_category['is_sale_percentage'] && $pricing_category['sale_percentage_val'] > 0 ){
+											$price   = ( $pricing_category['sale_percentage_val']/100 ) * $pricing_category['regular_price'];
+										}
+										
+										$regular = $pricing_category['regular_price'];
 									}
 									
-									$regular = $pricing_category['regular_price'];
 								}
-								
+			
 							}
-		
+						}else{
+							$target_category = apply_filters( 'wp_travel_set_pricing_cat_to_show_min_price_single_trip_template', 'Adult');
+
+							$price = 0;
+							$regular = 0;
+
+							foreach ($category_data as $pricing_categories) {
+								foreach ($pricing_categories as $pricing_category) {
+
+									if (
+										strtolower($pricing_category['term_info']['title']) !==
+										strtolower($target_category)
+									) {
+										continue;
+									}
+
+									$current_price = (
+										$pricing_category['is_sale'] &&
+										$pricing_category['sale_price'] > 0
+									)
+										? $pricing_category['sale_price']
+										: $pricing_category['regular_price'];
+
+									if ($price == 0 || $current_price < $price) {
+										$price = $current_price;
+										$regular = $pricing_category['regular_price'];
+									}
+								}
+							}
 						}
-						
 					}
 					
 				}
@@ -580,7 +615,7 @@ class WpTravel_Helpers_Pricings {
 				}
 			}
 		}
-
+		
 		return (float)$price;
 	}
 
