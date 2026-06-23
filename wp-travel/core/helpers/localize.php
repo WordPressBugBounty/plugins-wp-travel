@@ -138,8 +138,6 @@ class WpTravel_Helpers_Localize {
 					$_wp_travel['enable_subscription'] = 'yes';
 				}
 
-				
-
 				if (isset($settings['mailchimp']['api_key'])) {
 					unset($settings['mailchimp']['api_key']);
 				}
@@ -291,37 +289,10 @@ class WpTravel_Helpers_Localize {
 			// Booking Chart Data. Need to merge in wp_travel or _wp_travel.
 			if(isset( $_GET['post_type'] ) && isset( $_GET['page'] ) && $_GET['page'] == 'booking_chart'){
 				
-				// $booking_data      = wptravel_get_booking_data();
-				
-				// $stat_data         = isset( $booking_data['stat_data'] ) ? $booking_data['stat_data'] : array();
-				// $labels            = isset( $stat_data['stat_label'] ) ? $stat_data['stat_label'] : array();
-				// $datas             = isset( $stat_data['data'] ) ? $stat_data['data'] : array();
-				// $data_label        = isset( $stat_data['data_label'] ) ? $stat_data['data_label'] : array();
-				// $data_bg_color     = isset( $stat_data['data_bg_color'] ) ? $stat_data['data_bg_color'] : array();
-				// $data_border_color = isset( $stat_data['data_border_color'] ) ? $stat_data['data_border_color'] : array();
-
-				// $booking_stat_from = isset( $booking_data['booking_stat_from'] ) ? $booking_data['booking_stat_from'] : '';
-				// $booking_stat_to   = isset( $booking_data['booking_stat_to'] ) ? $booking_data['booking_stat_to'] : '';
-
-				// $wp_travel_stat_data = array();
-
-				// foreach ( $datas as $key => $data ) {
-				// 	$wp_travel_stat_data[] = array(
-				// 		'label'           => esc_html__( 'Bookings', 'wp-travel' ),
-				// 		'backgroundColor' => '#2271b1',
-				// 		// 'borderColor'     => $data_border_color[ $key ],
-				// 		'data'            => $data,
-				// 		'fill'            => false,
-				// 	);
-				// }
 				$wp_travel_chart_data = array(
 					'ajax_url'          => 'admin-ajax.php',
 					'_nonce'           => wp_create_nonce( 'wp_travel_nonce' ),
 					'chart_title'       => esc_html__( 'Chart Stat', 'wp-travel' ),
-					// 'labels'            => wp_json_encode( $labels ),
-					// 'datasets'          => wp_json_encode( $wp_travel_stat_data ),
-					// 'booking_stat_from' => $booking_stat_from,
-					// 'booking_stat_to'   => $booking_stat_to,
 				);
 
 				$wp_travel_chart_data                   = apply_filters( 'wptravel_chart_data', $wp_travel_chart_data );
@@ -348,7 +319,7 @@ class WpTravel_Helpers_Localize {
 			$wp_travel_gallery_data['moment_date_format'] = $moment_date_format;
 
 			$wp_travel_gallery_data = apply_filters( 'wp_travel_localize_gallery_data', $wp_travel_gallery_data ); // phpcs:ignore
-			// $wp_travel_gallery_data = apply_filters( 'wptravel_localize_gallery_data', $wp_travel_gallery_data );
+
 			// end of Map & Gallery Data.
 			$localized_data['wp_travel_drag_drop_uploader'] = $wp_travel_gallery_data;
 

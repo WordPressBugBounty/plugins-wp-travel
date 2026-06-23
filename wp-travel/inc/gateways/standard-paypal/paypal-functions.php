@@ -30,11 +30,6 @@ function wptravel_get_paypal_redirect_url( $ssl_check = false ) {
  */
 function wptravel_listen_paypal_ipn() {
 
-
-	// if ( isset( $_POST['payer_id'] ) && isset( $_POST['txn_id'] ) ) {
-	// 	do_action( 'wp_travel_verify_paypal_ipn' );
-    // }
-
 	if ( isset( $_POST['payer_id'] ) && isset( $_POST['txn_id'] ) ) {
         // Get current user's email
         $current_user_email = '';
@@ -198,23 +193,6 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 				do_action( 'wp_travel_after_successful_payment', $booking_id );
 			}
 		} elseif( ! empty( $_POST['payer_status'] ) && $_POST['payer_status'] == 'VERIFIED' && isset( $_GET['partial'] ) ) {
-			
-				
-				// // Fixed Paypal booking step 
-				// set_post_type( $booking_id, 'itinerary-booking' );
-							
-				// $booking_form_data = get_post_meta( $booking_id, 'order_data', true );
-
-				// $customer_email = isset( $booking_form_data['wp_travel_email_traveller'] ) ? wptravel_sanitize_array( wp_unslash( $booking_form_data['wp_travel_email_traveller'] ) ) : array();
-				// reset( $customer_email );
-				// $first_key      = key( $customer_email );
-
-				// do_action( 'wptravel_action_send_booking_email', $booking_id, $booking_form_data, $booking_form_data['new_trip_id'] );
-				
-				// do_action( 'wp_travel_after_frontend_booking_save', $booking_id, $first_key );
-				// do_action( 'wptravel_after_frontend_booking_save', $booking_id, $first_key );
-
-				// do_action( 'wptravel_save_bookings_data_google_sheet', $booking_id );
 
 				$payment_gateway = 'paypal';
 				$booking_id      = (int)$_GET['booking_id'];
@@ -236,21 +214,6 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 					$settings = wp_travel_get_settings();
 				}
 
-				// if ( function_exists( 'wptravel_booking_data' ) ) {
-				// 	$details     = wptravel_booking_data( $booking_id );
-				// } else {
-				// 	$details     = wp_travel_booking_data( $booking_id );
-				// }
-				// $booking_option = $details['booking_option'];
-
-				// // Need to update payment meta here.
-				// do_action( 'wp_travel_after_partial_payment_complete' );
-
-				// Added since 4.3.4, if the trip is book only first, then if user pay it in next time, this divert to full payment mode and full pay email will be sent. ( This needs enhancement ).
-				// if ( 'booking_only' === $booking_option ) {
-				// 	wptravel_send_email_payment( $booking_id );
-				// 	return;
-				// }
 				// Send Partial Payment Complete email here.
 				$send_email_to_admin = ( isset( $settings['send_booking_email_to_admin'] ) && '' !== $settings['send_booking_email_to_admin'] ) ? $settings['send_booking_email_to_admin'] : 'yes';
 
@@ -274,13 +237,10 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 					$sitename = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 				}
 
-				// $amount = isset( $_POST['amount'] ) ? sanitize_text_field( wp_unslash( $_POST['amount'] ) ) : 0;
-
 				$email_tags = array(
 					'{sitename}'      => $sitename,
 					'{booking_id}'    => $booking_id,
 					'{customer_name}' => $current_user->display_name,
-					// '{amount}'        => wptravel_get_currency_symbol() . ' ' . $amount,
 					'{amount}'        => wptravel_get_formated_price_currency( $amount, false, '', $booking_id ), // @since 1.0.5,
 				);
 
@@ -318,7 +278,7 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 					$headers = $email->email_headers( $reply_to_email, $client_email );
 
 					if ( ! wp_mail( $admin_email, $admin_subject, $admin_message, $headers ) ) {
-						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel-pro' ) . '</strong> ' . __( 'Email could not be sent.', 'wp-travel-pro' ), 'error' );
+						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel' ) . '</strong> ' . __( 'Email could not be sent.', 'wp-travel' ), 'error' );
 					}
 				}
 
@@ -327,11 +287,11 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 				$headers = $email->email_headers( $reply_to_email, $reply_to_email );
 
 				if ( ! wp_mail( $client_email , $client_subject, $client_message, $headers ) ) {
-						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel-pro' ) . '</strong> ' . __( 'Emailss could not be sent.', 'wp-travel-pro' ), 'error' );
+						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel' ) . '</strong> ' . __( 'Emailss could not be sent.', 'wp-travel' ), 'error' );
 				}
 
 
-				WP_Travel()->notices->add( __( 'Partial Payment Success.', 'wp-travel-pro' ), 'success' );
+				WP_Travel()->notices->add( __( 'Partial Payment Success.', 'wp-travel' ), 'success' );
 
 				if ( function_exists(  'slicewp_get_setting' ) ) {
 					$slicewp_settings = slicewp_get_setting( 'active_integrations' );

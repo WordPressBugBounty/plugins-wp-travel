@@ -110,16 +110,14 @@ class WpTravel_Admin_Assets {
 		}
 		
 		wp_enqueue_script( 'wp-travel-admin-settings' ); // temp fixes to use localized data.
+		
 		// Block Coupon.
 		if ( WP_Travel::is_page( 'coupon', true ) ) {
 			wp_enqueue_style( 'wptravel-admin-coupon' );
 			wp_enqueue_script( 'wptravel-admin-coupon' );
 		}
+
 		// Block Enquiries.
-		// if ( WP_Travel::is_page( 'enquiry', true ) ) {
-		// 	wp_enqueue_style( 'wptravel-admin-enquiry' );
-		// 	wp_enqueue_script( 'wptravel-admin-enquiry' );
-		// }
 
 		if ( 
 			$screen->post_type === 'itinerary-booking' &&

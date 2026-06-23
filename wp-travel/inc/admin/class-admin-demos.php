@@ -1,18 +1,5 @@
 <?php 
 
-// if (
-//     is_admin() &&
-//     isset($_GET['post_type']) &&
-//     isset($_GET['page']) &&
-//     $_GET['post_type'] === 'itinerary-booking' &&
-//     $_GET['page'] === 'wp-travel-demos-lists'
-// ) {
-    
-    // require WP_TRAVEL_ABSPATH . '/inc/admin/importer/importer.php';
-
-// }
-
-
 class WP_Travel_Demos_Lists {
 
 	public function __construct() {

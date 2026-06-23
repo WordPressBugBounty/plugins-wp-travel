@@ -298,26 +298,8 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 					}
 				}
 
-				
-				// if ( apply_filters( 'wptravel_send_booking_email_to_guide', false ) == true ) { 
-					
-					do_action( 'wptravel_send_email_to_guide', $booking_id, $email_tags, $headers );
+				do_action( 'wptravel_send_email_to_guide', $booking_id, $email_tags, $headers );
 
-
-					// $email_content      = str_replace( array_keys( $email_tags ), $email_tags, $email_content );
-					// $order_items_data = get_post_meta( $booking_id, 'order_items_data' )[0];
-					// $guide_ids = [];
-					// foreach( $order_items_data as $data ){
-					// 	$trip_id = (int)$data['trip_id'];
-					// 	$get_guide_ids = maybe_unserialize( get_post_meta( $trip_id )['selected_guides'][0] );
-					// 	foreach( $get_guide_ids as $guide_id ){
-					// 		if ( ! wp_mail( get_userdata(  (int)$guide_id )->data->user_email, $email_subject, $email_content, $headers, $attachment ) ) {
-					// 			WPTravel()->notices->add( 'Your trip has been booked but the email could not be sent. Possible reason: your host may have disabled the mail() function.', 'error' );
-					// 		}
-					// 	}
-					// }
-					
-				// }
 
 				/**
 				 * Hooks to enable/disable booking email to client.
@@ -616,7 +598,6 @@ if ( ! class_exists( 'WP_Travel_Email' ) ) {
 				do_action( 'wp_travel_after_payment_email_sent', $booking_id, $email_data, $email_tags ); // @since 3.0.6 for invoice.
 			}
 			
-
 			return $email_tags;
 
 		}

@@ -628,10 +628,6 @@ function wptravel_get_formated_price( $price, $format = true, $number_of_decimal
 		return $price;
 	}
 
-	// $settings           = wptravel_get_settings();
-	// $thousand_separator = '';
-	// $decimal_separator  = $settings['decimal_separator'];
-	// $number_of_decimals = isset( $settings['number_of_decimals'] ) && ! empty( $settings['number_of_decimals'] ) ? $settings['number_of_decimals'] : 0;
 	/**
 	 * Defaults to all the currency to fix the issue caused by formatting.
 	 *
@@ -710,7 +706,7 @@ function wptravel_get_formated_price_currency( $price = 0, $regular_price = fals
 			}
 
 			?>
-			<span class="wp-travel-trip-currency"><?php echo $currency_symbol; ?></span><span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span>
+			<span class="wp-travel-trip-currency"><?php echo esc_html( $currency_symbol ); ?></span><span class="<?php echo esc_attr( $price_class ); ?>"><?php echo esc_html( $price ); ?></span>
 			<?php
 			break;
 		case 'left_with_space':

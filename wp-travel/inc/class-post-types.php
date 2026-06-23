@@ -424,24 +424,24 @@ class WP_Travel_Post_Types {
 function register_temporary_bookings_post_type() {
 
 	$labels = array(
-		'name'                  => _x( 'Temporary Bookings', 'Post Type General Name', 'textdomain' ),
-		'singular_name'         => _x( 'Temporary Booking', 'Post Type Singular Name', 'textdomain' ),
-		'menu_name'             => __( 'Temp Bookings', 'textdomain' ),
-		'name_admin_bar'        => __( 'Temporary Booking', 'textdomain' ),
-		'add_new'               => __( 'Add New', 'textdomain' ),
-		'add_new_item'          => __( 'Add New Temporary Booking', 'textdomain' ),
-		'edit_item'             => __( 'Edit Temporary Booking', 'textdomain' ),
-		'new_item'              => __( 'New Temporary Booking', 'textdomain' ),
-		'view_item'             => __( 'View Temporary Booking', 'textdomain' ),
-		'search_items'          => __( 'Search Temporary Bookings', 'textdomain' ),
-		'not_found'             => __( 'No temporary bookings found', 'textdomain' ),
-		'not_found_in_trash'    => __( 'No temporary bookings found in Trash', 'textdomain' ),
+		'name'                  => _x( 'Temporary Bookings', 'Post Type General Name', 'wp-travel' ),
+		'singular_name'         => _x( 'Temporary Booking', 'Post Type Singular Name', 'wp-travel' ),
+		'menu_name'             => __( 'Temp Bookings', 'wp-travel' ),
+		'name_admin_bar'        => __( 'Temporary Booking', 'wp-travel' ),
+		'add_new'               => __( 'Add New', 'wp-travel' ),
+		'add_new_item'          => __( 'Add New Temporary Booking', 'wp-travel' ),
+		'edit_item'             => __( 'Edit Temporary Booking', 'wp-travel' ),
+		'new_item'              => __( 'New Temporary Booking', 'wp-travel' ),
+		'view_item'             => __( 'View Temporary Booking', 'wp-travel' ),
+		'search_items'          => __( 'Search Temporary Bookings', 'wp-travel' ),
+		'not_found'             => __( 'No temporary bookings found', 'wp-travel' ),
+		'not_found_in_trash'    => __( 'No temporary bookings found in Trash', 'wp-travel' ),
 	);
 
 	$args = array(
-		'label'                 => __( 'Temporary Bookings', 'textdomain' ),
+		'label'                 => __( 'Temporary Bookings', 'wp-travel' ),
 		'labels'                => $labels,
-		'description'           => __( 'Stores temporary or pending booking records.', 'textdomain' ),
+		'description'           => __( 'Stores temporary or pending booking records.', 'wp-travel' ),
 		'public'                => false,          // not publicly queryable
 		'show_ui'               => true,           // visible in admin
 		'show_in_menu'          => false,
@@ -481,7 +481,7 @@ function add_trip_filter_to_itinerary_bookings() {
     $selected_trip = isset( $_GET['booking_trip_id'] ) ? absint( $_GET['booking_trip_id'] ) : '';
 
     echo '<select name="booking_trip_id">';
-    echo '<option value="">' . esc_html__( 'All Trips', 'wp-travel-pro' ) . '</option>';
+    echo '<option value="">' . esc_html__( 'All Trips', 'wp-travel' ) . '</option>';
 
     foreach ( $trips as $trip ) {
         printf(

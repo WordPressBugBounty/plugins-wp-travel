@@ -9,7 +9,7 @@
 /**
  * WXR Parser that makes use of the SimpleXML PHP extension.
  */
-class Templazee_WXR_Parser_SimpleXML {
+class WP_Travel_WXR_Parser_SimpleXML {
 	function parse( $file ) {
 		$authors    = array();
 		$posts      = array();
@@ -30,7 +30,7 @@ class Templazee_WXR_Parser_SimpleXML {
 		}
 
 		if ( ! $success || isset( $dom->doctype ) ) {
-			return new WP_Error( 'SimpleXML_parse_error', __( 'There was an error when reading this WXR file', 'themepalace-fse-pro' ), libxml_get_errors() );
+			return new WP_Error( 'SimpleXML_parse_error', __( 'There was an error when reading this WXR file', 'wp-travel' ), libxml_get_errors() );
 		}
 
 		$xml = simplexml_import_dom( $dom );
@@ -38,18 +38,18 @@ class Templazee_WXR_Parser_SimpleXML {
 
 		// halt if loading produces an error
 		if ( ! $xml ) {
-			return new WP_Error( 'SimpleXML_parse_error', __( 'There was an error when reading this WXR file', 'themepalace-fse-pro' ), libxml_get_errors() );
+			return new WP_Error( 'SimpleXML_parse_error', __( 'There was an error when reading this WXR file', 'wp-travel' ), libxml_get_errors() );
 		}
 
 		$wxr_version = $xml->xpath( '/rss/channel/wp:wxr_version' );
 		if ( ! $wxr_version ) {
-			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'wp-travel' ) );
 		}
 
 		$wxr_version = (string) trim( $wxr_version[0] );
 		// confirm that we are dealing with the correct file format
 		if ( ! preg_match( '/^\d+\.\d+$/', $wxr_version ) ) {
-			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'wp-travel' ) );
 		}
 
 		$base_url = $xml->xpath( '/rss/channel/wp:base_site_url' );

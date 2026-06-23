@@ -1,4 +1,5 @@
 <?php
+
 if ( ! function_exists( 'is_plugin_active' ) ) {
     require_once ABSPATH . '/wp-admin/includes/plugin.php';
 }
@@ -112,7 +113,6 @@ function wptravel_custom_calendar_shortcode($atts) {
             null,    // Version
             true     // Load in footer
         );
-
 
         // 4) Inline JS (pass events safely)
         wp_add_inline_script(
@@ -404,8 +404,6 @@ function wptravel_custom_calendar_shortcode($atts) {
         border-radius: 50%;
         margin: 5px auto 0;
     }
-
-
 
     .wp-travel-cal-layout .cal-trips {
         background: #f7f7f7;

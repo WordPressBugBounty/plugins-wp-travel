@@ -127,7 +127,6 @@ class WP_Travel_Admin_Enquiry {
 				foreach ( $form_fields as $field ) {
 					if ( isset( $field['name'] ) ) {
 						// Optional: get post meta value using the field's name, if stored that way
-						// $value = get_post_meta( $post_id, $field['name'], true );
 
 						$dynamic_fields[ $field['name'] ] = [
 							'label' => $field['label'],

@@ -24,7 +24,6 @@ class WpTravel_Ajax_Clone {
 
 	}
 
-	
 
 	/**
 	 * Clone.

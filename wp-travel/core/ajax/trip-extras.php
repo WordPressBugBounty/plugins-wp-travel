@@ -17,17 +17,6 @@ class WP_Travel_Ajax_Trip_Extras {
 			exit;
 		}
 
-		// if ( ! current_user_can( 'manage_options' ) ) {
-		// 	WP_Travel_Helpers_REST_API::response(
-		// 		new WP_Error(
-		// 			'forbidden',
-		// 			__( 'You are not allowed to get trip extras.', 'wp-travel' ),
-		// 			array( 'status' => 403 )
-		// 		)
-		// 	);
-		// 	exit;
-		// }
-
 		$args = array();
 
 		$payload = json_decode( file_get_contents( 'php://input' ) );

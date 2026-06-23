@@ -44,9 +44,3 @@ $generate_user_password       = isset( $settings['generate_user_password'] ) ? $
 
 echo apply_filters( 'wp_travel_powered_by_text_new_account_email', $html );
 
-// add_filter( 'wp_travel_powered_by_text_new_account_email', 'custom_powered_by_email_text' );
-// function custom_powered_by_email_text( $html ) {
-//     return '<p>' . esc_html__( 'Powered by', 'wp-travel' ) . 
-//             '<a href="http://wptravel.io" target="_blank"> ' . esc_html__( 'WP Travel', 'wp-travel' ) . '</a></p>';
-// }
-

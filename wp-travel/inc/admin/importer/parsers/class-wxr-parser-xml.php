@@ -9,7 +9,7 @@
 /**
  * WXR Parser that makes use of the XML Parser PHP extension.
  */
-class Templazee_WXR_Parser_XML {
+class WP_Travel_WXR_Parser_XML {
 	public $wp_tags     = array(
 		'wp:post_id',
 		'wp:post_date',
@@ -104,7 +104,7 @@ class Templazee_WXR_Parser_XML {
 		xml_parser_free( $xml );
 
 		if ( ! preg_match( '/^\d+\.\d+$/', $this->wxr_version ) ) {
-			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'wp-travel' ) );
 		}
 
 		return array(

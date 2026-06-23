@@ -37,25 +37,6 @@ class WP_Travel_FW_Field_Date extends WP_Travel_FW_Field_Text {
 			$set_max_data = true; // Either future or past date.
 		} 
 		
-		// $output   .= '<script>';
-		// $output   .= 'jQuery(function($){ ';
-		// $output   .= '$("#' . $this->field['id'] . '").attr("readonly", true);';
-		// $output   .= '$("#' . $this->field['id'] . '").wpt_datepicker({
-		// 					language: "' . $locale . '",';
-		// $output   .= "dateFormat: '" . $js_date_format . "',";
-		// if ( $set_max_data ) {
-		// 	if ( $max_today ) {
-		// 		$output .= 'maxDate: new Date(),'; // past date.
-		// 	} else {
-		// 		$output .= 'minDate: new Date(),'; // future date.
-		// 	}
-		// }
-
-		// $output .= '});';
-		// $output .= '} );';
-
-		// $output .= '</script>';
-
 		if ( ! $display ) {
 			return $output;
 		}
@@ -99,19 +80,7 @@ class WP_Travel_FW_Field_Date extends WP_Travel_FW_Field_Text {
 		}
 
 		$max_today = isset( $this->field['attributes'] ) && isset( $this->field['attributes']['data-max-today'] ) ? true : false;
-		// $output   .= '<script>';
-		// $output   .= 'jQuery(document).ready( function($){ ';
-		// $output   .= '$("#' . $this->field['id'] . '").wpt_datepicker({
-		// 					language: "' . $locale . '",';
-		// if ( $max_today ) {
-		// 	$output .= 'maxDate: new Date()';
-		// } else {
-		// 	$output .= 'minDate: new Date()';
-		// }
 
-		// $output .= '});';
-		// $output .= '} )';
-		// $output .= '</script>';
 
 		if ( ! $display ) {
 			return $output;

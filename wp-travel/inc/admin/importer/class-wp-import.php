@@ -38,37 +38,6 @@ class WP_Demo_Import extends WP_Importer {
 	var $url_remap         = array();
 	var $featured_images   = array();
 
-	/**
-	 * Registered callback function for the WordPress Importer
-	 *
-	 * Manages the three separate stages of the WXR import process
-	 */
-	// function dispatch() {
-	// 	$this->header();
-
-	// 	$step = empty( $_GET['step'] ) ? 0 : (int) $_GET['step'];
-	// 	switch ( $step ) {
-	// 		case 0:
-	// 			$this->greet();
-	// 			break;
-	// 		case 1:
-	// 			check_admin_referer( 'import-upload' );
-	// 			if ( $this->handle_upload() ) {
-	// 				$this->import_options();
-	// 			}
-	// 			break;
-	// 		case 2:
-	// 			check_admin_referer( 'import-wordpress' );
-	// 			$this->fetch_attachments = ( ! empty( $_POST['fetch_attachments'] ) && $this->allow_fetch_attachments() );
-	// 			$this->id                = (int) $_POST['import_id'];
-	// 			$file                    = get_attached_file( $this->id );
-	// 			set_time_limit( 0 );
-	// 			$this->import( $file );
-	// 			break;
-	// 	}
-
-	// 	$this->footer();
-	// }
 
 	/**
 	 * The main controller for the actual import stage.
@@ -105,18 +74,13 @@ class WP_Demo_Import extends WP_Importer {
 	 * @param string $file Path to the WXR file for importing
 	 */
 	function import_start( $file ) {
-		// if ( ! is_file( $file ) ) {
-		// 	echo '<p><strong>' . __( 'Sorry, there has been an error.', 'themepalace-fse-pro' ) . '</strong><br />';
-		// 	echo __( 'The file does not exist, please try again.', 'themepalace-fse-pro' ) . '</p>';
-		// 	$this->footer();
-		// 	die();
-		// }
+
 
 		$import_data = $this->parse( $file );
 
 
 		if ( is_wp_error( $import_data ) ) {
-			echo '<p><strong>' . __( 'Sorry, there has been an error.', 'themepalace-fse-pro' ) . '</strong><br />';
+			echo '<p><strong>' . esc_html__( 'Sorry, there has been an error.', 'wp-travel' ) . '</strong><br />';
 			echo esc_html( $import_data->get_error_message() ) . '</p>';
 			$this->footer();
 			die();
@@ -164,12 +128,13 @@ class WP_Demo_Import extends WP_Importer {
 		$file = wp_import_handle_upload();
 
 		if ( isset( $file['error'] ) ) {
-			echo '<p><strong>' . __( 'Sorry, there has been an error.', 'themepalace-fse-pro' ) . '</strong><br />';
+			echo '<p><strong>' . esc_html__( 'Sorry, there has been an error.', 'wp-travel' ) . '</strong><br />';
 			echo esc_html( $file['error'] ) . '</p>';
 			return false;
 		} elseif ( ! file_exists( $file['file'] ) ) {
-			echo '<p><strong>' . __( 'Sorry, there has been an error.', 'themepalace-fse-pro' ) . '</strong><br />';
-			printf( __( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'themepalace-fse-pro' ), esc_html( $file['file'] ) );
+			echo '<p><strong>' . esc_html__( 'Sorry, there has been an error.', 'wp-travel' ) . '</strong><br />';
+			/* translators: %s: Path to the export file. */
+			printf( esc_html__( 'The export file could not be found at <code>%s</code>. It is likely that this was caused by a permissions problem.', 'wp-travel' ), esc_html( $file['file'] ) );
 			echo '</p>';
 			return false;
 		}
@@ -177,7 +142,7 @@ class WP_Demo_Import extends WP_Importer {
 		$this->id    = (int) $file['id'];
 		$import_data = $this->parse( $file['file'] );
 		if ( is_wp_error( $import_data ) ) {
-			echo '<p><strong>' . __( 'Sorry, there has been an error.', 'themepalace-fse-pro' ) . '</strong><br />';
+			echo '<p><strong>' . esc_html__( 'Sorry, there has been an error.', 'wp-travel' ) . '</strong><br />';
 			echo esc_html( $import_data->get_error_message() ) . '</p>';
 			return false;
 		}
@@ -185,7 +150,8 @@ class WP_Demo_Import extends WP_Importer {
 		$this->version = $import_data['version'];
 		if ( $this->version > $this->max_wxr_version ) {
 			echo '<div class="error"><p><strong>';
-			printf( __( 'This WXR file (version %s) may not be supported by this version of the importer. Please consider updating.', 'themepalace-fse-pro' ), esc_html( $import_data['version'] ) );
+			/* translators: %s: data version. */
+			printf( esc_html__( 'This WXR file (version %s) may not be supported by this version of the importer. Please consider updating.', 'wp-travel' ), esc_html( $import_data['version'] ) );
 			echo '</strong></p></div>';
 		}
 
@@ -210,7 +176,8 @@ class WP_Demo_Import extends WP_Importer {
 			foreach ( $import_data['posts'] as $post ) {
 				$login = sanitize_user( $post['post_author'], true );
 				if ( empty( $login ) ) {
-					printf( __( 'Failed to import author %s. Their posts will be attributed to the current user.', 'themepalace-fse-pro' ), esc_html( $post['post_author'] ) );
+					/* translators: %s: Post Author. */
+					printf( esc_html__( 'Failed to import author %s. Their posts will be attributed to the current user.', 'wp-travel' ), esc_html( $post['post_author'] ) );
 					echo '<br />';
 					continue;
 				}
@@ -233,15 +200,21 @@ class WP_Demo_Import extends WP_Importer {
 		$j = 0;
 		// phpcs:disable Generic.WhiteSpace.ScopeIndent.Incorrect
 		?>
-		<form action="<?php echo admin_url( 'admin.php?import=wordpress&amp;step=2' ); ?>" method="post">
+		<form action="<?php echo esc_url( admin_url( 'admin.php?import=wordpress&amp;step=2' ) ); ?>" method="post">
 			<?php wp_nonce_field( 'import-wordpress' ); ?>
-			<input type="hidden" name="import_id" value="<?php echo $this->id; ?>" />
+			<input type="hidden" name="import_id" value="<?php echo esc_attr( $this->id ); ?>" />
 
 		<?php if ( ! empty( $this->authors ) ) : ?>
-			<h3><?php _e( 'Assign Authors', 'themepalace-fse-pro' ); ?></h3>
-			<p><?php _e( 'To make it simpler for you to edit and save the imported content, you may want to reassign the author of the imported item to an existing user of this site, such as your primary administrator account.', 'themepalace-fse-pro' ); ?></p>
+			<h3><?php esc_html__( 'Assign Authors', 'wp-travel' ); ?></h3>
+			<p><?php esc_html__( 'To make it simpler for you to edit and save the imported content, you may want to reassign the author of the imported item to an existing user of this site, such as your primary administrator account.', 'wp-travel' ); ?></p>
 		<?php if ( $this->allow_create_users() ) : ?>
-			<p><?php printf( __( 'If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary.', 'themepalace-fse-pro' ), esc_html( get_option( 'default_role' ) ) ); ?></p>
+			
+			<p>
+				<?php 
+				/* translators: %s: user default role. */
+				printf( esc_html__( 'If a new user is created by WordPress, a new password will be randomly generated and the new user&#8217;s role will be set as %s. Manually changing the new user&#8217;s details will be necessary.', 'wp-travel' ), esc_html( get_option( 'default_role' ) ) ); 
+				?>
+			</p>
 		<?php endif; ?>
 			<ol id="authors">
 		<?php foreach ( $this->authors as $author ) : ?>
@@ -251,14 +224,14 @@ class WP_Demo_Import extends WP_Importer {
 		<?php endif; ?>
 
 		<?php if ( $this->allow_fetch_attachments() ) : ?>
-			<h3><?php _e( 'Import Attachments', 'themepalace-fse-pro' ); ?></h3>
+			<h3><?php esc_html__( 'Import Attachments', 'wp-travel' ); ?></h3>
 			<p>
 				<input type="checkbox" value="1" name="fetch_attachments" id="import-attachments" />
-				<label for="import-attachments"><?php _e( 'Download and import file attachments', 'themepalace-fse-pro' ); ?></label>
+				<label for="import-attachments"><?php esc_html__( 'Download and import file attachments', 'wp-travel' ); ?></label>
 			</p>
 		<?php endif; ?>
 
-			<p class="submit"><input type="submit" class="button" value="<?php esc_attr_e( 'Submit', 'themepalace-fse-pro' ); ?>" /></p>
+			<p class="submit"><input type="submit" class="button" value="<?php esc_attr_e( 'Submit', 'wp-travel' ); ?>" /></p>
 		</form>
 		<?php
 		// phpcs:enable Generic.WhiteSpace.ScopeIndent.Incorrect
@@ -272,7 +245,7 @@ class WP_Demo_Import extends WP_Importer {
 	 * @param array $author Author information, e.g. login, display name, email
 	 */
 	function author_select( $n, $author ) {
-		_e( 'Import author:', 'themepalace-fse-pro' );
+		esc_html__( 'Import author:', 'wp-travel' );
 		echo ' <strong>' . esc_html( $author['author_display_name'] );
 		if ( '1.0' != $this->version ) {
 			echo ' (' . esc_html( $author['author_login'] ) . ')';
@@ -285,24 +258,24 @@ class WP_Demo_Import extends WP_Importer {
 
 		$create_users = $this->allow_create_users();
 		if ( $create_users ) {
-			echo '<label for="user_new_' . $n . '">';
+			echo '<label for="user_new_' . esc_attr( $n ) . '">';
 			if ( '1.0' != $this->version ) {
-				_e( 'or create new user with login name:', 'themepalace-fse-pro' );
+				esc_html__( 'or create new user with login name:', 'wp-travel' );
 				$value = '';
 			} else {
-				_e( 'as a new user:', 'themepalace-fse-pro' );
+				esc_html__( 'as a new user:', 'wp-travel' );
 				$value = esc_attr( sanitize_user( $author['author_login'], true ) );
 			}
 			echo '</label>';
 
-			echo ' <input type="text" id="user_new_' . $n . '" name="user_new[' . $n . ']" value="' . $value . '" /><br />';
+			echo ' <input type="text" id="user_new_' .esc_attr( $n ). '" name="user_new[' . esc_attr( $n ). ']" value="' . esc_attr( $value ) . '" /><br />';
 		}
 
-		echo '<label for="imported_authors_' . $n . '">';
+		echo '<label for="imported_authors_' . esc_attr( $n ). '">';
 		if ( ! $create_users && '1.0' == $this->version ) {
-			_e( 'assign posts to an existing user:', 'themepalace-fse-pro' );
+			esc_html__( 'assign posts to an existing user:', 'wp-travel' );
 		} else {
-			_e( 'or assign posts to an existing user:', 'themepalace-fse-pro' );
+			esc_html__( 'or assign posts to an existing user:', 'wp-travel' );
 		}
 		echo '</label>';
 
@@ -311,13 +284,13 @@ class WP_Demo_Import extends WP_Importer {
 				'name'            => "user_map[$n]",
 				'id'              => 'imported_authors_' . $n,
 				'multi'           => true,
-				'show_option_all' => __( '- Select -', 'themepalace-fse-pro' ),
+				'show_option_all' => __( '- Select -', 'wp-travel' ),
 				'show'            => 'display_name_with_login',
 				'echo'            => 0,
 			)
 		);
 
-		echo '<input type="hidden" name="imported_authors[' . $n . ']" value="' . esc_attr( $author['author_login'] ) . '" />';
+		echo '<input type="hidden" name="imported_authors[' . esc_attr( $n ). ']" value="' . esc_attr( $author['author_login'] ) . '" />';
 
 		if ( '1.0' != $this->version ) {
 			echo '</div>';
@@ -370,9 +343,10 @@ class WP_Demo_Import extends WP_Importer {
 					}
 					$this->author_mapping[ $santized_old_login ] = $user_id;
 				} else {
-					printf( __( 'Failed to create new user for %s. Their posts will be attributed to the current user.', 'themepalace-fse-pro' ), esc_html( $this->authors[ $old_login ]['author_display_name'] ) );
+					/* translators: %s: Author display name. */
+					printf( esc_html__( 'Failed to create new user for %s. Their posts will be attributed to the current user.', 'wp-travel' ), esc_html( $this->authors[ $old_login ]['author_display_name'] ) );
 					if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-						echo ' ' . $user_id->get_error_message();
+						echo ' ' . esc_html( $user_id->get_error_message() );
 					}
 					echo '<br />';
 				}
@@ -429,9 +403,10 @@ class WP_Demo_Import extends WP_Importer {
 					$this->processed_terms[ intval( $cat['term_id'] ) ] = $id;
 				}
 			} else {
-				printf( __( 'Failed to import category %s', 'themepalace-fse-pro' ), esc_html( $cat['category_nicename'] ) );
+				/* translators: %s: category name. */
+				printf( esc_html__( 'Failed to import category %s', 'wp-travel' ), esc_html( $cat['category_nicename'] ) );
 				if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-					echo ': ' . $id->get_error_message();
+					echo ': ' . esc_html( $id->get_error_message() );
 				}
 				echo '<br />';
 				continue;
@@ -480,9 +455,10 @@ class WP_Demo_Import extends WP_Importer {
 					$this->processed_terms[ intval( $tag['term_id'] ) ] = $id['term_id'];
 				}
 			} else {
-				printf( __( 'Failed to import post tag %s', 'themepalace-fse-pro' ), esc_html( $tag['tag_name'] ) );
+				/* translators: %s: tag name. */
+				printf( esc_html__( 'Failed to import post tag %s', 'wp-travel' ), esc_html( $tag['tag_name'] ) );
 				if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-					echo ': ' . $id->get_error_message();
+					echo ': ' . esc_html( $id->get_error_message() );
 				}
 				echo '<br />';
 				continue;
@@ -541,9 +517,10 @@ class WP_Demo_Import extends WP_Importer {
 					$this->processed_terms[ intval( $term['term_id'] ) ] = $id['term_id'];
 				}
 			} else {
-				printf( __( 'Failed to import %1$s %2$s', 'themepalace-fse-pro' ), esc_html( $term['term_taxonomy'] ), esc_html( $term['term_name'] ) );
+				/* translators: %s: term name. */
+				printf( esc_html__( 'Failed to import %1$s %2$s', 'wp-travel' ), esc_html( $term['term_taxonomy'] ), esc_html( $term['term_name'] ) );
 				if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-					echo ': ' . $id->get_error_message();
+					echo ': ' . esc_html( $id->get_error_message() );
 				}
 				echo '<br />';
 				continue;
@@ -631,8 +608,11 @@ class WP_Demo_Import extends WP_Importer {
 			$post = apply_filters( 'wp_import_post_data_raw', $post );
 
 			if ( ! post_type_exists( $post['post_type'] ) ) {
+
+								
 				printf(
-					__( 'Failed to import &#8220;%1$s&#8221;: Invalid post type %2$s', 'themepalace-fse-pro' ),
+					/* translators: 1: Post Title. 2: Post Type */
+					esc_html__( 'Failed to import &#8220;%1$s&#8221;: Invalid post type %2$s', 'wp-travel' ),
 					esc_html( $post['post_title'] ),
 					esc_html( $post['post_type'] )
 				);
@@ -745,13 +725,16 @@ class WP_Demo_Import extends WP_Importer {
 				}
 
 				if ( is_wp_error( $post_id ) ) {
+
+					
 					printf(
-						__( 'Failed to import %1$s &#8220;%2$s&#8221;', 'themepalace-fse-pro' ),
-						$post_type_object->labels->singular_name,
+						/* translators: 1: singular name. 2: Post Type*/
+						esc_html__( 'Failed to import %1$s &#8220;%2$s&#8221;', 'wp-travel' ),
+						esc_html( $post_type_object->labels->singular_name ),
 						esc_html( $post['post_title'] )
 					);
 					if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-						echo ': ' . $post_id->get_error_message();
+						echo ': ' . esc_html( $post_id->get_error_message() );
 					}
 					echo '<br />';
 					continue;
@@ -785,9 +768,11 @@ class WP_Demo_Import extends WP_Importer {
 							$term_id = $t['term_id'];
 							do_action( 'wp_import_insert_term', $t, $term, $post_id, $post );
 						} else {
-							printf( __( 'Failed to import %1$s %2$s', 'themepalace-fse-pro' ), esc_html( $taxonomy ), esc_html( $term['name'] ) );
+							/* translators: %1$s: taxonomy. */
+							/* translators: %2$s: term name. */
+							printf( esc_html__( 'Failed to import %1$s %2$s', 'wp-travel' ), esc_html( $taxonomy ), esc_html( $term['name'] ) );
 							if ( defined( 'IMPORT_DEBUG' ) && IMPORT_DEBUG ) {
-								echo ': ' . $t->get_error_message();
+								echo ': ' . esc_html( $t->get_error_message() );
 							}
 							echo '<br />';
 							do_action( 'wp_import_insert_term_failed', $t, $term, $post_id, $post );
@@ -932,14 +917,15 @@ class WP_Demo_Import extends WP_Importer {
 
 		// no nav_menu term associated with this menu item
 		if ( ! $menu_slug ) {
-			_e( 'Menu item skipped due to missing menu slug', 'themepalace-fse-pro' );
+			esc_html( 'Menu item skipped due to missing menu slug', 'wp-travel' );
 			echo '<br />';
 			return;
 		}
 
 		$menu_id = term_exists( $menu_slug, 'nav_menu' );
 		if ( ! $menu_id ) {
-			printf( __( 'Menu item skipped due to invalid menu slug: %s', 'themepalace-fse-pro' ), esc_html( $menu_slug ) );
+			/* translators: %s: menu slug. */
+			printf( esc_html__( 'Menu item skipped due to invalid menu slug: %s', 'wp-travel' ), esc_html( $menu_slug ) );
 			echo '<br />';
 			return;
 		} else {
@@ -1006,7 +992,7 @@ class WP_Demo_Import extends WP_Importer {
 		if ( ! $this->fetch_attachments ) {
 			return new WP_Error(
 				'attachment_processing_error',
-				__( 'Fetching attachments is not enabled', 'themepalace-fse-pro' )
+				__( 'Fetching attachments is not enabled', 'wp-travel' )
 			);
 		}
 
@@ -1024,7 +1010,7 @@ class WP_Demo_Import extends WP_Importer {
 		if ( $info ) {
 			$post['post_mime_type'] = $info['type'];
 		} else {
-			return new WP_Error( 'attachment_processing_error', __( 'Invalid file type', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'attachment_processing_error', __( 'Invalid file type', 'wp-travel' ) );
 		}
 
 		$post['guid'] = $upload['url'];
@@ -1068,7 +1054,7 @@ class WP_Demo_Import extends WP_Importer {
 
 		$tmp_file_name = wp_tempnam( $file_name );
 		if ( ! $tmp_file_name ) {
-			return new WP_Error( 'import_no_file', __( 'Could not create temporary file.', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_no_file', __( 'Could not create temporary file.', 'wp-travel' ) );
 		}
 
 		// Fetch the remote URL and write it to the placeholder file.
@@ -1090,7 +1076,7 @@ class WP_Demo_Import extends WP_Importer {
 				'import_file_error',
 				sprintf(
 					/* translators: 1: The WordPress error message. 2: The WordPress error code. */
-					__( 'Request failed due to an error: %1$s (%2$s)', 'themepalace-fse-pro' ),
+					__( 'Request failed due to an error: %1$s (%2$s)', 'wp-travel' ),
 					esc_html( $remote_response->get_error_message() ),
 					esc_html( $remote_response->get_error_code() )
 				)
@@ -1106,7 +1092,7 @@ class WP_Demo_Import extends WP_Importer {
 				'import_file_error',
 				sprintf(
 					/* translators: 1: The HTTP error message. 2: The HTTP error code. */
-					__( 'Remote server returned the following unexpected result: %1$s (%2$s)', 'themepalace-fse-pro' ),
+					__( 'Remote server returned the following unexpected result: %1$s (%2$s)', 'wp-travel' ),
 					get_status_header_desc( $remote_response_code ),
 					esc_html( $remote_response_code )
 				)
@@ -1118,25 +1104,26 @@ class WP_Demo_Import extends WP_Importer {
 		// Request failed.
 		if ( ! $headers ) {
 			@unlink( $tmp_file_name );
-			return new WP_Error( 'import_file_error', __( 'Remote server did not respond', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_file_error', __( 'Remote server did not respond', 'wp-travel' ) );
 		}
 
 		$filesize = (int) filesize( $tmp_file_name );
 
 		if ( 0 === $filesize ) {
 			@unlink( $tmp_file_name );
-			return new WP_Error( 'import_file_error', __( 'Zero size file downloaded', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_file_error', __( 'Zero size file downloaded', 'wp-travel' ) );
 		}
 
 		if ( ! isset( $headers['content-encoding'] ) && isset( $headers['content-length'] ) && $filesize !== (int) $headers['content-length'] ) {
 			@unlink( $tmp_file_name );
-			return new WP_Error( 'import_file_error', __( 'Downloaded file has incorrect size', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_file_error', __( 'Downloaded file has incorrect size', 'wp-travel' ) );
 		}
 
 		$max_size = (int) $this->max_attachment_size();
 		if ( ! empty( $max_size ) && $filesize > $max_size ) {
 			@unlink( $tmp_file_name );
-			return new WP_Error( 'import_file_error', sprintf( __( 'Remote file is too large, limit is %s', 'themepalace-fse-pro' ), size_format( $max_size ) ) );
+			/* translators: %s: max size. */
+			return new WP_Error( 'import_file_error', sprintf( esc_html__( 'Remote file is too large, limit is %s', 'wp-travel' ), size_format( $max_size ) ) );
 		}
 
 		// Override file name with Content-Disposition header value.
@@ -1168,7 +1155,7 @@ class WP_Demo_Import extends WP_Importer {
 		}
 
 		if ( ( ! $type || ! $ext ) && ! current_user_can( 'unfiltered_upload' ) ) {
-			return new WP_Error( 'import_file_error', __( 'Sorry, this file type is not permitted for security reasons.', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_file_error', __( 'Sorry, this file type is not permitted for security reasons.', 'wp-travel' ) );
 		}
 
 		$uploads = wp_upload_dir( $post['upload_date'] );
@@ -1183,7 +1170,7 @@ class WP_Demo_Import extends WP_Importer {
 
 		if ( ! $move_new_file ) {
 			@unlink( $tmp_file_name );
-			return new WP_Error( 'import_file_error', __( 'The uploaded file could not be moved', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'import_file_error', __( 'The uploaded file could not be moved', 'wp-travel' ) );
 		}
 
 		// Set correct file permissions.
@@ -1298,21 +1285,22 @@ class WP_Demo_Import extends WP_Importer {
 	 * @return array Information gathered from the WXR file
 	 */
 	function parse( $file ) {
-		$parser = new Templazee_WXR_Parser();
+		$parser = new WP_Travel_WXR_Parser();
 		return $parser->parse( $file );
 	}
 
 	// Display import page title
 	function header() {
 		echo '<div class="wrap">';
-		echo '<h2>' . __( 'Import WordPress', 'themepalace-fse-pro' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Import WordPress', 'wp-travel' ) . '</h2>';
 
 		$updates  = get_plugin_updates();
 		$basename = plugin_basename( __FILE__ );
 		if ( isset( $updates[ $basename ] ) ) {
 			$update = $updates[ $basename ];
 			echo '<div class="error"><p><strong>';
-			printf( __( 'A new version of this importer is available. Please update to version %s to ensure compatibility with newer export files.', 'themepalace-fse-pro' ), $update->update->new_version );
+			/* translators: %s: new version. */
+			printf( esc_html__( 'A new version of this importer is available. Please update to version %s to ensure compatibility with newer export files.', 'wp-travel' ), esc_html( $update->update->new_version ) );
 			echo '</strong></p></div>';
 		}
 	}
@@ -1327,8 +1315,8 @@ class WP_Demo_Import extends WP_Importer {
 	 */
 	function greet() {
 		echo '<div class="narrow">';
-		echo '<p>' . __( 'Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import the posts, pages, comments, custom fields, categories, and tags into this site.', 'themepalace-fse-pro' ) . '</p>';
-		echo '<p>' . __( 'Choose a WXR (.xml) file to upload, then click Upload file and import.', 'themepalace-fse-pro' ) . '</p>';
+		echo '<p>' . esc_html__( 'Howdy! Upload your WordPress eXtended RSS (WXR) file and we&#8217;ll import the posts, pages, comments, custom fields, categories, and tags into this site.', 'wp-travel' ) . '</p>';
+		echo '<p>' . esc_html__( 'Choose a WXR (.xml) file to upload, then click Upload file and import.', 'wp-travel' ) . '</p>';
 		wp_import_upload_form( 'admin.php?import=wordpress&amp;step=1' );
 		echo '</div>';
 	}

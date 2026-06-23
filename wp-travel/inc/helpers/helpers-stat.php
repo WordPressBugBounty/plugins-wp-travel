@@ -400,68 +400,6 @@ function wptravel_ajax_get_booking_data() {
 }
 
 
-// function wptravel_get_booking_data() {
-
-	
-// 	global $wpdb;
-// 	$stat_data = array();
-	
-// 	if( isset( $_GET['post_type'] ) && isset( $_GET['page'] ) && $_GET['page'] == 'booking_chart' ){
-// 		$submission_request = isset($_REQUEST) ? wptravel_sanitize_array(wp_unslash($_REQUEST)) : array();
-
-// 		$interval = $submission_request["booking_intervals"] ?? 'all-time';
-
-// 		// Permission check only if booking_intervals is manually submitted (e.g., via dashboard filter)
-// 		if (isset($submission_request['booking_intervals']) && !current_user_can('manage_options')) {
-// 			return;
-// 		}
-
-// 		// 🟢 Run Queries Only Once
-// 		$results           = wptravel_get_daily_booking_stats($interval);
-// 		$trip_stats        = wptravel_get_trip_stats($interval);
-// 		$destination_stats = wptravel_get_destination_stats($interval);
-
-// 		// Sort trip and destination stats
-// 		$top_performing_trips = array_slice(array_reverse($trip_stats), 0, 15);
-// 		$low_performing_trips = array_slice($trip_stats, 0, 15);
-
-// 		$top_destinations = array_slice(array_reverse($destination_stats), 0, 15);
-// 		$bottom_destinations = array_slice($destination_stats, 0, 15);
-
-// 		// Prepare booking data arrays
-// 		$booking_data = array_map(function($row) {
-// 			return [
-// 				'date' => $row['booking_date'],
-// 				'num_bookings' => (int) $row['num_bookings'],
-// 			];
-// 		}, $results);
-
-// 		$booking_dates = array_column($booking_data, 'date');
-// 		$booking_number = array_column($booking_data, 'num_bookings');
-
-// 		// Assemble response
-// 		$stat_data['stat_data']['stat_label'] = array_map(function($date) {
-// 			return date('Y/m/d', strtotime($date));
-// 		}, $booking_dates);
-
-// 		$stat_data['stat_data']['data'][] = $booking_number;
-// 		$stat_data['max_bookings'] = array_sum($booking_number);
-
-// 		$stat_data['top_performing_trips'] = $top_performing_trips;
-// 		$stat_data['low_performing_trips'] = $low_performing_trips;
-
-// 		$stat_data['top_destinations'] = $top_destinations;
-// 		$stat_data['bottom_destinations'] = $bottom_destinations;
-
-// 		$stat_data['booking_stat_from'] = $submission_request['booking_stat_from'] ?? '';
-// 		$stat_data['booking_stat_to'] = $submission_request['booking_stat_to'] ?? '';
-// 	}
-	
-
-// 	return $stat_data;
-// }
-
-
 /**
  * Get Booking Status List.
  *

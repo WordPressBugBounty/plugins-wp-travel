@@ -418,7 +418,5 @@ function trip_review_send_emails() {
         delete_post_meta($booking_id, 'review_reminder_lock');
     }
 
-   
-
     delete_transient('trip_review_reminder_cron_running');
 }

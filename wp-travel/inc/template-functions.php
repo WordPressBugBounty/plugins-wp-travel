@@ -962,7 +962,11 @@ function wptravel_single_excerpt( $trip_id ) {
 										</span>'
 									: '<span class="value">
 											<a href="#review" class="wp-travel-count-info">'
-											. sprintf(
+											
+											. 
+											
+											sprintf(
+												/* translators: 1: review count */
 												esc_html__( '%s Reviews', 'wp-travel' ),
 												esc_html( $count )
 											) .
@@ -1018,7 +1022,7 @@ function wptravel_single_excerpt( $trip_id ) {
 				echo esc_html( $settings['trip_date_countdown_label'] );
 				?>
 			</span>
-			<div class="tour-date-countdown" data-date="<?php echo date_i18n( 'Y-m-d', strtotime( $date_to_use ) ); ?>">
+			<div class="tour-date-countdown" data-date="<?php echo esc_html( date_i18n( 'Y-m-d', strtotime( $date_to_use ) ) ); ?>">
 				<div class="time-unit"><span class="time-number" id="days">00</span><span class="time-label">Days</span></div>
 				<div class="time-unit"><span class="time-number" id="hours">00</span><span class="time-label">Hours</span></div>
 				<div class="time-unit"><span class="time-number" id="minutes">00</span><span class="time-label">Minutes</span></div>
@@ -1246,15 +1250,15 @@ function wptravel_single_excerpt( $trip_id ) {
 			<div class="wp-travel-booking-count">
 				<?php if ( $booking_count > 0 ) : 
 
-					echo str_replace(
+					echo esc_html( str_replace(
 						['{count}'],
 						[$booking_count],
 						$booking_count_label
-					);
+					) );
 
 				else : 
 
-					echo $booking_count_label_non_booked;
+					echo esc_html( $booking_count_label_non_booked );
 
 				endif; ?>
 			</div>
@@ -1324,7 +1328,7 @@ function wptravel_single_excerpt( $trip_id ) {
 						"https://api.whatsapp.com/send/?phone={$phone_number}&text={$encoded_message}&type=phone_number&app_absent=0"
 					);
 			?>
-					<a id="wp-travel-send-message-whatsapp" class="wp-travel-message-whatsapp" data-effect="mfp-move-from-top" href="<?php echo $whatsapp_link ?>" target="_blank">
+					<a id="wp-travel-send-message-whatsapp" class="wp-travel-message-whatsapp" data-effect="mfp-move-from-top" href="<?php echo esc_url( $whatsapp_link ); ?>" target="_blank">
 						<span class="wp-travel-booking-enquiry-message">
 							<span class="wp-travel-whatsapp-icon">
 								<i class="fab fa-whatsapp"></i>

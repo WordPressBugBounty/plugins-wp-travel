@@ -155,8 +155,8 @@ class WP_Travel_Admin_Dashboard_Widgets {
 
 		<div class="wptravel-dashboard-widget">
 			<div class="wptravel-dashboard-box">
-				<a href="<?php echo admin_url( 'edit.php?post_type=itinerary-booking' ); ?>" class="wptravel-dashboard-label">
-					<?php _e( 'Total Confirmed Bookings', 'wp-travel' ); ?>
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itinerary-booking' ) ); ?>" class="wptravel-dashboard-label">
+					<?php esc_html__( 'Total Confirmed Bookings', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value">
 					<?php echo esc_html( $total_bookings ); ?>
@@ -164,19 +164,19 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<span class="wptravel-dashboard-label"><?php _e( 'Total Earnings', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-label"><?php esc_html__( 'Total Earnings', 'wp-travel' ); ?></span>
 				<span class="wptravel-dashboard-value"><?php echo wptravel_get_formated_price_currency( $total_earnings, true ); ?></span>
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<span class="wptravel-dashboard-label"><?php _e( 'Total Customers', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-label"><?php esc_html__( 'Total Customers', 'wp-travel' ); ?></span>
 				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_customer); ?></span>
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<a href="<?php echo admin_url( 'edit.php?post_type=itineraries' ); ?>" 
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itineraries' )); ?>" 
 				class="wptravel-dashboard-label">
-					<?php _e( 'Published Trips', 'wp-travel' ); ?>
+					<?php esc_html__( 'Published Trips', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value">
 					<?php echo esc_html( $total_trips ); ?>
@@ -184,9 +184,9 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<a href="<?php echo admin_url( 'edit.php?post_type=itinerary-booking&page=wp-travel-enquiry-settings' ); ?>" 
+				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itinerary-booking&page=wp-travel-enquiry-settings' ) ); ?>" 
 				class="wptravel-dashboard-label">
-					<?php _e( 'Total Enquiries', 'wp-travel' ); ?>
+					<?php esc_html__( 'Total Enquiries', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_enquiry ); ?></span>
 			</div>

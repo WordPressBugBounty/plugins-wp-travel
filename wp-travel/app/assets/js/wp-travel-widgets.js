@@ -165,10 +165,6 @@ jQuery(function($) {
         $(".price-amount").val(wp_travel.currency_symbol + $(".wp-travel-range-slider").slider("values", 0) +
             " - " + wp_travel.currency_symbol + $(".wp-travel-range-slider").slider("values", 1));
 
-        // $(".trip-duration-calender input").wpt_datepicker({
-        //     language: wp_travel.locale,
-        // });
-
     });
 
     $('.wp-travel-filter-submit-shortcode').on('click', function() {
@@ -204,27 +200,10 @@ jQuery(function($) {
         if (!pathname) {
             pathname = window.location.pathname;
         }
-        // query_string = '?';
-        // var check_query_string = pathname.match(/\?/);
-        // if (check_query_string) {
-        //     query_string = '&';
-        // }
-        // var data_index = $(this).siblings('.filter-data-index').data('index');
-        // $('.wp_travel_search_widget_filters_input' + data_index).each(function() {
-        //     filterby = $(this).attr('name');
-        //     filterby_val = $(this).val();
-        //     query_string += filterby + '=' + filterby_val + '&';
-        // })
-        // redirect_url = pathname + query_string;
-        // redirect_url = redirect_url.replace(/&+$/, '');
-
-        // redirect_url = redirect_url + '&view_mode=' + view_mode;
-        // window.location = redirect_url;
+        
 
         query_string = '';
-        // if ( window.location.search ) {
-        //     query_string = window.location.search;
-        // }
+  
         var full_url       = new URL( pathname + query_string );
         var search_params  = full_url.searchParams;
 
@@ -232,7 +211,7 @@ jQuery(function($) {
         $('.wp_travel_search_widget_filters_input' + data_index).each(function() {
             var filterby = $(this).attr('name');
             var filterby_val = $(this).val();
-            // query_string += filterby + '=' + filterby_val + '&';
+
             search_params.set( filterby, filterby_val );
             full_url.search = search_params.toString();
         })
@@ -404,11 +383,6 @@ jQuery(function($) {
         $('.datepicker').removeClass( 'active' );
     });    
 
-    // $(document).on('click', '.wp-travel-datepicker', function(event) {
-    //     var childItem = $(this).parent().parent().parent().parent().parent().parent().attr( 'data-child' ) 
-    //     $('#datepickers-container .datepicker:nth-child(' +childItem+ ')').css( 'left', '735px' );
-    //     $('#datepickers-container .datepicker:nth-child(' +childItem+ ')').addClass( 'active' );
-    // });
     
     $(document).on('click', '.open-quick-view-modal', function(event) {
         event.preventDefault();
@@ -481,7 +455,6 @@ jQuery(function($) {
 
             $('button.wp-travel-book').attr('data-url', url);
             $('button.wp-travel-book').addClass('custom-booking-link');
-            // $('button.wp-travel-book').removeClass('wp-travel-book');
         }
     });
 
@@ -495,14 +468,3 @@ jQuery(function($) {
         window.open(url, '_blank')
     });
 });
-
-
-
-// PWA
-// if ("serviceWorker" in navigator) {
-//     window.addEventListener("load", function() {
-//       navigator.serviceWorker
-//         .register("/sw.js")
-
-//     })
-//   }

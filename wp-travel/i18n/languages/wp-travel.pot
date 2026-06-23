@@ -46,6 +46,10 @@ msgstr ""
 msgid "Trips"
 msgstr ""
 
+#: inc/trip-enquiries.php:109
+msgid "Select"
+msgstr ""
+
 #: app/inc/admin/class-wptravel-localize-admin.php:333
 #: core/helpers/booking.php:339 core/helpers/booking.php:392
 #: core/helpers/booking.php:509 core/helpers/strings.php:223

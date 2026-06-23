@@ -58,7 +58,7 @@ function wptravel_show_coming_soon_page() {
             status_header( 200 );
             nocache_headers();
 
-            echo '<!DOCTYPE html><html ' . get_language_attributes() . '>';
+            echo '<!DOCTYPE html><html ' . esc_attr( get_language_attributes() ) . '>';
             echo '<head>';
             echo '<meta charset="' . esc_attr( get_bloginfo( 'charset' ) ) . '">';
             wp_head();
@@ -380,7 +380,7 @@ function wptravel_render_default_coming_soon( $settings ) {
                     <h1>'.esc_html( wptravel_get_settings()['coming_soon_title'] ).'</h1>
                     <p class="subtitle">'.esc_html(wptravel_get_settings()['coming_soon_description'] ).'</p>
                     
-                    <div class="countdown" data-date="'.$site_live_date.'">
+                    <div class="countdown" data-date="'.esc_attr( $site_live_date ).'">
                         <div class="time-unit"><span class="time-number" id="days">00</span><span class="time-label">Days</span></div>
                         <div class="time-unit"><span class="time-number" id="hours">00</span><span class="time-label">Hours</span></div>
                         <div class="time-unit"><span class="time-number" id="minutes">00</span><span class="time-label">Minutes</span></div>
@@ -764,11 +764,11 @@ function wptravel_render_default_coming_soon( $settings ) {
             <body style="background:'.esc_attr(wptravel_get_settings()['coming_soon_bg_color'] ).'">
 
             <div class="container" >
-                <div class="logo"><img src="'.$logo_url.'" alt="Logo"></div>
-                <h1>'.$title.'</h1>
-                <p class="subtitle">'.$description.'</p>
+                <div class="logo"><img src="'.esc_url($logo_url).'" alt="Logo"></div>
+                <h1>'.esc_html($title).'</h1>
+                <p class="subtitle">'.esc_html( $description ).'</p>
 
-                <div class="countdown" data-date="'.$site_live_date.'">
+                <div class="countdown" data-date="'.esc_attr($site_live_date).'">
                     <div class="unit"><span class="num" id="days">00</span><span class="label">Days</span></div>
                     <div class="unit"><span class="num" id="hours">00</span><span class="label">Hours</span></div>
                     <div class="unit"><span class="num" id="minutes">00</span><span class="label">Minutes</span></div>
@@ -776,10 +776,10 @@ function wptravel_render_default_coming_soon( $settings ) {
                 </div>
 
                 <div class="social-links">
-                    <a href="'.$fb.'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-facebook" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
-                    <a href="'.$x.'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-x-twitter" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
-                    <a href="'.$insta.'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-instagram" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
-                    <a href="'.$linkedin.'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-linkedin" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
+                    <a href="'.esc_url($fb).'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-facebook" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
+                    <a href="'.esc_url($x).'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-x-twitter" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
+                    <a href="'.esc_url($insta).'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-instagram" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
+                    <a href="'.esc_url($linkedin).'" style="background:'.esc_attr(wptravel_get_settings()['social_icon_bg_color'] ).'"><i class="fab fa-linkedin" style="color:'.esc_attr(wptravel_get_settings()['social_icon_color'] ).'"></i></a>
                 </div>
             </div>
 

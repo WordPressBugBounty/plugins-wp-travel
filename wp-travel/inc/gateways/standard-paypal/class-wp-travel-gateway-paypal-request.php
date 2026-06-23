@@ -259,56 +259,6 @@ class WP_Travel_Gateway_Paypal_Request {
 			$args[ 'amount_1' ]    = $payment_amount;
 			$args[ 'item_number_1' ] = $booking_id;
 
-			// foreach ( $items as $cart_id => $item ) {
-
-			// 	$trip_id = $item['trip_id'];
-
-			// 	$pax        = 1;
-			// 	$trip_price = $item['trip_price'];
-
-			// 	$item_name  = get_the_title( $trip_id );
-			// 	$trip_code  = wptravel_get_trip_code( $trip_id );
-
-			// 	$price_per = isset( $item['price_key'] ) && ! empty( $item['price_key'] ) 
-			// 		? wptravel_get_pricing_variation_price_per( $trip_id, $item['price_key'] ) 
-			// 		: get_post_meta( $trip_id, 'wp_travel_price_per', true );
-
-			// 	$payment_amount = ( 'partial' === $payment_mode ) 
-			// 		? wptravel_get_formated_price( $item['trip_price_partial'] ) 
-			// 		: wptravel_get_formated_price( $trip_price );
-
-			// 	if ( wptravel_is_react_version_enabled() ) {
-			// 		$partial        = 'partial' === $payment_mode;
-			// 		$trip_price     = wptravel_get_cart_item_price_with_extras( $cart_id, $trip_id, $partial );
-			// 		$payment_amount = wptravel_get_formated_price( $trip_price );
-			// 	}
-
-			// 	if ( 'group' === $price_per ) {
-			// 		$pax = 1;
-			// 	}
-
-			// 	// Build args array
-			// 	$args[ 'item_name_' . $agrs_index ] = $item_name;
-			// 	$args[ 'quantity_' . $agrs_index ]  = $pax;
-			// 	$args[ 'amount_' . $agrs_index ]    = $payment_amount;
-			// 	$args[ 'item_number_' . $agrs_index ] = $trip_id;
-			// 	$args[ 'on0_' . $agrs_index ] = __( 'Trip Code', 'wp-travel' );
-			// 	$args[ 'os0_' . $agrs_index ] = $trip_code;
-			// 	$args[ 'on2_' . $agrs_index ] = __( 'Trip Price', 'wp-travel' );
-			// 	$args[ 'os2_' . $agrs_index ] = $item['trip_price'];
-
-
-			// 	if( class_exists( 'wp_travel_pro' ) ){
-	
-			// 		$args = apply_filters( 'wp_travel_tour_extra_paypal_args', $args, $item, $cart_id, $agrs_index )['args'];
-				
-			// 		$agrs_index = apply_filters( 'wp_travel_tour_extra_paypal_args', $args, $item, $cart_id, $agrs_index )['count'];				
-			// 	}
-				
-			// 	$agrs_index++; // Increment after processing
-			// }
-
-
 		} else {
 			return;
 		}

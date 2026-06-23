@@ -9,7 +9,7 @@
 /**
  * WXR Parser that uses regular expressions. Fallback for installs without an XML parser.
  */
-class Templazee_WXR_Parser_Regex {
+class WP_Travel_WXR_Parser_Regex {
 	public $authors       = array();
 	public $posts         = array();
 	public $categories    = array();
@@ -99,7 +99,7 @@ class Templazee_WXR_Parser_Regex {
 		}
 
 		if ( ! $wxr_version ) {
-			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'themepalace-fse-pro' ) );
+			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'wp-travel' ) );
 		}
 
 		return array(

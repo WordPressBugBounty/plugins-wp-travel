@@ -5,8 +5,6 @@
  */
 class WP_Travel_Setup_Page {
 
-
-
 	public function __construct() {
 
 		// require_once ABSPATH . 'wp-includes/pluggable.php';
@@ -22,7 +20,6 @@ class WP_Travel_Setup_Page {
 		add_action( 'admin_head', array( $this, 'wp_travel_welcome_screen_remove_menus' ) );
 		add_action( 'rest_api_init', array( $this, 'add_custom_users_api' ) );
 	}
-
 
 	function add_custom_users_api() {
 

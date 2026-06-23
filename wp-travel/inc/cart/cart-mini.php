@@ -340,12 +340,12 @@ if ( wptravel_is_react_version_enabled() ) {
 											<div>
 												<div class="qty-spinner input-group bootstrap-touchspin bootstrap-touchspin-injected">
 													<span class="input-group-btn input-group-prepend" >
-														<button data-wpt-count-down data-increment="<?php echo $pax_increment; ?>" class="btn edit-pax-selector-qty" type="button"  data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">-</button>
+														<button data-wpt-count-down data-increment="<?php echo esc_attr( $pax_increment ); ?>" class="btn edit-pax-selector-qty" type="button"  data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">-</button>
 													</span>
 													<input type="hidden" class="trip-min-pax" value="<?php $cart_pricing['min_pax'] ?>" >
 													<input readonly type="number" max="<?php echo (int) $max_pax < (int) $min_pax ? 999 : (int) $max_pax; ?>" min="<?php echo (int) $min_pax; ?>" data-wpt-category-count-input="<?php echo esc_attr( $pax ); ?>" name="adult" class="wp-travel-form-control wp-travel-cart-category-qty qty form-control edit-pax-<?php echo esc_attr( $cart_number ) ?>" min="1" value="<?php echo esc_attr( $pax ); ?>">
 													<span class="input-group-btn input-group-prepend">
-														<button data-wpt-count-up data-increment="<?php echo $pax_increment; ?>" class="btn edit-pax-selector-qty" type="button" data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">+</button>
+														<button data-wpt-count-up data-increment="<?php echo esc_attr( $pax_increment ); ?>" class="btn edit-pax-selector-qty" type="button" data-cart="<?php echo esc_attr( $cart_number ) ?>" data-minpax="<?php echo esc_attr( $cart_pricing['min_pax'] ) ?>" data-allpricing="<?php echo esc_attr( $cart_item['trip_data']['enable_pax_all_pricing'] ); ?>">+</button>
 													</span>
 												</div>
 												<span class="prices">

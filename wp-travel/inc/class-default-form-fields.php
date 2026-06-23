@@ -393,8 +393,7 @@ class WP_Travel_Default_Form_Fields { // @phpcs:ignore
 				}
 			}
 		}
-
-
+		
 		return $fields;
 	}
 }

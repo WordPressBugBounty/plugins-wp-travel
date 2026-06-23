@@ -444,14 +444,17 @@ class Wp_Travel_Shortcodes {
 									<span>
 										<i class="fas fa-suitcase-rolling"></i>
 										<?php
-										printf(
-											_n(
-												'%s Trip available',
-												'%s Trips available',
-												$count,
-												'wp-travel'
-											),
-											esc_html( $count )
+										echo esc_html(
+											sprintf(
+												/* translators: %s: Number of available trips. */
+												_n(
+													'%s Trip available',
+													'%s Trips available',
+													$count,
+													'wp-travel'
+												),
+												absint( $count )
+											)
 										);
 										?>
 									</span>
@@ -860,7 +863,7 @@ class Wp_Travel_Shortcodes {
 							$month = $current_month;
 							?>
 							<tr class="new-month">
-								<th colspan="2"><?php echo $months_label[$month]; ?></th>
+								<th colspan="2"><?php echo esc_html( $months_label[$month] ); ?></th>
 							</tr>
 							<?php
 						}
@@ -913,7 +916,7 @@ class Wp_Travel_Shortcodes {
 										<span class="table-trip-metas">
 											<span class="date"> <?php echo esc_html( $date ); ?> </span>
 											<?php if( !empty( $inventory_args ) ): ?>
-												<span class="pax"><?php echo sprintf("%d/%d %s", $inventory_args['booked_pax'], $inventory_args['pax_limit'], __( '( Pax )', 'wp-travel' ) ); ?></span> 
+												<span class="pax"><?php echo sprintf("%d/%d %s", esc_html( $inventory_args['booked_pax']), esc_html( $inventory_args['pax_limit'] ), esc_html__( '( Pax )', 'wp-travel' ) ); ?></span> 
 											<?php endif; ?>
 
 											<span class="trip-price">
@@ -927,7 +930,7 @@ class Wp_Travel_Shortcodes {
 												<?php endif; ?>
 											</span>
 
-											<span class="pricing-per"><?php echo sprintf( "%s %s", __( 'per', 'wp-travel' ), $pricing_results->price_per ); ?></span>
+											<span class="pricing-per"><?php echo sprintf( "%s %s", esc_html__( 'per', 'wp-travel' ), esc_html( $pricing_results->price_per ) ); ?></span>
 
 											<?php if( !empty($inventory_args) ): ?>
 												<?php if( $booking_full ): ?>

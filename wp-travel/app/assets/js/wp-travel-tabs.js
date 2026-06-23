@@ -25,19 +25,10 @@
         handle: '.wp-travel-sorting-handle'
     });
 
-    // $(".wp-travel-accordion > .panel-group").accordion({
-    //     header: "> div.panel > div.panel-heading",
-    //     collapsible: true
-    // });
-
     $(document).on('keyup change', '.section_title', function () {
         var title = $(this).val();
-        // alert(title);
         $(this).siblings('.wp-travel-accordion-title').html(title);
     });
-
-    // if (!jQuery().slider)
-    //     return;
 
     // Payment Slider JS.
 
@@ -196,11 +187,6 @@
     $('#wp-travel-map-select').on('select2:select', function (e) {
         wp_travel_display_map_fields();
     });
-
-    // Added for fact migration
-    // $('.fact-title').on('keyup change', function() {
-    //     jQuery(this).next().val(jQuery(this).data('initial-title'));
-    // });
 
 
 }(jQuery));

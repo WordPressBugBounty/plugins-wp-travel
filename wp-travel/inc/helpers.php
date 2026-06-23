@@ -376,47 +376,6 @@ function wptravel_get_dropdown_list( $args = array() ) {
 	return $dropdown;
 }
 
-/**
- * Sanitize data. It may be either string or array
- *
- * @param mixed $array input data
- * @param bool  $wp_kses_post if data need wp keses or not.
- */
-// function wptravel_sanitize_array( $array, $wp_kses_post = false ) {
-// 	if ( is_string( $array ) ) {
-// 		if ( $wp_kses_post ) {
-// 			$array = wp_kses_post( $array );
-// 		} else {
-// 			$array = sanitize_text_field( $array );
-// 		}
-// 	} elseif ( is_array( $array ) || is_object( $array ) ) {
-// 		if ( $wp_kses_post ) { // Multiple foreach loop to reduce if condition checks.
-// 			foreach ( $array as $key => &$value ) {
-// 				if ( is_object( $value ) ) {
-// 					$value = (array) $value;
-// 				}
-// 				if ( is_array( $value ) ) {
-// 					$value = wptravel_sanitize_array( $value, $wp_kses_post );
-// 				} else {
-// 					$value = wp_kses_post( $value );
-// 				}
-// 			}
-// 		} else {
-// 			foreach ( $array as $key => &$value ) {
-// 				if ( is_object( $value ) ) {
-// 					$value = (array) $value;
-// 				}
-// 				if ( is_array( $value ) ) {
-// 					$value = wptravel_sanitize_array( $value, $wp_kses_post );
-// 				} else {
-// 					$value = sanitize_text_field( $value );
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return $array;
-// }
 
 function wptravel_sanitize_array( $array, $wp_kses_post = false ) {
 
@@ -2724,7 +2683,7 @@ function wptravel_get_search_filter_form( $args ) {
 					<input class="wp-travel-widget-filter-view-mode" type="hidden" name="view_mode" data-mode="<?php echo esc_attr( $view_mode ); ?>" value="<?php echo esc_attr( $view_mode ); ?>" >
 
 					<input type="hidden" class="wp-travel-widget-filter-archive-url" value="<?php echo esc_url( get_post_type_archive_link( WP_TRAVEL_POST_TYPE ) ); ?>" />
-					<input type="submit" id="wp-travel-filter-search-submit" class="button wp-block-button__link button-primary wp-travel-filter-search-submit" value="<?php echo __( 'Search', 'wp-travel' ); ?>">
+					<input type="submit" id="wp-travel-filter-search-submit" class="button wp-block-button__link button-primary wp-travel-filter-search-submit" value="<?php echo esc_html__( 'Search', 'wp-travel' ); ?>">
 				</div>
 			</div>
 		</div>
@@ -2859,7 +2818,7 @@ function wptravel_view_booking_details_table( $booking_id, $hide_payment_column 
 										<span class="my-order-head"><?php echo 'WooCommerce Reference Order Details:'; ?></span>
 										<span class="my-order-tail">
 											<a href="<?php echo esc_url( $edit_url ); ?>" target="_blank" rel="noopener">
-												<?php echo esc_html__( 'Edit Order #', 'wp-travel' ) . $order_id; ?>
+												<?php echo esc_html__( 'Edit Order #', 'wp-travel' ) . esc_html( $order_id ); ?>
 											</a>
 											<br />
 											<small><?php echo esc_html( get_the_date( '', $booking_id ) ); ?></small>
@@ -3730,7 +3689,7 @@ function wptravel_get_fixed_departure_date( $trip_id ) {
 					printf( '%s', esc_html( date_i18n( $date_format, strtotime( $start_date ) ) ) );
 				}
 			else :
-				echo apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' );
+				echo esc_html( apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' ) );
 			endif;
 		endif;
 
@@ -3818,7 +3777,7 @@ function wptravel_get_fixed_departure_date( $trip_id ) {
 
 													$days_label = apply_filters( 'wp_travel_trip_days_label', 'days' );
 												?>
-												    <span class="start-date"><?php echo esc_html( date_i18n( $date_format, strtotime( $date['start_date'] ) ) ) . ' - ' . $diff->days + 1 . ' ' . $days_label ; ?></span>
+												    <span class="start-date"><?php echo esc_html( date_i18n( $date_format, strtotime( $date['start_date'] ) ) ) . ' - ' . absint( $diff->days + 1 ) . ' ' . $days_label ; ?></span>
 												<?php }else{ ?>
 													<span class="start-date"><?php echo esc_html( date_i18n( $date_format, strtotime( $date['start_date'] ) ) ); ?></span>
 											<?php } ?>
@@ -3863,10 +3822,10 @@ function wptravel_get_fixed_departure_date( $trip_id ) {
 				}
 			}
 			if ( ! $date_found ) {
-				echo apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' );
+				echo esc_html( apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' ) );
 			}
 		}else{
-			echo apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' );
+			echo esc_html( apply_filters( 'wp_travel_label_for_no_trip_date', 'N/A' ) );
 		}
 	}
 

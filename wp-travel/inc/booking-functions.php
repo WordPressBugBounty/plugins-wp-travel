@@ -46,7 +46,6 @@ function wptravel_book_now() {
 		
 	}
 
-	
 	/**
 	 * Trigger any action before Booking Process.
 	 *
@@ -54,7 +53,6 @@ function wptravel_book_now() {
 	 * @since 4.4.2
 	 */
 	do_action( 'wp_travel_action_before_booking_process' ); // phpcs:ignore
-	// do_action( 'wptravel_action_before_booking_process' );	
 
 
 	if ( ! count( $items ) ) {
@@ -204,6 +202,12 @@ function wptravel_book_now() {
 	}
 	do_action( 'wpcrm_post_booking_user', $sanitized_data );
 	// Updating Booking Metas.
+
+	$user_id = get_current_user_id();
+
+	if ( $user_id ) {
+		update_post_meta( $booking_id, 'wp_travel_customer_user_id', $user_id );
+	}
 
 	update_post_meta( $booking_id, 'order_data', $sanitized_data );
 	update_post_meta( $booking_id, 'order_items_data', $items ); // @since 1.8.3
@@ -710,7 +714,6 @@ function wptravel_get_booking_chart() {
 
 	$top_revenue_trip_data = $top_revenue_trip_data;
 
-
 	$start_date = date('Y-m-01', strtotime('first day of last month'));
 	$end_date   = date('Y-m-t', strtotime('last day of last month'));
 
@@ -760,7 +763,6 @@ function wptravel_get_booking_chart() {
 		return $b['total_bookings'] <=> $a['total_bookings'];
 	});
 
-
 	$last_month_revenue = 0;
 
 	foreach ( $booking_data as $trip ) {
@@ -769,7 +771,6 @@ function wptravel_get_booking_chart() {
 
 	$start_date = date('Y-m-01'); // First day of current month
 	$end_date   = date('Y-m-t');  // Last day of current month
-
 
 	$current_month_performing_trips = $wpdb->get_results("
 		SELECT 
@@ -1024,11 +1025,11 @@ function wptravel_get_booking_chart() {
 					<?php if( $booking_growth > 0 ): ?>
 
 							<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
-							<span style="color:#16C47F"> <?php echo abs( round( $booking_growth, 2 ) ) . ' % ' ?></span>
+							<span style="color:#16C47F"> <?php echo esc_html( abs( round( $booking_growth, 2 ) ) ). ' % ' ?></span>
 						<?php elseif ( $booking_growth < 0 ): ?>
 
 							<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
-							<span style="color:#E14434"> <?php echo abs( round( $booking_growth, 2 ) ) . ' % ' ?></span>
+							<span style="color:#E14434"> <?php echo esc_html( abs( round( $booking_growth, 2 ) ) ). ' % ' ?></span>
 						<?php else: ?>
 							<span style="color:#151515"> <?php echo '0 % ' ?></span>
 					<?php endif; ?>
@@ -1042,11 +1043,11 @@ function wptravel_get_booking_chart() {
 					<?php if( $earning_growth > 0 ): ?>
 
 							<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
-							<span style="color:#16C47F"> <?php echo $earning_growth . ' % ' ?></span>
+							<span style="color:#16C47F"> <?php echo esc_html( $earning_growth ). ' % ' ?></span>
 						<?php elseif ( $earning_growth < 0 ): ?>
 
 							<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
-							<span style="color:#E14434"> <?php echo $earning_growth . ' % ' ?></span>
+							<span style="color:#E14434"> <?php echo esc_html( $earning_growth ). ' % ' ?></span>
 						<?php else: ?>
 							<span style="color:#151515"> <?php echo '0 % ' ?></span>
 					<?php endif; ?>
@@ -1061,11 +1062,11 @@ function wptravel_get_booking_chart() {
 					<?php if( $customer_growth > 0 ): ?>
 
 						<svg fill="#16C47F" width="20px" height="20px" viewBox="0 0 24 24" id="up-trend-round" data-name="Flat Line" class="icon flat-line"><path id="primary" d="M21,7l-6.79,6.79a1,1,0,0,1-1.42,0l-2.58-2.58a1,1,0,0,0-1.42,0L3,17" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><polyline id="primary-2" data-name="primary" points="21 11 21 7 17 7" style="fill: none; stroke: #16C47F; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></polyline></svg>
-						<span style="color:#16C47F"> <?php echo abs( round( $customer_growth, 2 ) ) . ' % ' ?></span>
+						<span style="color:#16C47F"> <?php echo esc_html( abs( round( $customer_growth, 2 ) ) ). ' % ' ?></span>
 						<?php elseif ( $customer_growth < 0 ): ?>
 
 						<svg fill="#E14434" width="20px" height="20px" viewBox="0 0 24 24" id="down-trend" class="icon line"><polyline id="primary" points="3 6 11 14 14 11 21 18" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline><polyline id="primary-2" data-name="primary" points="17 18 21 18 21 14" style="fill: none; stroke: #E14434; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5;"></polyline></svg>
-						<span style="color:#E14434"> <?php echo abs( round( $customer_growth, 2 ) ) . ' % ' ?></span>
+						<span style="color:#E14434"> <?php echo esc_html( abs( round( $customer_growth, 2 ) ) ). ' % ' ?></span>
 					<?php else: ?>
 						<span style="color:#151515"> <?php echo '0 % ' ?></span>
 					<?php endif; ?>
@@ -1098,7 +1099,7 @@ function wptravel_get_booking_chart() {
 					 
 				</h4>
 				<?php if ( ! empty($best_selling_trip) && ! empty($best_selling_trip['total_bookings']) ): ?>
-					<p>( <?php echo esc_html__( 'Total Bookings ' ) . $best_selling_trip['total_bookings']; ?> )</p>
+					<p>( <?php echo esc_html__( 'Total Bookings ', 'wp-travel' ) . esc_html( $best_selling_trip['total_bookings'] ); ?> )</p>
 				<?php endif; ?>
 			</div>
 			<div class="grid-item">
@@ -1112,7 +1113,7 @@ function wptravel_get_booking_chart() {
 					  
 				</h4>
 				<?php if ( ! empty($top_revenue_trip_data) && ! empty($top_revenue_trip_data['total_revenue']) ): ?>
-					<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_trip_data['total_revenue'] ); ?> )</p>
+					<p>( <?php echo esc_html__( 'Total Earnings ', 'wp-travel' ) . wptravel_get_formated_price_currency( $top_revenue_trip_data['total_revenue'] ); ?> )</p>
 				<?php endif; ?>
 			</div>
 			<div class="grid-item">
@@ -1127,7 +1128,7 @@ function wptravel_get_booking_chart() {
 				</h4>
 				<?php if( $best_destination_results ): ?>
 					<p>
-						( <?php echo esc_html__( 'Total Bookings ' ) . $best_destination_results[0]['total_bookings']; ?> )
+						( <?php echo esc_html__( 'Total Bookings ', 'wp-travel' ) . esc_html( $best_destination_results[0]['total_bookings'] ); ?> )
 					</p>
 				<?php endif; ?>
 			</div>
@@ -1144,7 +1145,7 @@ function wptravel_get_booking_chart() {
 					
 				</h4>
 				<?php if( $top_revenue_destination ): ?>
-				<p>( <?php echo esc_html__( 'Total Earnings ' ) . wptravel_get_formated_price_currency( $top_revenue_destination['total_revenue'] ); ?> )</p>
+				<p>( <?php echo esc_html__( 'Total Earnings ', 'wp-travel' ) . wptravel_get_formated_price_currency( $top_revenue_destination['total_revenue'] ); ?> )</p>
 				<?php endif; ?>
 			</div>
 		</div>

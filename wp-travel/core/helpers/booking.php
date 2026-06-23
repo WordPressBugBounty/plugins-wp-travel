@@ -284,7 +284,6 @@ class WpTravel_Helpers_Booking {
 		}
 
 		// Consist of traveler, billing details.
-		// $checkout_form_data = get_post_meta( $booking_id, 'order_data', true );
 		if( apply_filters( 'wp_travel_get_travelers_info_from_checkout_form', false ) == true ){
 			$checkout_form_data = $_POST;
 		}else{
@@ -610,12 +609,67 @@ class WpTravel_Helpers_Booking {
 
 
 add_action('wp_ajax_wp_travel_cancel_booking', 'wp_travel_cancel_booking_callback');
-add_action('wp_ajax_nopriv_wp_travel_cancel_booking', 'wp_travel_cancel_booking_callback');
+// add_action('wp_ajax_nopriv_wp_travel_cancel_booking', 'wp_travel_cancel_booking_callback');
 
 function wp_travel_cancel_booking_callback() {
     check_ajax_referer( 'wp_travel_nonce', 'security' );
 
-    $booking_id = intval( $_POST['booking_id'] );
+	if ( ! is_user_logged_in() ) {
+        wp_send_json_error(
+            array(
+                'message' => __( 'You must be logged in to cancel a booking.', 'wp-travel' ),
+            ),
+            401
+        );
+    }
+
+    $booking_id = isset( $_POST['booking_id'] ) ? absint( wp_unslash( $_POST['booking_id'] ) ) : 0;
+
+	$current_user_id = get_current_user_id();
+
+	/**
+     * Determine booking owner.
+     */
+    $booking_customer_id = (int) get_post_meta(
+        $booking_id,
+        'wp_travel_customer_user_id',
+        true
+    );
+
+	$can_manage_all = current_user_can( 'manage_options' );
+
+	if ( ! $can_manage_all ) {
+
+        if (
+            ! $booking_customer_id ||
+            $booking_customer_id !== $current_user_id
+        ) {
+            wp_send_json_error(
+                array(
+                    'message' => __( 'You are not allowed to cancel this booking.', 'wp-travel' ),
+                ),
+                403
+            );
+        }
+    }
+
+	/**
+     * Prevent duplicate cancellations.
+     */
+    $booking_status = get_post_meta(
+        $booking_id,
+        'wp_travel_booking_status',
+        true
+    );
+
+    if ( 'canceled' === $booking_status ) {
+        wp_send_json_error(
+            array(
+                'message' => __( 'Booking is already canceled.', 'wp-travel' ),
+            ),
+            400
+        );
+    }
 
     // Get travel date
     $travel_date = get_post_meta( $booking_id, 'wp_travel_arrival_date', true );
@@ -639,7 +693,7 @@ function wp_travel_cancel_booking_callback() {
     // Calculate days difference
     $days_difference = floor( ( $travel_timestamp - $today_timestamp ) / DAY_IN_SECONDS );
 
-    // ❌ Block cancellation
+
     if ( $days_difference < $cancel_days_limit ) {
         wp_send_json_error(
             sprintf(

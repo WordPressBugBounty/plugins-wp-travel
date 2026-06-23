@@ -23,8 +23,6 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 	 */
 	public static function get_enquiry_details() {
 
-		// $user = wp_get_current_user();
-
 		$permission = WP_Travel::verify_nonce();
 
 		if ( ! $permission || is_wp_error( $permission ) ) {
@@ -57,10 +55,6 @@ class WP_Travel_Ajax_Enquiry { // @phpcs:ignore
 	 * @since 5.0.0
 	 */
 	public static function update_enquiry_details() {
-		
-
-		// $user = wp_get_current_user();
-
 		
 		$permission = WP_Travel::verify_nonce();
 

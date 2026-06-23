@@ -542,8 +542,6 @@ class WP_Travel_Admin_Booking {
 			$old_payment_status = $old_payment_status;
 		}
 
-		// $old_payment_status = isset( $old_payment_status[0] ) ? $old_payment_status[0] : 'N/A';
-
 
 		if ( $mail_sending_payment_status ) {
 			if ( $new_payment_status != $old_payment_status ) {

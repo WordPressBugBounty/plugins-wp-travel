@@ -50,56 +50,6 @@ class WpTravel_Helpers_Schema {
 		self::get_trip_rating_schema();
 	}
 
-	/**
-	 * Generate schema as per $schema array.
-	 *
-	 * @since 5.0.0
-	 * @return string
-	 */
-	// public static function get_trip_schema() {
-	// 	if ( ! self::$trip ) {
-	// 		return;
-	// 	}
-	// 	$trip    = self::$trip;
-	// 	$trip_id = $trip['id'];
-
-	// 	$schema = array(
-	// 		'@context' => 'https://schema.org',
-	// 		'@type'    => 'Trip', // Fixed.
-	// 		'name'     => isset( $trip['title'] ) ? ucwords( $trip['title'] ) : '',
-	// 	);
-
-	// 	if ( isset( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) && count( $trip['itineraries'] ) > 0 ) {
-	// 		$itineraries         = $trip['itineraries'];
-	// 		$schema['itinerary'] = array(
-	// 			'@type'         => 'ItemList',
-	// 			'numberOfItems' => count( $itineraries ),
-	// 		);
-
-	// 		$i = 1;
-	// 		foreach ( $itineraries as $itinerary ) {
-	// 			$schema['itinerary']['itemListElement'][] = array(
-	// 				'@type'    => 'ListItem', // Fixed.
-	// 				'position' => $i,
-	// 				'item'     => array(
-	// 					'@type'       => 'TouristAttraction', // Fixed.
-	// 					'name'        => sprintf( '%s - %s', $itinerary['label'], $itinerary['title'] ),
-	// 					'description' => $itinerary['desc'],
-	// 				),
-	// 			);
-	// 			$i++;
-	// 		}
-	// 	}
-	// 	/**
-	// 	 * Trip schema structure.
-	// 	 *
-	// 	 * @param array $schema Schema data for trip.
-	// 	 * @since 5.0.0
-	// 	 */
-	// 	$schema = apply_filters( 'wptravel_trip_schema', $schema, $trip_id, $trip );
-
-	// 	self::generate_schema( $schema );
-	// }
 
 	public static function get_trip_schema() {
 

@@ -252,9 +252,6 @@ class WP_Travel_Cart {
 			$this->items[ $cart_item_id ]['pax']        = $pax;
 			$this->items[ $cart_item_id ]['price_key']  = $price_key;
 		endif;
-
-		// $this->items[ $cart_item_id ]['pickup_location']  = isset( $args['pickup_location'] ) ? $args['pickup_location'] : 'N/A';
-
 		
 		$this->clear_discount_values();
 		$this->update_partials(); // Partial Payout percent figure may be different if we calculate this befeore adding item to cart because partial payout figure may differ as per item count.
@@ -312,12 +309,7 @@ class WP_Travel_Cart {
 		$cart['discounts']  = $this->discounts;		
 
 		$cart_items = WPTravel()->session->set( $this->cart_id, $cart );
-		
-		//comment on 2025 june 10 - while inspecting 'wp_travel_cart' cookiee issue
-		
-		// ob_start();
-		// 	setcookie( 'wp_travel_cart', wp_json_encode( $cart ), time() + 604800, '/' );
-		// ob_end_flush();	
+
 	}
 	/**
 	 * Read items from cart session.

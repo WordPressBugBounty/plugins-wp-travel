@@ -20,27 +20,27 @@ class WP_Travel_Ajax_Trips {
 
 		// Get item from trip.
 		add_action( 'wp_ajax_wp_travel_get_trip', array( __CLASS__, 'get_trip' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_get_trip', array( __CLASS__, 'get_trip' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_get_trip', array( __CLASS__, 'get_trip' ) );
 
 		// Trip tab.
 		add_action( 'wp_ajax_wp_travel_get_trip_tabs', array( __CLASS__, 'trip_tabs' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_get_trip_tabs', array( __CLASS__, 'trip_tabs' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_get_trip_tabs', array( __CLASS__, 'trip_tabs' ) );
 		/**
 		 * Fixed Trip extra gallery image in backend
 		 *
 		 * @since 6.2.0
 		 */
 		add_action( 'wp_ajax_envira_gallery_load_image', array( __CLASS__, 'get_extra_gallery' ) );
-		add_action( 'wp_ajax_nopriv_envira_gallery_load_image', array( __CLASS__, 'get_extra_gallery' ) );
+		// add_action( 'wp_ajax_nopriv_envira_gallery_load_image', array( __CLASS__, 'get_extra_gallery' ) );
 		/**
 		 * Inventory testing
 		 * @since 6.5.0
 		 */
 		add_action( 'wp_ajax_inventory_testing', array( __CLASS__, 'wp_travel_inventory_checking' ) );
-		add_action( 'wp_ajax_nopriv_inventory_testing', array( __CLASS__, 'wp_travel_inventory_checking' ) );
+		// add_action( 'wp_ajax_nopriv_inventory_testing', array( __CLASS__, 'wp_travel_inventory_checking' ) );
 
 		add_action( 'wp_ajax_wp_travel_use_inventory_empty_cart', array( __CLASS__, 'wp_travel_cart_empty_for_inventory' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_use_inventory_empty_cart', array( __CLASS__, 'wp_travel_cart_empty_for_inventory' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_use_inventory_empty_cart', array( __CLASS__, 'wp_travel_cart_empty_for_inventory' ) );
 	}
 
 	public static function get_extra_gallery() {
@@ -94,7 +94,6 @@ class WP_Travel_Ajax_Trips {
 		 * solve json get error
 		 */
 		$post_data = file_get_contents( 'php://input' ); // Added 2nd Parameter to resolve issue with objects.
-		//$post_data     = is_string( $post_data ) ? json_decode( $post_data, true ) : $post_data;
 		$new_post_data = is_string( $post_data ) ? json_decode( $post_data, true ) : $post_data;
 		$new_post_data = wptravel_sanitize_array( $new_post_data, true );
 
