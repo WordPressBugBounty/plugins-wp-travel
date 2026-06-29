@@ -46,7 +46,7 @@ class WpTravel_Helpers_Localize {
 		// user form transfer in react
 		global $wt_cart;
 		$trip_items     = $wt_cart->getItems();
-		$checkoutPage   = get_option( 'wp_travel_wp-travel-checkout_page_id' );
+		$checkoutPage   = get_option( 'wp_travel_checkout_page_id' );
 		$checkoutDetail = get_post( $checkoutPage );
 
 		if ( self::is_request( 'frontend' ) ) {

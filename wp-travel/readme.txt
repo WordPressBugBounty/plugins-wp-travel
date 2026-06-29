@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 11.7.1
+Stable tag: 11.7.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,12 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.7.2 =
+Release Date: 29th June 2026
+
+Fixes
+* Added ownership validation to cart update, cart removal, and apply coupon actions.
 
 = 11.7.1 =
 Release Date: 23th June 2026

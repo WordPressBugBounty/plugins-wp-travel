@@ -108,8 +108,10 @@ class WP_Travel_Ajax_Cart {
 			exit;
 		}
 
-		$request = WP_Travel::get_sanitize_request();
+		$WP_Travel_Ajax = new WP_Travel_Ajax();
+		$WP_Travel_Ajax->validate_cart_access( );
 
+		$request = WP_Travel::get_sanitize_request();
 		$cart_id  = ! empty( $request['cart_id'] ) ? $request['cart_id'] : 0;
 		$response = WP_Travel_Helpers_Cart::remove_cart_item( $cart_id );
 		WP_Travel_Helpers_REST_API::response( $response );
@@ -127,8 +129,12 @@ class WP_Travel_Ajax_Cart {
 			exit;
 		}
 
+		$WP_Travel_Ajax = new WP_Travel_Ajax();
+		$WP_Travel_Ajax->validate_cart_access();
+
 		$request   = WP_Travel::get_sanitize_request();
 		$cart_id   = ! empty( $request['cart_id'] ) ? $request['cart_id'] : 0;
+
 		$post_data = json_decode( file_get_contents( 'php://input' ) );
 		$post_data = is_object( $post_data ) ? (array) $post_data : array();
 		$post_data = wptravel_sanitize_array( $post_data );

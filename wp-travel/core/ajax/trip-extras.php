@@ -2,7 +2,7 @@
 class WP_Travel_Ajax_Trip_Extras {
 	public static function init() {
 		add_action( 'wp_ajax_wp_travel_get_trip_extras', array( __CLASS__, 'get_trip_extras' ) );
-		add_action( 'wp_ajax_nopriv_wp_travel_get_trip_extras', array( __CLASS__, 'get_trip_extras' ) );
+		// add_action( 'wp_ajax_nopriv_wp_travel_get_trip_extras', array( __CLASS__, 'get_trip_extras' ) );
 
 		add_action( 'wp_ajax_wp_travel_search_trip_extras', array( __CLASS__, 'search_trip_extras' ) );
 		// add_action( 'wp_ajax_nopriv_wp_travel_search_trip_extras', array( __CLASS__, 'search_trip_extras' ) );

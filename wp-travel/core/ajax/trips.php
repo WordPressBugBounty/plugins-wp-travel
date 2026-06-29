@@ -146,6 +146,7 @@ class WP_Travel_Ajax_Trips {
 	 * Get Trip data.
 	 */
 	public static function get_trip() {
+		
 
 		$permission = self::get_trip_permission_check();
 
@@ -173,6 +174,11 @@ class WP_Travel_Ajax_Trips {
 		if ( ! isset( $_REQUEST['_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['_nonce'] ) ), 'wp_travel_nonce' ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_NONCE' );
 		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'You have no access to this trip.', 401 );
+		}
+
 		// Empty parameter.
 		if ( empty( $_REQUEST['trip_id'] ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
@@ -381,6 +387,10 @@ class WP_Travel_Ajax_Trips {
 			$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_NONCE' );
 			return WP_Travel_Helpers_REST_API::response( $error );
 			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'You have no access to this trip.', 401 );
 		}
 
 		return true;
