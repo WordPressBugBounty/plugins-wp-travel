@@ -587,6 +587,7 @@ class WP_Travel_Cart {
 	 * @return array An array of items in the cart.
 	 */
 	public function getItems() {
+		
 		return $this->items;
 	}
 

@@ -448,6 +448,7 @@ class WP_Travel_Lib_Cart {
 	 * @return array An array of items in the cart.
 	 */
 	public function getItems() {
+		
 		return $this->items;
 	}
 

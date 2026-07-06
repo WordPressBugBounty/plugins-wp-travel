@@ -93,6 +93,7 @@ final class WP_Session extends Recursive_ArrayAccess {
 
 		$this->set_cookie();
 
+
 	}
 
 	/**
@@ -132,8 +133,9 @@ final class WP_Session extends Recursive_ArrayAccess {
 		$secure   = apply_filters( 'wp_session_cookie_secure', false );
 		$httponly = apply_filters( 'wp_session_cookie_httponly', false );
 		if ( ! headers_sent( $file, $line ) ) {
-
+	
 			setcookie( WP_TRAVEL_SESSION_COOKIE, $this->session_id . '||' . $this->expires . '||' . $this->exp_variant, $this->expires, COOKIEPATH, COOKIE_DOMAIN, $secure, $httponly );
+			
 		}
 	}
 
@@ -147,6 +149,8 @@ final class WP_Session extends Recursive_ArrayAccess {
 	protected function read_data() {
 		$this->container = get_option( "_wp_session_{$this->session_id}", array() );
 
+		
+
 		return $this->container;
 	}
 
@@ -155,6 +159,17 @@ final class WP_Session extends Recursive_ArrayAccess {
 	 */
 	public function write_data() {
 		$option_key = "_wp_session_{$this->session_id}";
+
+		if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+			wt_cart_log(
+				'SESSION WRITE',
+				array(
+					'session_id' => $this->session_id,
+					'option_key' => $option_key,
+					'container'  => $this->container,
+				)
+			);
+		}
 
 		if ( false === get_option( $option_key ) ) {
 			update_option( "_wp_session_{$this->session_id}", $this->container, '', 'no' );
@@ -229,6 +244,7 @@ final class WP_Session extends Recursive_ArrayAccess {
 	 * Flushes all session variables.
 	 */
 	public function reset() {
+	
 		$this->container = array();
 	}
 }

@@ -11161,6 +11161,42 @@ msgstr ""
 msgid "Keywords:"
 msgstr ""
 
+#: inc/helpers.php:1005
+msgid "Full Discount"
+msgstr ""
+
+#: inc/helpers.php:1009
+msgid "Pending"
+msgstr ""
+
+#: inc/helpers.php:1013
+msgid "Partially Paid"
+msgstr ""
+
+#: inc/helpers.php:1017
+msgid "Paid"
+msgstr ""
+
+#: inc/helpers.php:1021
+msgid "Waiting for voucher"
+msgstr ""
+
+#: inc/helpers.php:1025
+msgid "Voucher submited"
+msgstr ""
+
+#: inc/helpers.php:1029
+msgid "Canceled"
+msgstr ""
+
+#: inc/helpers.php:1033
+msgid "N/A"
+msgstr ""
+
+#: inc/helpers.php:1037
+msgid "Refund"
+msgstr ""
+
 #: inc/helpers.php:2805 templates/account/tab-content/bookings.php:233
 msgid "Cancel Booking"
 msgstr ""

@@ -1002,39 +1002,39 @@ function wptravel_get_payment_status() {
 	$status = array(
 		'full_discount'          => array(
 			'color' => '#008600',
-			'text'  => 'Full Discount',
+			'text'  => __( 'Full Discount', 'wp-travel' ),
 		),
 		'pending'          => array(
 			'color' => '#FF9800',
-			'text'  => 'Pending',
+			'text'  => __( 'Pending', 'wp-travel' ),
 		),
 		'partially_paid'   => array(
 			'color' => '#FF9800',
-			'text'  => 'Partially Paid',
+			'text'  => __( 'Partially Paid', 'wp-travel' ),
 		),
 		'paid'             => array(
 			'color' => '#008600',
-			'text'  => 'Paid',
+			'text'  => __( 'Paid', 'wp-travel' ),
 		),
 		'waiting_voucher'  => array(
 			'color' => '#FF9800',
-			'text'  => 'Waiting for voucher',
+			'text'  => __( 'Waiting for voucher', 'wp-travel' ),
 		),
 		'voucher_submited' => array(
 			'color' => '#FF9800',
-			'text'  => 'Voucher submited',
+			'text'  => __( 'Voucher submited', 'wp-travel' ),
 		),
 		'canceled'         => array(
 			'color' => '#FE450E',
-			'text'  => 'Canceled',
+			'text'  => __( 'Canceled', 'wp-travel' ),
 		),
 		'N/A'              => array(
 			'color' => '#892E2C',
-			'text'  => 'N/A',
+			'text'  => __( 'N/A', 'wp-travel' ),
 		),
 		'refund'           => array(
 			'color' => '#892E2C',
-			'text'  => 'Refund',
+			'text'  => __( 'Refund', 'wp-travel' ),
 		),
 	);
 

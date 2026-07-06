@@ -35,6 +35,27 @@ class WP_Travel_Checkout { // @phpcs:ignore
 			do_action( 'wp_travel_cart_empty_message' );
 			return;
 		}
+
+
+		if ( isset($_COOKIE['wp_travel_session']) ) {
+
+			$cookie = wp_unslash($_COOKIE['wp_travel_session']);
+			$parts  = explode('||', $cookie);
+
+		}
+		
+		if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+			wt_cart_log(
+				'GET ITEMS CALLED',
+				array(
+					'session_id' => ! empty($parts[0])
+					? sanitize_text_field($parts[0])
+					: '',
+					'items'      => $trips,
+				)
+			);
+		}
+		
 		// Check if login is required for checkout.
 		$settings = wptravel_get_settings();
 

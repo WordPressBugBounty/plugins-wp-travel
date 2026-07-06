@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 11.7.2
+Stable tag: 11.8.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,22 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.8.0 =
+Release Date: 06th July 2026
+
+Fixes
+* Fixed a vulnerability that allowed attackers to extract usernames and passwords through SQL injection in the wp_travel_update_trip request.
+* Fixed an SQL injection vulnerability in the add_individual_date function.
+* Sanitized and validated the pricing_ids input associated with trip dates.
+* Replaced unsafe SQL queries with prepared statements to improve database security.
+
+Enhancements:
+* Introduced a Booking Count feature on the single trip template.
+* Added an option to enable or disable the Booking Count feature.
+* Updated the single trip template to display "Be the first to rate this trip" when no reviews are available.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-8-0-update-release-note).**
 
 = 11.7.2 =
 Release Date: 29th June 2026

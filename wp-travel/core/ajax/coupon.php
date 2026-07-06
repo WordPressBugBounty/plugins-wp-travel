@@ -9,7 +9,7 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 
 		// Apply coupons.
 		add_action( 'wp_ajax_wp_travel_apply_coupon', array( __CLASS__, 'apply_coupon_code' ) );
-		// add_action( 'wp_ajax_nopriv_wp_travel_apply_coupon', array( __CLASS__, 'apply_coupon_code' ) );
+		add_action( 'wp_ajax_nopriv_wp_travel_apply_coupon', array( __CLASS__, 'apply_coupon_code' ) );
 
 		// For admin Get coupon.
 		add_action( 'wp_ajax_wptravel_get_coupon', array( __CLASS__, 'get_coupon_code' ) );
