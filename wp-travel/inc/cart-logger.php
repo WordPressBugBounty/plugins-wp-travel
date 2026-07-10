@@ -39,49 +39,49 @@ function wt_get_browser_details() {
 	);
 }
 
-function wt_cart_log( $message, $data = array() ) {
-	$uri = $_SERVER['REQUEST_URI'] ?? '';
+function wt_cart_log( $message, $data = array(), $include_device_info = false ) {
 
-	if ( strpos($uri, apply_filters( 'wp_travel_checkout_request_url', 'wp-travel-checkout' ) ) === false ) {
-		return;
-	}
-
-		
 	$upload_dir = wp_upload_dir();
-	$log_dir = $upload_dir['basedir'] . '/wp-travel-logs';
+	$log_dir    = $upload_dir['basedir'] . '/wp-travel-logs';
 
 	if ( ! file_exists( $log_dir ) ) {
 		wp_mkdir_p( $log_dir );
 	}
 
-	$user_id = get_current_user_id();
-	$user_email = '';
+	$device_info = '';
 
-	if ( $user_id ) {
-		$user = get_userdata( $user_id );
-		$user_email = $user ? $user->user_email : '';
+	if ( $include_device_info ) {
+
+		$user_id    = get_current_user_id();
+		$user_email = '';
+
+		if ( $user_id ) {
+			$user = get_userdata( $user_id );
+			$user_email = $user ? $user->user_email : '';
+		}
+
+		$device_info = print_r(
+			array(
+				'ip'          => $_SERVER['REMOTE_ADDR'] ?? '',
+				'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? '',
+				'device_type' => wt_get_device_type(),
+				'browser'     => wt_get_browser_details(),
+				'user_id'     => $user_id,
+				'user_email'  => $user_email,
+			),
+			true
+		);
 	}
-
-	$device_info = array(
-		'ip'          => $_SERVER['REMOTE_ADDR'] ?? '',
-		'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? '',
-		'device_type' => wt_get_device_type(),
-		'browser'     => wt_get_browser_details(),
-		'user_id'     => $user_id,
-		'user_email'  => $user_email,
-	);
 
 	$log_file = $log_dir . '/cart-' . date( 'Y-m-d' ) . '.log';
 
 	$log = sprintf(
-		"[%s]\nMESSAGE: %s\nDEVICE & USER INFO: %s\nDATA INFO: %s\n\n",
+		"[%s]\nMESSAGE: %s\n%sDATA INFO: %s\n\n",
 		current_time( 'mysql' ),
 		$message,
-		print_r( $device_info, true ),
+		$include_device_info ? "DEVICE & USER INFO: {$device_info}\n" : '',
 		print_r( $data, true )
 	);
 
 	file_put_contents( $log_file, $log, FILE_APPEND | LOCK_EX );
-	
-	
 }

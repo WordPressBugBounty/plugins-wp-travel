@@ -7,7 +7,6 @@
 
 function wptravel_book_now() {
 
-
 	// This condition is added to fix Paypal unpaid bookings 
 	if( isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'paypal' ){	
 		$booking_post_type = 'pending-booking';
@@ -521,7 +520,34 @@ function wptravel_book_now() {
 
 	$affiliate = apply_filters( 'wp_travel_all_booking_data_list_for_slicewp', $booking_id, $user_id );
 
+	if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+		$cookie = wp_unslash($_COOKIE['wp_travel_session']);
+		$parts  = explode('||', $cookie);
+		wt_cart_log(
+			'BOOKING SUCCESSFUL',
+			array(
+				'session_id' => ! empty($parts[0])
+				? sanitize_text_field($parts[0])
+				: '',
+				'booking_id' => $booking_id,
+			)
+		);
+	}
+
 	$wt_cart->clear();
+
+	if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+		$cookie = wp_unslash($_COOKIE['wp_travel_session']);
+		$parts  = explode('||', $cookie);
+		wt_cart_log(
+			'CART CLEARED AFTER SUCCESSFUL BOOKING',
+			array(
+				'session_id' => ! empty($parts[0])
+				? sanitize_text_field($parts[0])
+				: '',
+			)
+		);
+	}
 
 	if( get_option( 'wptravel_reserve_date' ) == 'yes' ){
 		$reserved_booking_dates = array();

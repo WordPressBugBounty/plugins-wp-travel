@@ -160,14 +160,39 @@ final class WP_Session extends Recursive_ArrayAccess {
 	public function write_data() {
 		$option_key = "_wp_session_{$this->session_id}";
 
-		if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+		if ( ! isset( $_COOKIE[ WP_TRAVEL_SESSION_COOKIE ] ) ) {
+
+			$ip = $_SERVER['REMOTE_ADDR'] ?? '';
+
+			$previous_session = get_transient(
+				'wt_last_session_' . md5( $ip )
+			);
+
+			if ( $previous_session ) {
+
+				wt_cart_log(
+					'POTENTIAL SESSION RESET',
+					array(
+						'previous_session' => $previous_session,
+						'new_session'      => $this->session_id,
+					),
+					true
+				);
+			}
+
+			set_transient(
+				'wt_last_session_' . md5( $ip ),
+				$this->session_id,
+				DAY_IN_SECONDS
+			);
+
 			wt_cart_log(
-				'SESSION WRITE',
+				'NEW SESSION CREATED',
 				array(
 					'session_id' => $this->session_id,
 					'option_key' => $option_key,
-					'container'  => $this->container,
-				)
+				),
+				true
 			);
 		}
 

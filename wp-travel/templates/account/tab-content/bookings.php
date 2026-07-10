@@ -27,8 +27,35 @@ if ( ! function_exists( 'wptravel_account_tab_content' ) ) {
 		$back_link    = $detail_link;
 		$request_data = WP_Travel::get_sanitize_request();
 
+		
+
 		if ( $request_data ) { // @phpcs:ignore
+
+			$booking_id = isset( $request_data['detail_id'] ) ? absint( $request_data['detail_id'] ) : 0;
+
+			$user_id = absint(
+				get_post_meta( $booking_id, 'wp_travel_customer_user_id', true )
+			);
+
+			$user = get_userdata( $user_id );
+
+			$booking_email = strtolower( trim( $user->user_email ) );
+
+			$current_user = wp_get_current_user();
+
+			$current_user_email = $current_user->user_email;
+
+			if ( $booking_email !== $current_user_email ) {
+
+				echo '<div class="wp-travel-error-message">';
+				echo esc_html__( 'You have no access to this booking.', 'wp-travel' );
+				echo '</div>';
+
+				return;
+			}
+			
 			wptravel_print_notices();
+			
 			$booking_id    = isset( $request_data['detail_id'] ) ? absint( $request_data['detail_id'] ) : 0;
 			$details       = wptravel_booking_data( $booking_id );
 			$payment_data  = wptravel_payment_data( $booking_id );

@@ -55,6 +55,20 @@ class IPNListener {
 	public $use_sandbox = false;
 
 	/**
+	 *  Optional explicit path to a CA bundle file for cURL SSL verification.
+	 *  Left null by default so cURL uses the server's own system CA bundle,
+	 *  which is properly maintained/updated by the hosting environment. Only
+	 *  set this if you have a specific reason to override the system bundle
+	 *  (e.g. a broken local dev environment with no CA store at all) - do NOT
+	 *  ship a bundled/static cert file here, since PayPal periodically rotates
+	 *  its certificate chain and a stale bundled file will start failing
+	 *  verification even though the connection is legitimate.
+	 *
+	 *  @var string|null
+	 */
+	public $ca_bundle_path = null;
+
+	/**
 	 *  The amount of time, in seconds, to wait for the PayPal server to respond
 	 *  before timing out. Default 30 seconds.
 	 *
@@ -98,7 +112,17 @@ class IPNListener {
 
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, true );
 		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
-		curl_setopt( $ch, CURLOPT_CAINFO, dirname( __FILE__ ) . '/cert/api_cert_chain.crt' );
+
+		// Only override cURL's CA bundle if explicitly configured. By default
+		// this is left unset so cURL uses the server's own system CA bundle -
+		// previously this was hardcoded to a bundled cert/api_cert_chain.crt
+		// file, which goes stale as PayPal rotates its certificate chain and
+		// causes SSL verification failures ("cURL error: 60 ... unable to get
+		// local issuer certificate") even on healthy servers.
+		if ( ! empty( $this->ca_bundle_path ) ) {
+			curl_setopt( $ch, CURLOPT_CAINFO, $this->ca_bundle_path );
+		}
+
 		curl_setopt( $ch, CURLOPT_URL, $uri );
 		curl_setopt( $ch, CURLOPT_POST, true );
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $encoded_data );

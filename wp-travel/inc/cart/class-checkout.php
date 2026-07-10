@@ -36,17 +36,12 @@ class WP_Travel_Checkout { // @phpcs:ignore
 			return;
 		}
 
-
-		if ( isset($_COOKIE['wp_travel_session']) ) {
-
-			$cookie = wp_unslash($_COOKIE['wp_travel_session']);
-			$parts  = explode('||', $cookie);
-
-		}
 		
 		if( apply_filters( 'wp_travel_enable_cart_logs', false ) == true ){
+			$cookie = wp_unslash($_COOKIE['wp_travel_session']);
+			$parts  = explode('||', $cookie);
 			wt_cart_log(
-				'GET ITEMS CALLED',
+				'REACHED TO CHECKOUT PAGE',
 				array(
 					'session_id' => ! empty($parts[0])
 					? sanitize_text_field($parts[0])

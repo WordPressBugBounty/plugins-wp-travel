@@ -29,10 +29,35 @@ add_action( 'wp_travel_after_frontend_booking_save', 'wptravel_booking_bank_depo
 
 function wptravel_submit_bank_deposit_slip() {
 
-	if ( isset( $_POST['complete_partial_payment'] ) && isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'bank_deposit' ) { 
-		$payment_gateway = 'bank_deposit';
+	if ( ! isset( $_POST['wp_travel_security'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wp_travel_security'] ) ), 'wp_travel_security_action' ) ) {
+		return;
+	}
 
-		$booking_id      = sanitize_text_field( wp_unslash( $_POST['wp_travel_booking_id'] ) );
+	$booking_id = absint( $_POST['wp_travel_booking_id'] ?? 0 );
+
+	$user_id = absint(
+		get_post_meta( $booking_id, 'wp_travel_customer_user_id', true )
+	);
+
+	$user = get_userdata( $user_id );
+
+
+	$booking_email = strtolower( trim( $user->user_email ) );
+	$payer_email   = strtolower(
+		trim(
+			sanitize_email( wp_unslash( $_POST['payment_email'] ?? '' ) )
+		)
+	);
+
+	if ( empty( $payer_email ) || $booking_email !== $payer_email ) {
+		return;
+	}
+		
+
+	if ( isset( $_POST['complete_partial_payment'] ) && isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'bank_deposit' ) { 
+
+	
+		$payment_gateway = 'bank_deposit';
 
 		$payment_id = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
 
@@ -45,17 +70,6 @@ function wptravel_submit_bank_deposit_slip() {
 	}
 
 	if ( isset( $_POST['wp_travel_submit_slip'] ) ) {
-
-		if ( ! isset( $_POST['booking_id'] ) ) {
-			return;
-		}
-
-		if (
-			! isset( $_POST['wp_travel_security'] )
-			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wp_travel_security'] ) ), 'wp_travel_security_action' )
-			) {
-			return;
-		}
 
 		$settings = wptravel_get_settings();
 
@@ -98,7 +112,7 @@ function wptravel_submit_bank_deposit_slip() {
 		if ( true === $upload_ok ) {
 
 			
-			$booking_id = absint( $_POST['booking_id'] );
+			$booking_id = absint( $_POST['wp_travel_booking_id'] );
 			$txn_id     = isset( $_POST['wp_travel_bank_deposit_transaction_id'] ) ? sanitize_text_field( $_POST['wp_travel_bank_deposit_transaction_id'] ) : '';
 			$data       = wptravel_booking_data( $booking_id );	
 			
@@ -343,9 +357,17 @@ function wptravel_bank_deposite_content( $booking_id = null, $details = array() 
 	$bank_deposit_fields               = wptravel_get_bank_deposit_form_fields($details);
 	$bank_deposit_fields['booking_id'] = array(
 		'type'    => 'hidden',
-		'name'    => 'booking_id',
+		'name'    => 'wp_travel_booking_id',
 		'id'      => 'wp-travel-booking_id',
 		'default' => $booking_id,
+	);
+
+	$current_user = wp_get_current_user();
+	$bank_deposit_fields['payment_email'] = array(
+		'type'    => 'hidden',
+		'name'    => 'payment_email',
+		'id'      => 'payment_email',
+		'default' => $current_user->user_email,
 	);
 	?>
 	<div class="wp-travel-bank-deposit-wrap">

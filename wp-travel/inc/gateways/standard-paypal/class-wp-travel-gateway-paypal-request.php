@@ -128,15 +128,7 @@ class WP_Travel_Gateway_Paypal_Request {
 			$args['handling']             = 0;
 			$args['handling_cart']        = 0;
 			$args['no_shipping']          = 0;
-			// $args['notify_url']           = esc_url(
-			// 	add_query_arg(
-			// 		array(
-			// 			'wp_travel_listener' => 'IPN',
-			// 			'partial'            => true,
-			// 		),
-			// 		home_url( 'index.php' )
-			// 	)
-			// );
+			$args['notify_url']           = esc_url( add_query_arg( 'wp_travel_listener', 'IPN', home_url( 'index.php' ) ) );
 
 			// Cart Item.
 			$agrs_index = 1;
@@ -147,6 +139,10 @@ class WP_Travel_Gateway_Paypal_Request {
 
 			$args[ 'amount_' . $agrs_index ]      = sanitize_text_field( wp_unslash( $_POST['amount'] ) );
 			$args[ 'item_number_' . $agrs_index ] = $booking_id;
+			$args['custom']         = wp_json_encode( array(
+				'booking_id'   => $booking_id,
+				'payment_type' => 'complete_partial',
+			) );
 
 		} elseif ( $items ) {  // Normal Payment.
 			
@@ -197,7 +193,7 @@ class WP_Travel_Gateway_Paypal_Request {
 			$args['handling']             = 0;
 			$args['handling_cart']        = 0;
 			$args['no_shipping']          = 0;
-			// $args['notify_url']           = esc_url( add_query_arg( 'wp_travel_listener', 'IPN', home_url( 'index.php' ) ) );
+			$args['notify_url']           = esc_url( add_query_arg( 'wp_travel_listener', 'IPN', home_url( 'index.php' ) ) );
 
 			// Cart Item.
 			$agrs_index = 1; // Initialize only once
@@ -258,14 +254,17 @@ class WP_Travel_Gateway_Paypal_Request {
 			$args[ 'quantity_1']  = 1;
 			$args[ 'amount_1' ]    = $payment_amount;
 			$args[ 'item_number_1' ] = $booking_id;
+			$args['custom']         = wp_json_encode( array(
+				'booking_id'   => $booking_id,
+				'payment_mode' => $payment_mode,
+				'user_id'      => get_current_user_id(),
+			) );
 
 		} else {
 			return;
 		}
 
 		$args['option_index_0'] = $agrs_index;
-		$args['custom']         = $booking_id;
-
 	
 
 		return apply_filters( 'wp_travel_paypal_args', $args );

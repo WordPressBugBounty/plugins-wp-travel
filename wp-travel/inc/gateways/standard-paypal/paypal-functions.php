@@ -30,17 +30,11 @@ function wptravel_get_paypal_redirect_url( $ssl_check = false ) {
  */
 function wptravel_listen_paypal_ipn() {
 
-	if ( isset( $_POST['payer_id'] ) && isset( $_POST['txn_id'] ) ) {
-        // Get current user's email
-        $current_user_email = '';
-
-        if ( is_user_logged_in() ) {
-            $current_user = wp_get_current_user();
-            $current_user_email = $current_user->user_email;
-        }
-
-        // Pass the current user's email to the action
-        do_action( 'wp_travel_verify_paypal_ipn', $current_user_email );
+	if ( isset( $_GET['wp_travel_listener'] )
+		&& $_GET['wp_travel_listener'] == 'IPN'
+		|| isset( $_GET['test'] )
+		&& $_GET['test'] == true ) {
+        do_action( 'wp_travel_verify_paypal_ipn' );
     }
 
 }
@@ -55,13 +49,20 @@ add_action( 'init', 'wptravel_listen_paypal_ipn' );
  */
 function wptravel_paypal_ipn_process( $current_user_email ) {
 
+	include dirname( __FILE__ ) . '/php-paypal-ipn/IPNListener.php';
+	$listener = new IPNListener();
 
-		$settings              = wptravel_get_settings();
+	$settings              = wptravel_get_settings();
 
-		$message = null;
+	$listener->use_sandbox = ( $settings['wt_test_mode'] ) ? true : false;
+
+	/**
+	 * Check if IPN was successfully processed
+	 */
+	if ( $verified = $listener->processIpn() ) {
 	
 		if ( $_POST['mc_currency'] != $settings['currency'] ) { // @phpcs:ignore
-			$message .= "\nCurrency does not match those assigned in settings\n";
+			return;
 		}
 
 		/**
@@ -70,12 +71,16 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 		 * PayPal transaction id (txn_id) is stored in the database, we check
 		 * that against the txn_id returned.
 		 */
-		$booking_id = isset( $_POST['custom'] ) ? absint( $_POST['custom'] ) : 0;
+		$custom = json_decode( wp_unslash( $_POST['custom'] ?? '' ), true );
+
+		$booking_id  = absint( $custom['booking_id'] ?? 0 );
+		$payment_mode = sanitize_text_field( $custom['payment_mode'] ?? '' );
+		$payment_type = sanitize_text_field( $custom['payment_type'] ?? '' );
+		$user_id = absint( $custom['user_id'] ?? 0 );
+
 		$txn_id     = get_post_meta( $booking_id, 'txn_id', true );
 		if ( empty( $txn_id ) ) {
 			update_post_meta( $booking_id, 'txn_id', sanitize_text_field( $_POST['txn_id'] ) );
-		} else {
-			$message .= "\nThis payment was already processed\n";
 		}
 
 		/**
@@ -84,8 +89,8 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 		 * Create a new payment, send customer an email and empty the cart
 		 */
 
-		if ( ! empty( $_POST['payer_status'] ) && $_POST['payer_status'] == 'VERIFIED' && ! isset( $_GET['partial'] ) ) { // @phpcs:ignore
-				
+		if ( ! empty( $_POST['payment_status'] ) && $_POST['payment_status'] == 'Completed' && !$payment_type ) { // @phpcs:ignore
+
 			// Fixed Paypal booking step 
 			set_post_type( $booking_id, 'itinerary-booking' );
 						
@@ -142,15 +147,8 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 
 				update_post_meta( $new_payment_id, 'wp_travel_payment_amount', $amount );
 				
-		
-				if( $_POST['payment_status'] == 'Completed' ){
-		
-					update_post_meta( $new_payment_id, 'wp_travel_payment_status', 'paid' );
-				}else{
-	
-					update_post_meta( $new_payment_id, 'wp_travel_payment_status', 'pending' );
-				}
-				
+				update_post_meta( $new_payment_id, 'wp_travel_payment_status', 'paid' );
+			
 				update_post_meta( $new_payment_id, 'wp_travel_payment_mode', 'partial' );
 
 				$json = sanitize_text_field( wp_unslash( $_POST['payment_details'] ) );
@@ -160,31 +158,23 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
                 
 				
 				update_post_meta( $payment_id, '_paypal_args', wptravel_sanitize_array( $_POST ) );
-				if( $_GET['payment'] == 'partial' ){
-					if( $_POST['payment_status'] == 'Completed' ){
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'partially_paid' );
-					}else{
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'pending' );
-					}
-				}elseif( $_GET['payment'] == 'full' ){
-				    
-					if( $_POST['payment_status'] == 'Completed' ){
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'paid' );
-					}else{
-					   
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'pending' );
-					}
+				if( $payment_mode == 'partial' ){
+					
+					update_post_meta( $payment_id, 'wp_travel_payment_status', 'partially_paid' );
+					
+				}elseif( $payment_mode == 'full' ){
+					
+					update_post_meta( $payment_id, 'wp_travel_payment_status', 'paid' );
+					
 				}else{
-					if( $_POST['payment_status'] == 'Completed' ){
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'paid' );
-					}else{
-						update_post_meta( $payment_id, 'wp_travel_payment_status', 'pending' );
-					}
+					
+					update_post_meta( $payment_id, 'wp_travel_payment_status', 'pending' );
+					
 				}
 
 				update_post_meta( $payment_id, 'wp_travel_payment_mode', 'full' );
 
-				if( $_GET['payment'] == 'partial' ){ 
+				if( $payment_mode == 'partial' ){ 
 					update_post_meta( $payment_id, 'wp_travel_payment_mode', 'partial' );
 				}
 				
@@ -192,10 +182,9 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 
 				do_action( 'wp_travel_after_successful_payment', $booking_id );
 			}
-		} elseif( ! empty( $_POST['payer_status'] ) && $_POST['payer_status'] == 'VERIFIED' && isset( $_GET['partial'] ) ) {
+		} elseif( ! empty( $_POST['payment_status'] ) && $_POST['payment_status'] == 'Completed' && $payment_type == 'complete_partial' ) {
 
 				$payment_gateway = 'paypal';
-				$booking_id      = (int)$_GET['booking_id'];
 				
 				$payment_id = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
 
@@ -319,11 +308,8 @@ function wptravel_paypal_ipn_process( $current_user_email ) {
 				die;
 
 			
-		}else {
-
-			$message .= "\nPayment status not set to Completed\n";
-
-		}    
+		} 
+	}
 
 }
 add_action( 'wp_travel_verify_paypal_ipn', 'wptravel_paypal_ipn_process' );
