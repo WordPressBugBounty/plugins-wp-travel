@@ -139,14 +139,6 @@ function wptravel_display_single_pricing_deprecated_notice( $notices ) {
 add_filter( 'wp_travel_deprecated_admin_notice', 'wptravel_display_single_pricing_deprecated_notice' );
 
 
-function wptravel_black_friday_dismiss_notice_ajax() {
-	$user_id = get_current_user_id();
-	$key     = 'wp_travel_black_friday_2019_' . $user_id;
-	update_option( $key, true );
-}
-// add_action( 'wp_ajax_wp_travel_black_friday_dismiss', 'wp_travel_black_friday_dismiss_notice_ajax' );
-
-
 function wptravel_remove_v3_trips_notice() {
 	$settings     = wptravel_get_settings();
 	$user_since   = get_option( 'wp_travel_user_since', '3.0.0' );

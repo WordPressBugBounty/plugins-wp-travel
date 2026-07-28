@@ -47,9 +47,11 @@ class WpTravel_Helpers_Schema {
 			self::$trip = $trip;
 		}
 		self::get_trip_schema();
-		self::get_trip_rating_schema();
-	}
 
+		if ( WP_Travel::is_page( 'single' ) ) {
+			self::get_faq_schema( $trip_id );
+		}
+	}
 
 	public static function get_trip_schema() {
 
@@ -61,13 +63,13 @@ class WpTravel_Helpers_Schema {
 		$trip_id = $trip['id'];
 
 		/**
-		 * Base schema (UPGRADED)
+		 * Base Schema
 		 */
 		$schema = array(
 			'@context' => 'https://schema.org',
 			'@type'    => 'TouristTrip',
 
-			'name'        => isset( $trip['title'] )
+			'name' => isset( $trip['title'] )
 				? ucwords( $trip['title'] )
 				: '',
 
@@ -75,41 +77,46 @@ class WpTravel_Helpers_Schema {
 				? wp_strip_all_tags( $trip['trip_overview'] )
 				: '',
 
-			'url' => isset( $trip['url'] ) ? $trip['url'] : '',
+			'url' => isset( $trip['url'] )
+				? $trip['url']
+				: '',
 
 			'identifier' => array(
 				'@type' => 'PropertyValue',
 				'name'  => 'Trip ID',
 				'value' => $trip_id,
 			),
-
-			'sku' => isset( $trip['trip_code'] ) ? $trip['trip_code'] : '',
 		);
 
 		/**
-		 * TOURIST TYPE (from itinerary_types taxonomy)
+		 * Tourist Types
 		 */
 		$terms = wp_get_post_terms( $trip_id, 'itinerary_types' );
 
 		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 
-			$schema['touristType'] = array_map( function ( $term ) {
-				return $term->name;
-			}, $terms );
+			$schema['touristType'] = array_map(
+				function ( $term ) {
+					return $term->name;
+				},
+				$terms
+			);
 
 		} else {
+
 			$schema['touristType'] = array( 'General Tourism' );
+
 		}
 
 		/**
-		 * ITINERARY STRUCTURE
+		 * Itinerary
 		 */
-		if ( isset( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) && count( $trip['itineraries'] ) > 0 ) {
+		if ( ! empty( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) ) {
 
 			$schema['itinerary'] = array(
-				'@type'         => 'ItemList',
-				'numberOfItems' => count( $trip['itineraries'] ),
-				'itemListElement' => array()
+				'@type'           => 'ItemList',
+				'numberOfItems'   => count( $trip['itineraries'] ),
+				'itemListElement' => array(),
 			);
 
 			$i = 1;
@@ -131,21 +138,61 @@ class WpTravel_Helpers_Schema {
 		}
 
 		/**
-		 * OPTIONAL: IMAGE (if available)
+		 * Featured Image
 		 */
-		if ( ! empty( $trip['featured_image_data'] ) ) {
-			$schema['image'] = $trip['featured_image_data'];
+		$image_id = get_post_thumbnail_id( $trip_id );
+
+		if ( $image_id ) {
+
+			$meta = wp_get_attachment_metadata( $image_id );
+
+			$schema['image'] = array_filter(
+				array(
+					'@type'  => 'ImageObject',
+					'url'    => wp_get_attachment_image_url( $image_id, 'full' ),
+					'width'  => isset( $meta['width'] ) ? (int) $meta['width'] : null,
+					'height' => isset( $meta['height'] ) ? (int) $meta['height'] : null,
+				)
+			);
 		}
 
 		/**
-		 * OPTIONAL: GROUP SIZE
+		 * Offer (Price)
 		 */
-		if ( ! empty( $trip['group_size'] ) ) {
-			$schema['maximumAttendeeCapacity'] = (int) $trip['group_size'];
-		}
+		$args = array(
+			'trip_id' => $trip_id,
+		);
+
+		$args_regular = $args;
+		$args_regular['is_regular_price'] = true;
+
+		$trip_price    = WP_Travel_Helpers_Pricings::get_price( $args );
+		$regular_price = WP_Travel_Helpers_Pricings::get_price( $args_regular );
+
+		$enable_sale = WP_Travel_Helpers_Trips::is_sale_enabled(
+			array(
+				'trip_id'                => $trip_id,
+				'from_price_sale_enable' => true,
+			)
+		);
+
+		$settings = wptravel_get_settings();
+		$currency = isset( $settings['currency'] ) ? $settings['currency'] : 'USD';
+
+		$schema['offers'] = array(
+			'@type'         => 'Offer',
+			'price'         => $enable_sale ? $trip_price : $regular_price,
+			'priceCurrency' => $currency,
+			'availability'  => 'https://schema.org/InStock',
+			'eligibleQuantity' => array(
+				'@type'    => 'QuantitativeValue',
+				'minValue' => get_post_meta( $trip_id, 'wp_travel_group_min_size', true ),
+				'maxValue' => get_post_meta( $trip_id, 'wp_travel_group_size', true ),
+			),
+		);
 
 		/**
-		 * FILTER (WP TRAVEL HOOK)
+		 * Filter
 		 */
 		$schema = apply_filters(
 			'wptravel_trip_schema',
@@ -158,85 +205,46 @@ class WpTravel_Helpers_Schema {
 	}
 
 	/**
-	 * Generate schema as per $schema array.
+	 * Generate FAQ Schema.
 	 *
-	 * @since 5.0.0
-	 * @return string
+	 * @param int $trip_id Trip ID.
 	 */
-	public static function get_trip_rating_schema() {
-		if ( ! self::$trip ) {
-			return;
-		}
-		$trip         = self::$trip;
-		$trip_id      = $trip['id'];
-		$review_count = wptravel_get_rating_count();
+	public static function get_faq_schema( $trip_id ) {
 
-		if ( ! $review_count ) {
+		$faq_data = get_post_meta( $trip_id, 'wptravel_trip_faqs', true );
+
+		if ( empty( $faq_data ) || ! is_array( $faq_data ) ) {
 			return;
 		}
-		$brand_name = apply_filters( 'wp_travel_schema_brand', get_bloginfo(), $trip_id );
+
+		$faq_items = array();
+
+		foreach ( $faq_data as $faq ) {
+
+			if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
+				continue;
+			}
+
+			$faq_items[] = array(
+				'@type' => 'Question',
+				'name'  => wp_strip_all_tags( $faq['question'] ),
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => wp_strip_all_tags( $faq['answer'] ),
+				),
+			);
+		}
+
+		if ( empty( $faq_items ) ) {
+			return;
+		}
+
 		$schema = array(
-			'@context'    => 'https://schema.org',
-			'@type'       => 'Product', // Fixed.
-			'name'        => isset( $trip['title'] ) ? ucwords( $trip['title'] ) : '',
-			'sku'         => wptravel_get_trip_code( $trip_id ),
-			'description' => wp_strip_all_tags( $trip['trip_overview'] ),
-			'image'       => wptravel_get_post_thumbnail_url( $trip_id ),
-			'brand'       => array(
-				'@type' => 'Brand',
-				'name'  => $brand_name,
-			),
-		);
-		$get_rating = wptravel_get_average_rating( $trip_id );
-		$get_rating = apply_filters( 'wp_travel_schema_ratting_value', $get_rating, $trip_id );
-		$calculate_rating = $get_rating * 20;
-		$calculate_rating = apply_filters( 'wp_travel_calculated_rating', $calculate_rating, $trip_id );
-		$rount_rating = apply_filters( 'wp_travel_round_rating', round( $calculate_rating ), $trip_id );
-		$final_rating = apply_filters( 'wp_travel_schema_final_rating', $rount_rating < 20 ? 20 : $rount_rating, $trip_id );
-		// Rating Data.
-		$schema['aggregateRating']        = array(
-			'@type'       => 'AggregateRating', // Fixed.
-			'bestRating'  => 100,
-			'ratingValue' => $final_rating,
-			'reviewCount' => $review_count,
-		);
-		/**
-		 * added affers in schema
-		 * @since 6.8.0
-		 */
-		$args                             = array( 'trip_id' => $trip_id );
-		$args_regular                     = $args;
-		$args_regular['is_regular_price'] = true;
-		$trip_price                       = WP_Travel_Helpers_Pricings::get_price( $args );
-		$regular_price                    = WP_Travel_Helpers_Pricings::get_price( $args_regular );
-		$enable_sale                      = WP_Travel_Helpers_Trips::is_sale_enabled(
-			array(
-				'trip_id'                => $trip_id,
-				'from_price_sale_enable' => true,
-			)
-		);
-		$settings = wptravel_get_settings();
-		$currency = isset( $settings['currency'] ) ? $settings['currency'] : 'USD';
-		$schema['offers'] = array(
-			'@type'         => 'Offer',
-			'price'         => $enable_sale ? $trip_price : $regular_price,
-			'priceCurrency' => $currency,
-			'availability'  => 'https://schema.org/InStock',
+			'@context' => 'https://schema.org',
+			'@type'    => 'FAQPage',
+			'mainEntity' => $faq_items,
 		);
 
-		$schema['identifier']	= [
-			"@type"		=> "PropertyValue",
-			"name"		=> $brand_name,
-			"value"		=> $trip_id,
-		];
-
-		/**
-		 * Trip Review schema structure.
-		 *
-		 * @param array $schema Schema data for trip rating.
-		 * @since 5.0.0
-		 */
-		$schema = apply_filters( 'wptravel_trip_rating_schema', $schema, $trip_id, $trip );
 		self::generate_schema( $schema );
 	}
 

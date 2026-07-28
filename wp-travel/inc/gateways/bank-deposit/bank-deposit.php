@@ -35,6 +35,10 @@ function wptravel_submit_bank_deposit_slip() {
 
 	$booking_id = absint( $_POST['wp_travel_booking_id'] ?? 0 );
 
+	if( !$booking_id ){
+		return;
+	}
+
 	$user_id = absint(
 		get_post_meta( $booking_id, 'wp_travel_customer_user_id', true )
 	);

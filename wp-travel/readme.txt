@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 11.8.1
+Stable tag: 11.9.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,22 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 11.9.0 =
+Release Date: 10th July 2026
+
+Fixes
+* Improved the dashboard review section so it no longer remains active after users select “I already reviewed” or “Remind me later.”
+* Fixed the responsive layout issue affecting date listings in the trip template.
+* Resolved a deprecation warning on the Booking Report page.
+
+Enhancements:
+* Improved sanitization logic in the pricing update function to prevent unintended data loss.
+* Added the wp_travel_show_min_price_from_selected_pricing_cat_single_trip_template filter to allow displaying the minimum price from a selected pricing category on the single trip template.
+* Added the wp_travel_set_pricing_cat_to_show_min_price_single_trip_template filter to define which pricing category should be used for minimum price display on the single trip template.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v11-9-0-update-release-note).**
+
 
 = 11.8.1 =
 Release Date: 10th July 2026

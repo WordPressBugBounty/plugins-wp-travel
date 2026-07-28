@@ -47,7 +47,7 @@ add_action( 'init', 'wptravel_listen_paypal_ipn' );
  * the ones PayPal is sending back to us.
  * This is the Pink Lilly of the whole operation.
  */
-function wptravel_paypal_ipn_process( $current_user_email ) {
+function wptravel_paypal_ipn_process( ) {
 
 	include dirname( __FILE__ ) . '/php-paypal-ipn/IPNListener.php';
 	$listener = new IPNListener();

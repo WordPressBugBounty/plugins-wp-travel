@@ -295,7 +295,7 @@ function wptravel_ajax_get_booking_data() {
 								. $term_name .
 								'</a>';
 
-	$trip_id    = (int) $top_performing_trips[0]['trip_id'];
+	$trip_id    = isset( $top_performing_trips[0]['trip_id'] ) ? (int) $top_performing_trips[0]['trip_id']: '' ;
 	$trip_link  = esc_url( get_the_permalink( $trip_id ) );
 	$trip_title = esc_html( get_the_title( $trip_id ) );
 

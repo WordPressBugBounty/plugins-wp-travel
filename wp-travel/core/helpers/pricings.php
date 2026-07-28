@@ -581,28 +581,61 @@ class WpTravel_Helpers_Pricings {
 							$price = 0;
 							$regular = 0;
 
+							
+
 							foreach ($category_data as $pricing_categories) {
-								foreach ($pricing_categories as $pricing_category) {
+								$exists = false;
 
+								foreach ( $pricing_categories as $category ) {
 									if (
-										strtolower($pricing_category['term_info']['title']) !==
-										strtolower($target_category)
+										isset( $category['term_info']['title'] ) &&
+										strtolower( $category['term_info']['title'] ) === strtolower( $target_category )
 									) {
-										continue;
-									}
-
-									$current_price = (
-										$pricing_category['is_sale'] &&
-										$pricing_category['sale_price'] > 0
-									)
-										? $pricing_category['sale_price']
-										: $pricing_category['regular_price'];
-
-									if ($price == 0 || $current_price < $price) {
-										$price = $current_price;
-										$regular = $pricing_category['regular_price'];
+										$exists = true;
+										break;
 									}
 								}
+
+								if($exists){
+									foreach ($pricing_categories as $pricing_category) {
+
+										if (
+											strtolower($pricing_category['term_info']['title']) !==
+											strtolower($target_category)
+										) {
+											continue;
+										}
+
+										$current_price = (
+											$pricing_category['is_sale'] &&
+											$pricing_category['sale_price'] > 0
+										)
+											? $pricing_category['sale_price']
+											: $pricing_category['regular_price'];
+
+										if ($price == 0 || $current_price < $price) {
+											$price = $current_price;
+											$regular = $pricing_category['regular_price'];
+										}
+									}
+								}else{
+									foreach ($pricing_categories as $pricing_category) {
+
+					
+										$current_price = (
+											$pricing_category['is_sale'] &&
+											$pricing_category['sale_price'] > 0
+										)
+											? $pricing_category['sale_price']
+											: $pricing_category['regular_price'];
+
+										if ($price == 0 || $current_price < $price) {
+											$price = $current_price;
+											$regular = $pricing_category['regular_price'];
+										}
+									}
+								}
+								
 							}
 						}
 					}
