@@ -29,66 +29,111 @@ class WpTravel_Helpers_Trip_Dates {
 	 *
 	 * @param int $trip_id Trip ID.
 	 */
-	public static function get_dates($trip_id = false) {
+	public static function get_dates( $trip_id = false ) {
+
 		if ( empty( $trip_id ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
 
+		static $request_cache = array();
+
+		$trip_id = absint( $trip_id );
+
+		// Request cache (fastest)
+		if ( isset( $request_cache[ $trip_id ] ) ) {
+			return $request_cache[ $trip_id ];
+		}
+
+		$cache_key = 'wp_travel_trip_dates_' . $trip_id;
+
+		// Persistent object cache (Redis/Memcached if available)
+		$response = wp_cache_get( $cache_key, 'wp_travel' );
+
+		if ( false !== $response ) {
+			$request_cache[ $trip_id ] = $response;
+			return $response;
+		}
+
 		global $wpdb;
 
-		$trip_id = intval($trip_id);
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}wt_dates WHERE trip_id = %d",
+				$trip_id
+			)
+		);
 
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_dates WHERE `trip_id` = %d", $trip_id ) );
 		if ( empty( $results ) ) {
-			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_DATES' );
+			$response = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_DATES' );
+
+			// Cache the "no dates" result too, so repeated lookups for
+			// trips without dates don't keep hitting the database.
+			$request_cache[ $trip_id ] = $response;
+			wp_cache_set( $cache_key, $response, 'wp_travel', HOUR_IN_SECONDS );
+
+			return $response;
 		}
 
 		$dates = array();
-		$index = 0;
-		foreach ( $results as $result ) {
+
+		foreach ( $results as $index => $result ) {
+
 			$dates[ $index ]['id']           = absint( $result->id );
 			$dates[ $index ]['title']        = $result->title;
 			$dates[ $index ]['custom_link']  = $result->custom_link;
-			$dates[ $index ]['booking_status']  = $result->booking_status;
+			$dates[ $index ]['booking_status'] = $result->booking_status;
 			$dates[ $index ]['years']        = empty( $result->years ) ? 'every_year' : $result->years;
 			$dates[ $index ]['months']       = empty( $result->months ) ? 'every_month' : $result->months;
 			$dates[ $index ]['days']         = empty( $result->days ) ? '' : $result->days;
 			$dates[ $index ]['date_days']    = empty( $result->date_days ) ? '' : $result->date_days;
 			$dates[ $index ]['start_date']   = $result->start_date;
 			$dates[ $index ]['end_date']     = $result->end_date;
-			$dates[ $index ]['is_recurring'] = ! empty( $result->recurring ) && class_exists( 'WP_Travel_Pro' ) ? true : false;
-			/**
-			 * @since 6.1.0
-			 */
-			$dates[ $index ] ['enable_time']            = ! empty( absint( $result->id ) ) && class_exists( 'WP_Travel_Utilities_Core' ) ? get_post_meta( absint( $result->id ), 'wp_travel_trip_time_enable', true ) : false;
-			$dates[ $index ] ['twentyfour_time_format']            = ! empty( absint( $result->id ) ) && class_exists( 'WP_Travel_Utilities_Core' ) ? get_post_meta( absint( $result->id ), 'wp_travel_trip_twentyfour_time_format', true ) : false;
-			$dates[ $index ]['trip_time']               = ! empty( $result->trip_time ) && class_exists( 'WP_Travel_Utilities_Core' ) ? $result->trip_time : ''; // Time is utilities features.
-			$dates[ $index ]['pricing_ids']             = ! empty( $result->pricing_ids ) ? $result->pricing_ids : '';
+			$dates[ $index ]['is_recurring'] = ! empty( $result->recurring ) && class_exists( 'WP_Travel_Pro' );
+
+			$date_id = absint( $result->id );
+
+			$dates[ $index ]['enable_time'] =
+				$date_id && class_exists( 'WP_Travel_Utilities_Core' )
+					? get_post_meta( $date_id, 'wp_travel_trip_time_enable', true )
+					: false;
+
+			$dates[ $index ]['twentyfour_time_format'] =
+				$date_id && class_exists( 'WP_Travel_Utilities_Core' )
+					? get_post_meta( $date_id, 'wp_travel_trip_twentyfour_time_format', true )
+					: false;
+
+			$dates[ $index ]['trip_time'] =
+				! empty( $result->trip_time ) && class_exists( 'WP_Travel_Utilities_Core' )
+					? $result->trip_time
+					: '';
+
+			$dates[ $index ]['pricing_ids'] = ! empty( $result->pricing_ids ) ? $result->pricing_ids : '';
+
 			$dates[ $index ]['recurring_weekdays_type'] = '';
+
 			if ( ! empty( $result->days ) ) {
 				$dates[ $index ]['recurring_weekdays_type'] = 'every_days';
 			} elseif ( ! empty( $result->date_days ) ) {
 				$dates[ $index ]['recurring_weekdays_type'] = 'every_date_days';
 			}
-			$index++;
 		}
 
 		if ( ! is_admin() ) {
-			/**
-			 * Filter to change available dates data as per trip.
-			 *
-			 * @since 5.2.3
-			 * @since 5.2.4 Only availble this hook for frontend.
-			 */
 			$dates = apply_filters( 'wptravel_trip_dates', $dates, $trip_id );
 		}
 
-		return WP_Travel_Helpers_Response_Codes::get_success_response(
+		$response = WP_Travel_Helpers_Response_Codes::get_success_response(
 			'WP_TRAVEL_TRIP_DATES',
 			array(
 				'dates' => $dates,
 			)
 		);
+
+		// Store in caches
+		$request_cache[ $trip_id ] = $response;
+		wp_cache_set( $cache_key, $response, 'wp_travel', HOUR_IN_SECONDS );
+
+		return $response;
 	}
 	
 	/**

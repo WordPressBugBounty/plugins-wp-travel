@@ -88,114 +88,12 @@ class WpTravel_Helpers_Schema {
 			),
 		);
 
-		/**
-		 * Tourist Types
-		 */
-		$terms = wp_get_post_terms( $trip_id, 'itinerary_types' );
-
-		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-
-			$schema['touristType'] = array_map(
-				function ( $term ) {
-					return $term->name;
-				},
-				$terms
-			);
-
-		} else {
-
-			$schema['touristType'] = array( 'General Tourism' );
-
-		}
-
-		/**
-		 * Itinerary
-		 */
-		if ( ! empty( $trip['itineraries'] ) && is_array( $trip['itineraries'] ) ) {
-
-			$schema['itinerary'] = array(
-				'@type'           => 'ItemList',
-				'numberOfItems'   => count( $trip['itineraries'] ),
-				'itemListElement' => array(),
-			);
-
-			$i = 1;
-
-			foreach ( $trip['itineraries'] as $itinerary ) {
-
-				$schema['itinerary']['itemListElement'][] = array(
-					'@type'    => 'ListItem',
-					'position' => $i++,
-					'item'     => array(
-						'@type'       => 'TouristAttraction',
-						'name'        => trim(
-							( $itinerary['label'] ?? '' ) . ' - ' . ( $itinerary['title'] ?? '' )
-						),
-						'description' => wp_strip_all_tags( $itinerary['desc'] ?? '' ),
-					),
-				);
-			}
-		}
-
-		/**
-		 * Featured Image
-		 */
-		$image_id = get_post_thumbnail_id( $trip_id );
-
-		if ( $image_id ) {
-
-			$meta = wp_get_attachment_metadata( $image_id );
-
-			$schema['image'] = array_filter(
-				array(
-					'@type'  => 'ImageObject',
-					'url'    => wp_get_attachment_image_url( $image_id, 'full' ),
-					'width'  => isset( $meta['width'] ) ? (int) $meta['width'] : null,
-					'height' => isset( $meta['height'] ) ? (int) $meta['height'] : null,
-				)
-			);
-		}
-
-		/**
-		 * Offer (Price)
-		 */
-		$args = array(
-			'trip_id' => $trip_id,
-		);
-
-		$args_regular = $args;
-		$args_regular['is_regular_price'] = true;
-
-		$trip_price    = WP_Travel_Helpers_Pricings::get_price( $args );
-		$regular_price = WP_Travel_Helpers_Pricings::get_price( $args_regular );
-
-		$enable_sale = WP_Travel_Helpers_Trips::is_sale_enabled(
-			array(
-				'trip_id'                => $trip_id,
-				'from_price_sale_enable' => true,
-			)
-		);
-
-		$settings = wptravel_get_settings();
-		$currency = isset( $settings['currency'] ) ? $settings['currency'] : 'USD';
-
-		$schema['offers'] = array(
-			'@type'         => 'Offer',
-			'price'         => $enable_sale ? $trip_price : $regular_price,
-			'priceCurrency' => $currency,
-			'availability'  => 'https://schema.org/InStock',
-			'eligibleQuantity' => array(
-				'@type'    => 'QuantitativeValue',
-				'minValue' => get_post_meta( $trip_id, 'wp_travel_group_min_size', true ),
-				'maxValue' => get_post_meta( $trip_id, 'wp_travel_group_size', true ),
-			),
-		);
 
 		/**
 		 * Filter
 		 */
 		$schema = apply_filters(
-			'wptravel_trip_schema',
+			'wp_travel_trip_schema',
 			$schema,
 			$trip_id,
 			$trip
@@ -211,29 +109,13 @@ class WpTravel_Helpers_Schema {
 	 */
 	public static function get_faq_schema( $trip_id ) {
 
-		$faq_data = get_post_meta( $trip_id, 'wptravel_trip_faqs', true );
-
-		if ( empty( $faq_data ) || ! is_array( $faq_data ) ) {
-			return;
-		}
-
 		$faq_items = array();
 
-		foreach ( $faq_data as $faq ) {
-
-			if ( empty( $faq['question'] ) || empty( $faq['answer'] ) ) {
-				continue;
-			}
-
-			$faq_items[] = array(
-				'@type' => 'Question',
-				'name'  => wp_strip_all_tags( $faq['question'] ),
-				'acceptedAnswer' => array(
-					'@type' => 'Answer',
-					'text'  => wp_strip_all_tags( $faq['answer'] ),
-				),
-			);
-		}
+		$faq_items = apply_filters(
+						'wp_travel_faq_schema_items',
+						$faq_items,
+						$trip_id
+					);
 
 		if ( empty( $faq_items ) ) {
 			return;

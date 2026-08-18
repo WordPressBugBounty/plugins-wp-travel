@@ -4029,8 +4029,22 @@ function wptravel_get_cart_pricing( $cart_id ) {
  */
 if ( ! function_exists( 'wptravel_get_trip_pricings' ) ) :
 	function wptravel_get_trip_pricings( $trip_id ) {
+
+		static $cache = array();
+
+		$trip_id = absint( $trip_id );
+
+		if ( isset( $cache[ $trip_id ] ) ) {
+			return $cache[ $trip_id ];
+		}
+
 		$pricings_data = WP_Travel_Helpers_Pricings::get_pricings( $trip_id );
-		return ! is_wp_error( $pricings_data ) && isset( $pricings_data['pricings'] ) ? $pricings_data['pricings'] : array(); // Trip Pricings.
+
+		$cache[ $trip_id ] = ! is_wp_error( $pricings_data ) && isset( $pricings_data['pricings'] )
+			? $pricings_data['pricings']
+			: array();
+
+		return $cache[ $trip_id ];
 	}
 endif;
 

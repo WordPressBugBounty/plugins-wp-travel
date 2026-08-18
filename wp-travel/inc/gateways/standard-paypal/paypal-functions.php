@@ -61,9 +61,9 @@ function wptravel_paypal_ipn_process( ) {
 	 */
 	if ( $verified = $listener->processIpn() ) {
 	
-		if ( $_POST['mc_currency'] != $settings['currency'] ) { // @phpcs:ignore
-			return;
-		}
+		// if ( $_POST['mc_currency'] != $settings['currency'] ) { // @phpcs:ignore
+		// 	return;
+		// }
 
 		/**
 		 * Check if this payment was already processed

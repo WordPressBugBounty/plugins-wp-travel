@@ -61,11 +61,11 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 			exit;
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'edit_others_posts' ) ) {
 			WP_Travel_Helpers_REST_API::response(
 				new WP_Error(
 					'forbidden',
-					__( 'You are not allowed to get coupon code.', 'wp-travel' ),
+					__( 'You are not allowed to update coupon.', 'wp-travel' ),
 					array( 'status' => 403 )
 				)
 			);
@@ -97,7 +97,7 @@ class WP_Travel_Ajax_Coupon { // @phpcs:ignore
 			exit;
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'edit_others_posts' ) ) {
 			WP_Travel_Helpers_REST_API::response(
 				new WP_Error(
 					'forbidden',

@@ -33,13 +33,22 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 		if ( empty( $trip_id ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
-		global $wpdb;
 
-		$trip_id = intval($trip_id);
+		$trip_id = intval( $trip_id );
+
+		// Static cache keyed by trip_id, scoped to this request.
+		static $cache = array();
+
+		if ( array_key_exists( $trip_id, $cache ) ) {
+			return $cache[ $trip_id ];
+		}
+
+		global $wpdb;
 
 		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_excluded_dates_times WHERE `trip_id` = %d", $trip_id ) );
 		if ( empty( $results ) ) {
-			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_EXCLUDED_DATE_TIME' );
+			$cache[ $trip_id ] = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_EXCLUDED_DATE_TIME' );
+			return $cache[ $trip_id ];
 		}
 
 		$dates = array();
@@ -63,12 +72,15 @@ class WpTravel_Helpers_Trip_Excluded_Dates_Times {
 			}
 			$index++;
 		}
-		return WP_Travel_Helpers_Response_Codes::get_success_response(
+
+		$cache[ $trip_id ] = WP_Travel_Helpers_Response_Codes::get_success_response(
 			'WP_TRAVEL_TRIP_EXCLUDED_DATES_TIMES',
-			array(
-				'dates_times' => $dates,
+				array(
+					'dates_times' => $dates,
 			)
 		);
+
+		return $cache[ $trip_id ];
 	}
 	
 

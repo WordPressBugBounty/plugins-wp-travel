@@ -949,32 +949,7 @@ function wptravel_single_excerpt( $trip_id ) {
 										</div>
 									</li>', $trip_id ) ) : '' ),
 					'reviews' => apply_filters( 'wp_travel_single_archive_review',
-						'<li>
-							<div class="travel-info">
-								<strong class="title">' . esc_html( $reviews_text ) . '</strong>
-							</div>
-							<div class="travel-info">
-								' . ( $count < 1
-									? '<span class="value">
-											<a href="#review" class="wp-travel-count-info">'
-											. esc_html__( 'Be the first to review this trip', 'wp-travel' ) .
-										'</a>
-										</span>'
-									: '<span class="value">
-											<a href="#review" class="wp-travel-count-info">'
-											
-											. 
-											
-											sprintf(
-												/* translators: 1: review count */
-												esc_html__( '%s Reviews', 'wp-travel' ),
-												esc_html( $count )
-											) .
-										'</a>
-										</span>'
-								) . '
-							</div>
-						</li>',
+						'',
 					$trip_id ),
 				);
 

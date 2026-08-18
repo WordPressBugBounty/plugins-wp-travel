@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 11.9.0
+ * Version: 12.0.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -300,9 +300,9 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			add_filter( 'option_wp_travel_settings', array( $this, 'filter_wp_travel_settings' ), 11, 2 );
 			self::reject_cache_in_checkout();
 			$settings = wptravel_get_settings();
-			if ( isset( $settings['wpml_migrations'] ) && $settings['wpml_migrations'] ) {
-				add_action( 'init', array( 'WpTravel_Helpers_Trips', 'wp_travel_trip_date_price' ) );
-			}
+			// if ( isset( $settings['wpml_migrations'] ) && $settings['wpml_migrations'] ) {
+			// 	add_action( 'init', array( 'WpTravel_Helpers_Trips', 'wp_travel_trip_date_price' ) );
+			// }
 			/**
 			 * Admin Notice for install wp travel slicewp affiliate addon
  			 */
@@ -471,10 +471,21 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			include sprintf( '%s/inc/class-session.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/class-notices.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/template-functions.php', WP_TRAVEL_ABSPATH );
-			include sprintf( '%s/inc/itinerary-v2-functions.php', WP_TRAVEL_ABSPATH ); // @since 5.0.0
+			include sprintf( '%s/inc/itinerary-v2-functions.php', WP_TRAVEL_ABSPATH );
+			
 
-			include_once sprintf( '%s/inc/gateways/standard-paypal/class-wp-travel-gateway-paypal-request.php', WP_TRAVEL_ABSPATH );
-			include_once sprintf( '%s/inc/gateways/standard-paypal/paypal-functions.php', WP_TRAVEL_ABSPATH );
+			if ( ! is_plugin_active( 'wp-travel-standard-paypal/wp-travel-standard-paypal.php' ) ) {
+				include_once sprintf(
+					'%s/inc/gateways/standard-paypal/class-wp-travel-gateway-paypal-request.php',
+					WP_TRAVEL_ABSPATH
+				);
+
+				include_once sprintf(
+					'%s/inc/gateways/standard-paypal/paypal-functions.php',
+					WP_TRAVEL_ABSPATH
+				);
+			}
+
 			include_once sprintf( '%s/inc/gateways/bank-deposit/bank-deposit.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/email-template-functions.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/class-wp-travel-email.php', WP_TRAVEL_ABSPATH );

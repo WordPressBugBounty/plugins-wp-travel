@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 11.9.0
+Stable tag: 12.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -427,8 +427,22 @@ Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
 
+= 12.0.0 =
+Release Date: 17th August 2026
+
+Fixes
+* Fixed a design issue affecting the WP Travel settings toggle caused by WordPress 7.0.
+
+Enhancements:
+* Added nonce verification and permission checks to ensure that only Administrators and Site Editors can add or edit coupons.
+* Added more travel themes to the Marketplace page.
+* Added more travel site demos to the Demo Sites page.
+* Added the missing translation string for the Trip Search button label.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v12-0-0-update-release-note).**
+
 = 11.9.0 =
-Release Date: 10th July 2026
+Release Date: 28th July 2026
 
 Fixes
 * Improved the dashboard review section so it no longer remains active after users select “I already reviewed” or “Remind me later.”

@@ -1707,7 +1707,6 @@
     );
 });
 
-
 jQuery(function ($) {
     if (typeof flatpickr === 'undefined') {
         return;
@@ -1731,7 +1730,7 @@ jQuery(function ($) {
     initFlatpickr(
         $(".wp-travel-datepicker, .date input"),
         {
-            dateFormat: "Y-m-d",
+            dateFormat: _wp_travel_date_format.date_format,
             minDate: "1900-01-01",
             maxDate: "2200-12-31",
             locale: flatpickrLocale
@@ -1741,7 +1740,7 @@ jQuery(function ($) {
     initFlatpickr(
         $("[id^='wp-travel-date-of-birth-']"),
         {
-            dateFormat: "Y-m-d",
+            dateFormat: _wp_travel_date_format.date_format,
             minDate: "1900-01-01",
             maxDate: new Date(),
             locale: flatpickrLocale
@@ -1751,7 +1750,7 @@ jQuery(function ($) {
     initFlatpickr(
         $(".date input.future-date"),
         {
-            dateFormat: "Y-m-d",
+            dateFormat: _wp_travel_date_format.date_format,
             minDate: new Date(),
             maxDate: "2200-12-31",
             locale: flatpickrLocale
@@ -1761,7 +1760,7 @@ jQuery(function ($) {
     initFlatpickr(
         $(".date input.past-date"),
         {
-            dateFormat: "Y-m-d",
+            dateFormat: _wp_travel_date_format.date_format,
             minDate: "1900-01-01",
             maxDate: new Date(),
             locale: flatpickrLocale
@@ -1771,7 +1770,7 @@ jQuery(function ($) {
     initFlatpickr(
         $(".wp-travel-trip-duration input"),
         {
-            dateFormat: "Y-m-d",
+            dateFormat: _wp_travel_date_format.date_format,
             minDate: "1900-01-01",
             maxDate: "2200-12-31",
             locale: flatpickrLocale

@@ -6,6 +6,7 @@
  * @author WEN Solutions.
  */
 
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

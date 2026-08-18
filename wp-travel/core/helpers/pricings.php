@@ -39,11 +39,35 @@ class WpTravel_Helpers_Pricings {
 		if ( empty( $trip_id ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_TRIP_ID' );
 		}
-		global $wpdb;
-		
-		$trip_id = intval( $trip_id );
 
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d order by sort_order asc", $trip_id ) );
+		static $cache = array();
+
+		$trip_id = absint( $trip_id );
+
+		if ( isset( $cache[ $trip_id ] ) ) {
+
+			if ( $pricing_id ) {
+				foreach ( $cache[ $trip_id ]['pricings'] as $pricing ) {
+					if ( absint( $pricing['id'] ) === absint( $pricing_id ) ) {
+						return array(
+							'code'     => 'WP_TRAVEL_TRIP_PRICINGS',
+							'pricings' => $pricing,
+						);
+					}
+				}
+			}
+
+			return $cache[ $trip_id ];
+		}
+
+		global $wpdb;
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}wt_pricings WHERE trip_id=%d ORDER BY sort_order ASC",
+				$trip_id
+			)
+		);
 
 		if ( empty( $results ) ) {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_NO_PRICINGS' );
@@ -105,10 +129,14 @@ class WpTravel_Helpers_Pricings {
 			}
 			$index++;
 		}
-		return array(
+
+
+		$cache[ $trip_id ] = array(
 			'code'     => 'WP_TRAVEL_TRIP_PRICINGS',
-			'pricings' => $pricing_id && count( $selected_pricing ) > 0 ? $selected_pricing : $pricings,
+			'pricings' => $pricings,
 		);
+
+		return $cache[ $trip_id ];
 	}
 
 	/**

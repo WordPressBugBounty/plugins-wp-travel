@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+
+
 /**
  * WP Session Manager wraper.
  */
@@ -23,6 +25,8 @@ class WP_Travel_Session {
 	 * Constructor function.
 	 */
 	public function __construct() {
+	
+
 		// Let users change the session cookie name. 
 		if ( ! defined( 'WP_TRAVEL_SESSION_COOKIE' ) ) {
 			define( 'WP_TRAVEL_SESSION_COOKIE', 'wp_travel_session' );

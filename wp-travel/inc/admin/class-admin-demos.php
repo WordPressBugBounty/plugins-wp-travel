@@ -5,7 +5,7 @@ class WP_Travel_Demos_Lists {
 	public function __construct() {
 
 		// Hook into the submenu filter
-		add_filter( 'wp_travel_submenus', [ $this, 'add_enquiry_settings_submenu' ] );
+		add_filter( 'wp_travel_submenus', [ $this, 'add_demos_settings_submenu' ] );
 		
         add_action( 'wp_ajax_wptravel_install_theme', [ $this, 'install_theme' ] );
         add_action( 'wp_ajax_wptravel_activate_theme', [ $this, 'activate_theme' ] );
@@ -16,7 +16,7 @@ class WP_Travel_Demos_Lists {
 	/**
 	 * Adds a custom submenu item to WP Travel admin.
 	 */
-	public function add_enquiry_settings_submenu( $submenus ) {
+	public function add_demos_settings_submenu( $submenus ) {
 
 		$submenus['bookings']['demo_lists'] = array(
 			'priority'   => 145,
@@ -160,7 +160,7 @@ class WP_Travel_Demos_Lists {
         
 
         // Download the XML file to a temporary location
-        $tmp_file = "https://wpdemo.wensolutions.com/demo-data/fse-demo/{$slug}/content.xml";
+        $tmp_file = "https://gitlab.com/Psink01/demo-data/-/raw/main/fse-demo/{$slug}/content.xml";
    
         // Check for errors while downloading the file
         if ( is_wp_error($tmp_file) ) {
@@ -191,7 +191,7 @@ class WP_Travel_Demos_Lists {
         $demo_list     = get_transient( $transient_key );
 
         if ( false === $demo_list ) {
-            $url      = 'https://wpdemo.wensolutions.com/demo-data/fse-demo/demo.json';
+            $url      = 'https://gitlab.com/Psink01/demo-data/-/raw/main/fse-demo/demo.json';
             $response = wp_remote_get( $url );
 
             if ( is_wp_error( $response ) ) {
@@ -223,7 +223,7 @@ class WP_Travel_Demos_Lists {
                     <div class="demo-item">
                         
                         <img
-                            src="https://wpdemo.wensolutions.com/demo-data/fse-demo/<?php echo esc_attr( $key ); ?>/screenshot.png"
+                            src="https://gitlab.com/Psink01/demo-data/-/raw/main/fse-demo/<?php echo esc_attr( $key ); ?>/screenshot.png"
                             alt="<?php echo esc_attr( $key ); ?>"
                         >
 

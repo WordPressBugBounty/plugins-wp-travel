@@ -30,16 +30,7 @@ class WP_Travel_Admin_Enquiry {
 	 * Adds a custom submenu item to WP Travel admin.
 	 */
 	public function add_enquiry_settings_submenu( $submenus ) {
-		global $wpdb;
-
-		$pending_count = (int) $wpdb->get_var("
-			SELECT COUNT(*) FROM {$wpdb->postmeta} pm
-			INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
-			WHERE pm.meta_key = 'wp_travel_enquiry_status'
-			AND pm.meta_value = 'unread'
-			AND p.post_type = 'itinerary-enquiries'
-			AND p.post_status = 'publish'
-		");
+		$pending_count = $this->get_unread_enquiry_count();
 
 		$notification = $pending_count > 0
 			? ' <span class="submenu-enquiry-notification">' . $pending_count . '</span>'
@@ -54,6 +45,39 @@ class WP_Travel_Admin_Enquiry {
 		);
 
 		return $submenus;
+	}
+
+	/**
+	 * Get the count of unread itinerary enquiries.
+	 * Cached per-request (static) and across requests (transient) since
+	 * this runs on every wp-admin page load via the submenu badge.
+	 */
+	protected function get_unread_enquiry_count() {
+		static $count = null;
+
+		if ( null !== $count ) {
+			return $count;
+		}
+
+		$cached = get_transient( 'wp_travel_unread_enquiry_count' );
+		if ( false !== $cached ) {
+			$count = (int) $cached;
+			return $count;
+		}
+
+		global $wpdb;
+		$count = (int) $wpdb->get_var( "
+			SELECT COUNT(*) FROM {$wpdb->postmeta} pm
+			INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+			WHERE pm.meta_key = 'wp_travel_enquiry_status'
+			AND pm.meta_value = 'unread'
+			AND p.post_type = 'itinerary-enquiries'
+			AND p.post_status = 'publish'
+		" );
+
+		set_transient( 'wp_travel_unread_enquiry_count', $count, 60 );
+
+		return $count;
 	}
 
 

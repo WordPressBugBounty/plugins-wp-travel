@@ -194,6 +194,27 @@ function wptravel_marketplace_page() {
 	);
 
 	$themes_fse_data = array(
+		'wens-trekx'     => array(
+			'name'       => __( 'WENS TrekX', 'wp-travel' ),
+			'type'       => 'free',
+			'img_url'    => 'https://wensolutions.com/wp-content/uploads/2026/07/WENS-Trekx-07-21-2026_12_00_PM-1.png',
+			'demo_url'   => 'https://wpdemo.wensolutions.com/wens-trekx/',
+			'detail_url' => 'https://wensolutions.com/themes/wens-trekx/',
+		),
+		'wens-travel-hub'     => array(
+			'name'       => __( 'WENS Travel Hub', 'wp-travel' ),
+			'type'       => 'free',
+			'img_url'    => 'https://wensolutions.com/wp-content/uploads/2026/07/WENS-Travel-Hub-07-21-2026_10_53_AM-1.png',
+			'demo_url'   => 'https://wpdemo.wensolutions.com/wens-travel-hub/',
+			'detail_url' => 'https://wensolutions.com/themes/wens-travel-hub/',
+		),
+		'wens-travel-joy'     => array(
+			'name'       => __( 'WENS Travel Joy', 'wp-travel' ),
+			'type'       => 'free',
+			'img_url'    => 'https://wensolutions.com/wp-content/uploads/2026/05/WENS-Travel-Joy-05-21-2026_12_21_PM-1.png',
+			'demo_url'   => 'https://wpdemo.wensolutions.com/wens-travel-joy/',
+			'detail_url' => 'https://wensolutions.com/themes/wens-travel-joy/',
+		),
 		'wens-travelx'     => array(
 			'name'       => __( 'WENS Travelx', 'wp-travel' ),
 			'type'       => 'free',

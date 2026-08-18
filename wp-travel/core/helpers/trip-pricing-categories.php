@@ -46,7 +46,7 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 
 		$pricing_id = intval( $pricing_id );
 
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d", $pricing_id ) );
+		// $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}wt_price_category_relation WHERE `pricing_id` = %d", $pricing_id ) );
 
 		$cache_key = 'wp_travel_pricing_categories_' . $pricing_id;
 		$results = wp_cache_get( $cache_key );
