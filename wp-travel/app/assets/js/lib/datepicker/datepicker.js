@@ -1708,6 +1708,7 @@
 });
 
 jQuery(function ($) {
+
     if (typeof flatpickr === 'undefined') {
         return;
     }
@@ -1715,10 +1716,54 @@ jQuery(function ($) {
     const wpLang = document.documentElement.lang || 'en-US';
     const flatpickrLocale = wpLang.slice(0, 2).toLowerCase();
 
+    /*
+     * Calendar settings from WordPress.
+     */
+    const calendarFirstDay =
+        typeof _wp_travel_date_format.firstDay !== 'undefined'
+            ? parseInt(_wp_travel_date_format.firstDay, 10)
+            : 1;
+
+    const calendarDayNames =
+        Array.isArray(_wp_travel_date_format.dayNames) &&
+        _wp_travel_date_format.dayNames.length === 7
+            ? _wp_travel_date_format.dayNames
+            : [
+                'Sun',
+                'Mon',
+                'Tue',
+                'Wed',
+                'Thu',
+                'Fri',
+                'Sat'
+            ];
+
+    /*
+     * Flatpickr locale.
+     */
+    const calendarLocale = {
+        firstDayOfWeek: calendarFirstDay,
+
+        weekdays: {
+            shorthand: calendarDayNames,
+
+            /*
+             * Optional:
+             * If you want full weekday names,
+             * you can also add them through another filter later.
+             */
+            longhand: calendarDayNames
+        }
+    };
+
     const initFlatpickr = function ($elements, options) {
-        if (!$elements.length) return;
+
+        if (!$elements.length) {
+            return;
+        }
 
         $elements.each(function () {
+
             if (this._flatpickr) {
                 this._flatpickr.destroy();
             }
@@ -1727,54 +1772,83 @@ jQuery(function ($) {
         });
     };
 
+    /*
+     * Common options.
+     */
+    const commonOptions = {
+        dateFormat: _wp_travel_date_format.date_format,
+
+        minDate: '1900-01-01',
+
+        maxDate: '2200-12-31',
+
+        locale: calendarLocale
+    };
+
+    /*
+     * Normal datepicker.
+     */
     initFlatpickr(
-        $(".wp-travel-datepicker, .date input"),
+        $('.wp-travel-datepicker, .date input'),
         {
-            dateFormat: _wp_travel_date_format.date_format,
-            minDate: "1900-01-01",
-            maxDate: "2200-12-31",
-            locale: flatpickrLocale
+            ...commonOptions
         }
     );
 
+    /*
+     * Date of birth.
+     */
     initFlatpickr(
         $("[id^='wp-travel-date-of-birth-']"),
         {
-            dateFormat: _wp_travel_date_format.date_format,
-            minDate: "1900-01-01",
-            maxDate: new Date(),
-            locale: flatpickrLocale
+            ...commonOptions,
+
+            minDate: '1900-01-01',
+
+            maxDate: new Date()
         }
     );
 
+    /*
+     * Future date.
+     */
     initFlatpickr(
-        $(".date input.future-date"),
+        $('.date input.future-date'),
         {
-            dateFormat: _wp_travel_date_format.date_format,
+            ...commonOptions,
+
             minDate: new Date(),
-            maxDate: "2200-12-31",
-            locale: flatpickrLocale
+
+            maxDate: '2200-12-31'
         }
     );
 
+    /*
+     * Past date.
+     */
     initFlatpickr(
-        $(".date input.past-date"),
+        $('.date input.past-date'),
         {
-            dateFormat: _wp_travel_date_format.date_format,
-            minDate: "1900-01-01",
-            maxDate: new Date(),
-            locale: flatpickrLocale
+            ...commonOptions,
+
+            minDate: '1900-01-01',
+
+            maxDate: new Date()
         }
     );
 
+    /*
+     * Trip duration.
+     */
     initFlatpickr(
-        $(".wp-travel-trip-duration input"),
+        $('.wp-travel-trip-duration input'),
         {
-            dateFormat: _wp_travel_date_format.date_format,
-            minDate: "1900-01-01",
-            maxDate: "2200-12-31",
-            locale: flatpickrLocale
+            ...commonOptions,
+
+            minDate: '1900-01-01',
+
+            maxDate: '2200-12-31'
         }
     );
+
 });
-

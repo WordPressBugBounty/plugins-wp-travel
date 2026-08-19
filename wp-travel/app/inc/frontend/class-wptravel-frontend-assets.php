@@ -182,7 +182,45 @@ class WpTravel_Frontend_Assets {
 		wp_enqueue_script( 'jquery-datepicker-lib' );
 		wp_enqueue_script( 'jquery-datepicker-lib-eng' );
 
-		wp_localize_script( 'jquery-datepicker-lib', '_wp_travel_date_format', array( 'date_format' => get_option( 'date_format' ) ) );
+		/**
+		 * Calendar first day of week.
+		 *
+		 * 0 = Sunday
+		 * 1 = Monday
+		 * 2 = Tuesday
+		 * ...
+		 * 6 = Saturday
+		 */
+		$calendar_first_day = apply_filters(
+			'wp_travel_calendar_first_day',
+			0
+		);
+
+		/**
+		 * Calendar weekday names.
+		 */
+		$calendar_day_names = apply_filters(
+			'wp_travel_calendar_day_names',
+			array(
+				'Sun',
+				'Mon',
+				'Tue',
+				'Wed',
+				'Thu',
+				'Fri',
+				'Sat',
+			)
+		);
+
+		wp_localize_script( 
+			'jquery-datepicker-lib', 
+			'_wp_travel_date_format', 
+			array( 
+				'date_format' => get_option( 'date_format' ),
+				'firstDay' => absint( $calendar_first_day ),
+        		'dayNames' => array_values( $calendar_day_names ), 
+			) 
+		);
 
 		wp_localize_script( 'wp-travel-script', '_wp_travel_check_for_pro', array( 'is_enable' => class_exists('WP_Travel_Pro') ) );
 		wp_localize_script( 'wp-travel-script', '_wp_travel_check_cp_by_billing', array( 'is_enable' => isset( wptravel_get_settings()['enable_CP_by_billing_address'] ) ? wptravel_get_settings()['enable_CP_by_billing_address']: '' ) );

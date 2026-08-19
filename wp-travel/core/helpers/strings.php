@@ -177,6 +177,7 @@ class WpTravel_Helpers_Strings {
 			'hour'                     	=> __( 'Hour(s)', 'wp-travel' ),
 			'booking_start_date_info'   => apply_filters( 'booking_start_date_info', __( 'Booking will start from ', 'wp-travel' ) ),
 			'booking_offset'            => apply_filters( 'wptravel_booking_offset', 0 ),
+			
 			'exclude_date'            	=> apply_filters( 'wptravel_exclude_booking_dates', array() ),
 			'exclude_date_range'        => apply_filters( 'wptravel_exclude_booking_dates_range_for_all_trips', array() ),
 			'current_year'            	=> gmdate("Y"),
@@ -283,6 +284,14 @@ class WpTravel_Helpers_Strings {
 			'trip_pickup_location'		=> get_post_meta( get_the_id(), 'wp_travel_trip_pickup_points', true ),
 			'trip_pickup_location_label'		=> __('Select Pickup Location', 'wp-travel'),
 		);
+
+		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/wp-travel-pro/wp-travel-pro.php' );
+
+		$localized_strings['calendar_first_day'] = 0;
+		if ( version_compare( $plugin_data['Version'], '11.0.0', '>=' ) ) {
+			$localized_strings['calendar_first_day'] = apply_filters( 'wp_travel_calendar_first_day', 0 );
+		}
+		
 
 		$localized_strings['price_per_labels'] = array(
 			'group'  => $localized_strings['group'],
