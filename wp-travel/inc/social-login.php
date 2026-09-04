@@ -17,6 +17,22 @@ function wp_travel_unique_username($username) {
 
 // ====== ADD LOGIN BUTTON ======
 function wp_travel_google_login_button() {
+     // Capture the current page (e.g. /wp-travel-dashboard/) and store it in a cookie
+	$return_to = home_url(add_query_arg(null, null));
+	$return_to = esc_url_raw($return_to);
+
+	setcookie(
+		'wp_travel_login_redirect',
+		$return_to,
+		[
+			'expires'  => time() + 300, // 5 minutes is plenty for an OAuth round trip
+			'path'     => '/',
+			'domain'   => '',           // current domain
+			'secure'   => is_ssl(),
+			'httponly' => true,
+			'samesite' => 'Lax',        // 'Lax' survives the top-level redirect back from Google
+		]
+	);
     $google_auth_url = "https://accounts.google.com/o/oauth2/v2/auth?" . http_build_query([
         'client_id' => GOOGLE_CLIENT_ID,
         'redirect_uri' => GOOGLE_REDIRECT_URI,
@@ -32,6 +48,8 @@ add_shortcode('google_login', 'wp_travel_google_login_button');
 // ====== HANDLE CALLBACK ======
 function wp_travel_google_login_callback() {
     if ( !is_admin() && strpos($_SERVER['REQUEST_URI'], '/google-login-callback') !== false && isset($_GET['code'])) {
+
+        $fallback_url = 'https://dev.wensolutions.com/';
 
         // 1. Exchange code for access token
         $response = wp_remote_post('https://oauth2.googleapis.com/token', [
@@ -59,31 +77,52 @@ function wp_travel_google_login_callback() {
                 $user_id = email_exists($user_email);
 
                 if (!$user_id) {
-					// Create new user with custom role and username
-					$random_password = wp_generate_password(12, false);
+                    // Create new user with custom role and username
+                    $random_password = wp_generate_password(12, false);
 
-					// Use Google name as username (fallback to email prefix if name missing)
-					$username = !empty($userinfo['name']) 
-						? sanitize_user(str_replace(' ', '_', strtolower($userinfo['name'])))
-						: sanitize_user(current(explode('@', $user_email)));
+                    // Use Google name as username (fallback to email prefix if name missing)
+                    $username = !empty($userinfo['name']) 
+                        ? sanitize_user(str_replace(' ', '_', strtolower($userinfo['name'])))
+                        : sanitize_user(current(explode('@', $user_email)));
 
-					// Ensure username is unique
-					$username = wp_travel_unique_username($username);
+                    // Ensure username is unique
+                    $username = wp_travel_unique_username($username);
 
-					// Create user
-					$user_id = wp_create_user($username, $random_password, $user_email);
+                    // Create user
+                    $user_id = wp_create_user($username, $random_password, $user_email);
 
-					// Assign role
-					wp_update_user([
-						'ID'           => $user_id,
-						'role'         => 'wp-travel-customer',
-						'display_name' => $userinfo['name'],
-					]);
-				}
+                    // Assign role
+                    wp_update_user([
+                        'ID'           => $user_id,
+                        'role'         => 'wp-travel-customer',
+                        'display_name' => $userinfo['name'],
+                    ]);
+                }
 
                 // Log the user in
                 wp_set_auth_cookie($user_id, true);
-                wp_redirect(home_url());
+
+                // 3. Redirect back to the page stored in the cookie, if present and valid
+                $redirect_to = $fallback_url;
+
+                if (!empty($_COOKIE['wp_travel_login_redirect'])) {
+                    $stored_url = $_COOKIE['wp_travel_login_redirect'];
+                    // wp_validate_redirect ensures the URL is local to this site,
+                    // preventing an open-redirect exploit via a tampered cookie value.
+                    $redirect_to = wp_validate_redirect($stored_url, $fallback_url);
+                }
+
+                // Clean up the cookie now that it's been used
+                setcookie('wp_travel_login_redirect', '', [
+                    'expires'  => time() - 3600,
+                    'path'     => '/',
+                    'domain'   => '',
+                    'secure'   => is_ssl(),
+                    'httponly' => true,
+                    'samesite' => 'Lax',
+                ]);
+
+                wp_redirect($redirect_to);
                 exit;
             }
         }

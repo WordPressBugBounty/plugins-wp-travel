@@ -155,13 +155,7 @@ class WP_Travel_Gateway_Paypal_Request {
 				if ( 'partial' === $payment_mode ) {
 					$tax = $cart_amounts['tax_partial'];
 				}
-			}
-			
-
-			// if ( 'partial' === $payment_mode ) {
-			// 	$discount = isset( $cart_amounts['discount_partial'] ) ? wptravel_get_formated_price( $cart_amounts['discount_partial'] ) : 0;
-			// }
-			
+			}			
 
 			$args['cmd']                  = '_cart';
 			$args['upload']               = '1';

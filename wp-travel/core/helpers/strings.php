@@ -285,10 +285,16 @@ class WpTravel_Helpers_Strings {
 			'trip_pickup_location_label'		=> __('Select Pickup Location', 'wp-travel'),
 		);
 
-		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/wp-travel-pro/wp-travel-pro.php' );
+		$pro_plugin_file = WP_PLUGIN_DIR . '/wp-travel-pro/wp-travel-pro.php';
+		$plugin_data     = array();
+
+		if ( file_exists( $pro_plugin_file ) ) {
+			$plugin_data = get_plugin_data( $pro_plugin_file );
+		}
+
 
 		$localized_strings['calendar_first_day'] = 0;
-		if ( version_compare( $plugin_data['Version'], '11.0.0', '>=' ) ) {
+		if ( ! empty( $plugin_data['Version'] ) && version_compare( $plugin_data['Version'], '11.0.0', '>=' ) ) {
 			$localized_strings['calendar_first_day'] = apply_filters( 'wp_travel_calendar_first_day', 0 );
 		}
 		

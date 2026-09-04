@@ -80,7 +80,6 @@ final class WP_Session extends Recursive_ArrayAccess {
 			// Update the session expiration if we're past the variant time
 			if ( time() > $this->exp_variant ) {
 				$this->set_expiration();
-				// delete_option( "_wp_session_expires_{$this->session_id}" );
 				update_option( "_wp_session_expires_{$this->session_id}", $this->expires, '', 'no' );
 			}
 		} else {
@@ -116,7 +115,6 @@ final class WP_Session extends Recursive_ArrayAccess {
 	 */
 	protected function set_expiration() {
 		$this->exp_variant = time() + (int) apply_filters( 'wp_session_expiration_variant', 24 * 60 );
-		// $this->expires     = time() + (int) apply_filters( 'wp_session_expiration', 120 * 60 );
 		$this->expires     = time() + (int) apply_filters( 'wp_session_expiration', 24 * 60 * 60 ); 
 	}
 
@@ -200,7 +198,6 @@ final class WP_Session extends Recursive_ArrayAccess {
 			update_option( "_wp_session_{$this->session_id}", $this->container, '', 'no' );
 			update_option( "_wp_session_expires_{$this->session_id}", $this->expires, '', 'no' );
 		} else {
-			// delete_option( "_wp_session_{$this->session_id}" );
 			update_option( "_wp_session_{$this->session_id}", $this->container, '', 'no' );
 		}
 	}

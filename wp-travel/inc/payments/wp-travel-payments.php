@@ -462,8 +462,6 @@ function wptravel_send_email_payment( $booking_id ) {
 		$customer_gender = get_post_meta( $booking_id, 'wp_travel_gender_traveller', true )[array_key_first( get_post_meta( $booking_id, 'wp_travel_gender_traveller', true ))][0];
 	}
 
-	// $customer_gender   = isset( get_post_meta( $booking_id, 'order_data', true )['wp_travel_gender_traveller'] ) ? get_post_meta( $booking_id, 'order_data', true )['wp_travel_gender_traveller'][array_key_first( get_post_meta( $booking_id, 'order_data', true )['wp_travel_gender_traveller'])][0] : '';
-
 	if( apply_filters( 'wptravel_traveller_salutation', true ) ==  true ){
 		if( $customer_gender == 'male' ){
 			$salutation = __( 'Mr ', 'wp-travel' );
@@ -642,7 +640,40 @@ function wptravel_payment_booking_message( $message ) {
 	if ( ! isset( $_GET['booking_id'] ) ) {
 		return $message;
 	}
+	
+
 	$booking_id = absint( $_GET['booking_id'] );
+
+	if ( 'itinerary-booking' !== get_post_type( $booking_id ) ) {
+		return $message;
+	}
+
+	$current_user = wp_get_current_user();
+
+
+	if ( ! $current_user->exists() ) {
+		return $message;
+	}
+
+	$traveller_data = get_post_meta( $booking_id, 'wp_travel_email_traveller', true );
+
+	$booking_email = '';
+
+	if ( is_array( $traveller_data ) ) {
+		$first_group = reset( $traveller_data );
+
+		if ( is_array( $first_group ) && isset( $first_group[0] ) ) {
+			$booking_email = sanitize_email( $first_group[0] );
+		}
+	}
+
+	$booking_email = strtolower( trim( $booking_email ) );
+
+
+	if ( $booking_email !== $current_user->user_email ) {
+		return $message;
+	}
+
 	if ( isset( $_GET['status'] ) && 'cancel' === $_GET['status'] ) {
 		update_post_meta( $booking_id, 'wp_travel_payment_status', 'canceled' );
 		$message = esc_html__( 'Your booking has been canceled', 'wp-travel' );

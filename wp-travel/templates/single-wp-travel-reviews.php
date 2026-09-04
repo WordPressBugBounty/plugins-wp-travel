@@ -138,7 +138,5 @@ if ( ! comments_open() ) {
 			</div>
 		</div>
 	</div>
-
-	<!-- <div class="clear"></div> -->
 </div>
 

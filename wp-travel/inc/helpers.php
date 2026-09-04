@@ -5178,13 +5178,11 @@ function wptravel_get_travellers_data( $booking_id ){
 
 add_action( 'admin_head', 'wp_travel_hide_add_new_button_for_post_type' );
 function wp_travel_hide_add_new_button_for_post_type() {
-    // $screen = get_current_screen();
-    
-    // if ( $screen->post_type === 'itinerary-enquiries' ) {
-        echo '<style>
-		.post-type-itinerary-enquiries .page-title-action { display: none !important; }
-		</style>';
-    // }
+
+	echo '<style>
+	.post-type-itinerary-enquiries .page-title-action { display: none !important; }
+	</style>';
+  
 }
 
 

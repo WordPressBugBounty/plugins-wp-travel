@@ -13,6 +13,12 @@ class WP_Travel_Admin_Dashboard_Widgets {
 	var $assets_path;
 
 	public function __construct() {
+
+		// global $pagenow;
+
+		// if ( 'index.php' !== $pagenow ) {
+		// 	return;
+		// }
 	
 		$this->assets_path = plugin_dir_url( WP_TRAVEL_PLUGIN_FILE );
 		add_action( 'wp_dashboard_setup', array( $this, 'add_widgets' ) );
@@ -41,10 +47,6 @@ class WP_Travel_Admin_Dashboard_Widgets {
 	}
 
 	public function enqueue_scripts() {
-
-	 	if ( ! current_user_can( 'edit_theme_options' ) ) {
-            return;
-        }
 
 		$screen = get_current_screen();
 
@@ -156,7 +158,7 @@ class WP_Travel_Admin_Dashboard_Widgets {
 		<div class="wptravel-dashboard-widget">
 			<div class="wptravel-dashboard-box">
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itinerary-booking' ) ); ?>" class="wptravel-dashboard-label">
-					<?php esc_html__( 'Total Confirmed Bookings', 'wp-travel' ); ?>
+					<?php echo esc_html__( 'Total Confirmed Bookings', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value">
 					<?php echo esc_html( $total_bookings ); ?>
@@ -164,19 +166,19 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<span class="wptravel-dashboard-label"><?php esc_html__( 'Total Earnings', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-label"><?php echo esc_html__( 'Total Earnings', 'wp-travel' ); ?></span>
 				<span class="wptravel-dashboard-value"><?php echo wptravel_get_formated_price_currency( $total_earnings, true ); ?></span>
 			</div>
 
 			<div class="wptravel-dashboard-box">
-				<span class="wptravel-dashboard-label"><?php esc_html__( 'Total Customers', 'wp-travel' ); ?></span>
+				<span class="wptravel-dashboard-label"><?php echo esc_html__( 'Total Customers', 'wp-travel' ); ?></span>
 				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_customer); ?></span>
 			</div>
 
 			<div class="wptravel-dashboard-box">
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itineraries' )); ?>" 
 				class="wptravel-dashboard-label">
-					<?php esc_html__( 'Published Trips', 'wp-travel' ); ?>
+					<?php echo esc_html__( 'Published Trips', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value">
 					<?php echo esc_html( $total_trips ); ?>
@@ -186,7 +188,7 @@ class WP_Travel_Admin_Dashboard_Widgets {
 			<div class="wptravel-dashboard-box">
 				<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=itinerary-booking&page=wp-travel-enquiry-settings' ) ); ?>" 
 				class="wptravel-dashboard-label">
-					<?php esc_html__( 'Total Enquiries', 'wp-travel' ); ?>
+					<?php echo esc_html__( 'Total Enquiries', 'wp-travel' ); ?>
 				</a>
 				<span class="wptravel-dashboard-value"><?php echo esc_html( $total_enquiry ); ?></span>
 			</div>
@@ -209,10 +211,8 @@ class WP_Travel_Admin_Dashboard_Widgets {
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'ID', 'wp-travel' ); ?></th>
-						<!-- <th><?php esc_html_e( 'Trip Code', 'wp-travel' ); ?></th> -->
 						<th><?php esc_html_e( 'Contact Name', 'wp-travel' ); ?></th>
 						<th><?php esc_html_e( 'Status', 'wp-travel' ); ?></th>
-						<!-- <th><?php esc_html_e( 'Payment', 'wp-travel' ); ?></th> -->
 						<th><?php esc_html_e( 'Date', 'wp-travel' ); ?></th>
 					</tr>
 			</thead>
@@ -289,10 +289,8 @@ class WP_Travel_Admin_Dashboard_Widgets {
 
 					<tr>
 						<td><a href="<?php echo esc_url( get_edit_post_link( $id ) ); ?>"><?php echo esc_html( $booking_id ); ?></a></td>
-						<!-- <td><?php echo esc_html( $trip_code ); ?></td> -->
 						<td><?php echo esc_html( $name ); ?></td>
 						<td><?php echo '<span class="wp-travel-status wp-travel-booking-status" style="color:#fff;padding:2px 5px;background: ' . esc_attr( $status[ $label_key ]['color'] ) . ' ">' . esc_attr( $status[ $label_key ]['text'] ) . '</span>'; ?></td>
-						<!-- <td><?php echo '<span class="wp-travel-status wp-travel-payment-status" style="color:#fff;padding:2px 5px;background: ' . esc_attr( $Pmt_status[ $pmt_label_key ]['color'], 'wp-travel' ) . ' ">' . esc_attr( $Pmt_status[ $pmt_label_key ]['text'], 'wp-travel' ) . '</span>'; ?></td> -->
 						<td><?php echo esc_html( $date ); ?></td>
 					</tr>
 

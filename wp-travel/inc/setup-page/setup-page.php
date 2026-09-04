@@ -7,7 +7,6 @@ class WP_Travel_Setup_Page {
 
 	public function __construct() {
 
-		// require_once ABSPATH . 'wp-includes/pluggable.php';
 		require_once ABSPATH . 'wp-admin/includes/theme.php';
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 

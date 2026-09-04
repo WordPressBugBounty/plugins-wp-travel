@@ -62,7 +62,6 @@ class WP_Travel_Widget_Featured extends WP_Widget {
 			'meta_value'       => 'yes',
 			'post_type'        => WP_TRAVEL_POST_TYPE,
 			'post_status'      => 'publish',
-			// 'suppress_filters' => true,
 		);
 
 		$itineraries = new WP_Query( $featured_args );

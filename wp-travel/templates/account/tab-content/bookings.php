@@ -33,13 +33,17 @@ if ( ! function_exists( 'wptravel_account_tab_content' ) ) {
 
 			$booking_id = isset( $request_data['detail_id'] ) ? absint( $request_data['detail_id'] ) : 0;
 
-			$user_id = absint(
-				get_post_meta( $booking_id, 'wp_travel_customer_user_id', true )
-			);
+			$traveller_data = get_post_meta( $booking_id, 'wp_travel_email_traveller', true );
 
-			$user = get_userdata( $user_id );
+			$booking_email = '';
 
-			$booking_email = strtolower( trim( $user->user_email ) );
+			if ( is_array( $traveller_data ) ) {
+				$first_group = reset( $traveller_data );
+
+				if ( is_array( $first_group ) && isset( $first_group[0] ) ) {
+					$booking_email = sanitize_email( $first_group[0] );
+				}
+			}
 
 			$current_user = wp_get_current_user();
 

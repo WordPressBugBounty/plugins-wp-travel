@@ -39,24 +39,29 @@ function wptravel_submit_bank_deposit_slip() {
 		return;
 	}
 
-	$user_id = absint(
-		get_post_meta( $booking_id, 'wp_travel_customer_user_id', true )
-	);
+	$current_user = wp_get_current_user();
 
-	$user = get_userdata( $user_id );
-
-
-	$booking_email = strtolower( trim( $user->user_email ) );
-	$payer_email   = strtolower(
-		trim(
-			sanitize_email( wp_unslash( $_POST['payment_email'] ?? '' ) )
-		)
-	);
-
-	if ( empty( $payer_email ) || $booking_email !== $payer_email ) {
+	if ( ! $current_user->exists() ) {
 		return;
 	}
-		
+
+	$traveller_data = get_post_meta( $booking_id, 'wp_travel_email_traveller', true );
+
+	$booking_email = '';
+
+	if ( is_array( $traveller_data ) ) {
+		$first_group = reset( $traveller_data );
+
+		if ( is_array( $first_group ) && isset( $first_group[0] ) ) {
+			$booking_email = sanitize_email( $first_group[0] );
+		}
+	}
+
+	$booking_email = strtolower( trim( $booking_email ) );
+
+	if ( $booking_email !== $current_user->user_email ) {
+		return;
+	}
 
 	if ( isset( $_POST['complete_partial_payment'] ) && isset( $_POST['wp_travel_payment_gateway'] ) && $_POST['wp_travel_payment_gateway'] == 'bank_deposit' ) { 
 

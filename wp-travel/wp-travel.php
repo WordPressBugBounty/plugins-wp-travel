@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 12.0.1
+ * Version: 12.0.2
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -39,7 +39,7 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 *
 		 * @var string
 		 */
-		public $version = '12.0.1';
+		public $version = '12.0.2';
 
 		/**
 		 * WP Travel API version.
@@ -473,8 +473,12 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			include sprintf( '%s/inc/template-functions.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/itinerary-v2-functions.php', WP_TRAVEL_ABSPATH );
 			
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
 
 			if ( ! is_plugin_active( 'wp-travel-standard-paypal/wp-travel-standard-paypal.php' ) ) {
+				
 				include_once sprintf(
 					'%s/inc/gateways/standard-paypal/class-wp-travel-gateway-paypal-request.php',
 					WP_TRAVEL_ABSPATH
@@ -1052,6 +1056,11 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 		 * Admin notice for request installation of wp-travel-slicewp-affiliate plugin
 		 */
 		public function wp_travel_slicewp_affiliate_install_notice() {
+			
+			if ( ! function_exists( 'is_plugin_active' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			
 			if ( is_plugin_active( 'slicewp/index.php' ) && ! is_plugin_active( 'wp-travel-slicewp-affiliate-addon/wp-travel-slicewp-affiliate-addon.php' ) ) {
 				echo '<div class="notice notice-warning is-dismissible"><h4>Check our <a href="https://wptravel.io/wp-travel-slicewp-affiliate-plugin/" style="text-decoration:none; color:red;" target="_blank" >WP Travel SliceWP Affiliate</a> plugin to know about new affiliate program feature and increase your booking.</h4></div>';
 			}

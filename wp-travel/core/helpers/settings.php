@@ -253,22 +253,6 @@ class WP_Travel_Helpers_Settings {
 
 		}
 
-		// if ( isset( $settings_data['global_tab_settings'] ) && is_array( $settings_data['global_tab_settings'] ) ) {
-
-		// 	$global_tabs = array();
-		// 	foreach ( $settings_data['global_tab_settings'] as  $global_tab ) {
-		// 		$tab_key                                 = $global_tab['tab_key']; // quick fix.
-		// 		$global_tabs[ $tab_key ]['label']        = $global_tab['label'];
-		// 		$global_tabs[ $tab_key ]['icon']        = $global_tab['icon'];
-		// 		$global_tabs[ $tab_key ]['icon']         = $global_tab['icon'];
-		// 		$global_tabs[ $tab_key ]['icon_img']         = $global_tab['icon_img'];
-		// 		$global_tabs[ $tab_key ]['icon_img_id']         = $global_tab['icon_img_id'];
-		// 		$global_tabs[ $tab_key ]['selected_icon_type']         = $global_tab['selected_icon_type'];
-		// 		$global_tabs[ $tab_key ]['show_in_menu'] = $global_tab['show_in_menu'];
-		// 	}
-		// 	$settings['global_tab_settings'] = $global_tabs;
-		// }
-
 		if ( isset( $settings_data['global_tab_settings'] ) && is_array( $settings_data['global_tab_settings'] ) ) {
 
 			$global_tabs = array();

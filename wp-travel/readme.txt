@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 12.0.1
+Stable tag: 12.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,17 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 12.0.2 =
+Release Date: 4th September 2026
+
+Fixes:
+* Fix: Unauthenticated arbitrary booking payment reset.
+* Fix: Authenticated (Subscriber+) booking payment-state tampering via IDOR.
+* Fix: Issue caused by is_plugin_active() when the plugin is network activated on multisite.
+* Fix: Issue caused by get_plugin_data() returning null, by adding a file_exists() check.
+
+Special thanks to Revanth Hari Narayana Matte for reporting the issue on the plugin.
 
 = 12.0.1 =
 Release Date: 19th August 2026

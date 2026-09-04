@@ -1707,6 +1707,8 @@
     );
 });
 
+
+
 jQuery(function ($) {
 
     if (typeof flatpickr === 'undefined') {
@@ -1777,11 +1779,6 @@ jQuery(function ($) {
      */
     const commonOptions = {
         dateFormat: _wp_travel_date_format.date_format,
-
-        minDate: '1900-01-01',
-
-        maxDate: '2200-12-31',
-
         locale: calendarLocale
     };
 
@@ -1791,7 +1788,7 @@ jQuery(function ($) {
     initFlatpickr(
         $('.wp-travel-datepicker, .date input'),
         {
-            ...commonOptions
+            ...commonOptions,
         }
     );
 
@@ -1817,9 +1814,7 @@ jQuery(function ($) {
         {
             ...commonOptions,
 
-            minDate: new Date(),
-
-            maxDate: '2200-12-31'
+            minDate: new Date()
         }
     );
 
@@ -1837,17 +1832,12 @@ jQuery(function ($) {
         }
     );
 
-    /*
-     * Trip duration.
-     */
+    
     initFlatpickr(
-        $('.wp-travel-trip-duration input'),
+        $(".wp-travel-trip-duration input"),
         {
             ...commonOptions,
-
-            minDate: '1900-01-01',
-
-            maxDate: '2200-12-31'
+            minDate: new Date()
         }
     );
 

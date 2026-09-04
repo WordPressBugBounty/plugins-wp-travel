@@ -97,6 +97,23 @@ if ( ! empty( $_POST['register'] ) && wp_verify_nonce( $nonce_value, 'wp-travel-
 						'access_type' => 'online',
 						'prompt' => 'select_account'
 					]);
+
+					 // Capture the current page (e.g. /wp-travel-dashboard/) and store it in a cookie
+					$return_to = home_url(add_query_arg(null, null));
+					$return_to = esc_url_raw($return_to);
+
+					setcookie(
+						'wp_travel_login_redirect',
+						$return_to,
+						[
+							'expires'  => time() + 300, // 5 minutes is plenty for an OAuth round trip
+							'path'     => '/',
+							'domain'   => '',           // current domain
+							'secure'   => is_ssl(),
+							'httponly' => true,
+							'samesite' => 'Lax',        // 'Lax' survives the top-level redirect back from Google
+						]
+					);
 				?>
 				<a class="google-login-btn" href="<?php echo esc_url($google_auth_url); ?>"><?php echo esc_html__( 'Login with Google', 'wp-travel' ); ?></a>
 				<?php endif; ?>

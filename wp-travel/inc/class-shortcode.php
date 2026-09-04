@@ -914,7 +914,17 @@ class Wp_Travel_Shortcodes {
 									<a class="<?php echo $booking_full == false ? 'book-active' : 'full-booked'; ?>" href="<?php echo esc_url( get_the_permalink( (int)$data->trip_id ) ); ?>">
 										<span class="trip-title"><?php echo esc_html( get_the_title( (int)$data->trip_id ) ); ?></span>
 										<span class="table-trip-metas">
-											<span class="date"> <?php echo esc_html( $date ); ?> </span>
+											
+											<span class="date"> 
+												<?php
+													echo esc_html(
+														wp_date(
+															get_option('date_format'),
+															strtotime($date)
+														)
+													);
+												?>
+											</span>
 											<?php if( !empty( $inventory_args ) ): ?>
 												<span class="pax"><?php echo sprintf("%d/%d %s", esc_html( $inventory_args['booked_pax']), esc_html( $inventory_args['pax_limit'] ), esc_html__( '( Pax )', 'wp-travel' ) ); ?></span> 
 											<?php endif; ?>

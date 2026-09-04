@@ -215,7 +215,7 @@ class WP_Travel_Demos_Lists {
         </script>
 
         <div id="wptravel-demo-lists-page">
-            <h1 class="wp-heading-inline">FSE Travel Site Demos</h1>
+            <h1 class="wp-heading-inline"><?php echo esc_html__( 'FSE Travel Site Demos', 'wp-travel' ); ?></h1>
             <hr class="wp-header-end">
 
             <div class="demo-grid">
@@ -236,11 +236,11 @@ class WP_Travel_Demos_Lists {
                                 class="button button-secondary wptravel-view-demo"
                                 data-demo-url="https://wpdemo.wensolutions.com/<?php echo esc_attr( $key ); ?>"
                                 data-demo-name="<?php echo esc_attr( $demo['demo_name'] ); ?>">
-                                View Demo
+                                <?php echo esc_html__( 'View Demo', 'wp-travel' ); ?>
                             </button>
 
                             <button class="wp-travel-theme-demo-import button button-primary" data-slug="<?php echo esc_attr( $key ); ?>">
-                                Import Demo
+                                <?php echo esc_html__( 'Import Demo', 'wp-travel' ); ?>
                             </button>
                         </div>
                     </div>
@@ -255,9 +255,9 @@ class WP_Travel_Demos_Lists {
                 <div class="modal-header">
                     <h2 class="modal-title"></h2>
                     <div class="view-buttons">
-                        <button class="view-btn" data-width="500">📱 Mobile</button>
-                        <button class="view-btn" data-width="768">🖥 Tablet</button>
-                        <button class="view-btn" data-width="1200">💻 Desktop</button>
+                        <button class="view-btn" data-width="500">📱 <?php echo esc_html__( 'Mobile', 'wp-travel' ); ?></button>
+                        <button class="view-btn" data-width="768">🖥 <?php echo esc_html__( 'Tablet', 'wp-travel' ); ?></button>
+                        <button class="view-btn" data-width="1200">💻 <?php echo esc_html__( 'Desktop', 'wp-travel' ); ?></button>
                     </div>
                     <button class="modal-close" aria-label="Close">&times;</button>
                 </div>
@@ -271,7 +271,7 @@ class WP_Travel_Demos_Lists {
                                 </path>
                             </g>
                         </svg>
-                        <p>Loading...</p>
+                        <p><?php echo esc_html__( 'Loading...', 'wp-travel' ); ?></p>
                     </div>
                     <iframe src="" frameborder="0"></iframe>
                 </div>
@@ -281,17 +281,17 @@ class WP_Travel_Demos_Lists {
 
         <div id="wptravel-import-modal">
             <div class="import-inner">
-                <h2>Importing Demo</h2>
+                <h2><?php echo esc_html__( 'Importing Demo', 'wp-travel' ); ?></h2>
 
                 <ul class="import-steps">
                     <li data-step="theme">
-                        Installing Theme <span class="step-loader">⏳</span>
+                        <?php echo esc_html__( 'Installing Theme', 'wp-travel' ); ?> <span class="step-loader">⏳</span>
                     </li>
-                    <li data-step="activate">Activating Theme <span>⏳</span></li>
-                    <li data-step="demo">Importing Demo - it may take 15-20 minutes<span>⏳</span></li>
+                    <li data-step="activate"><?php echo esc_html__( 'Activating Theme', 'wp-travel' ); ?> <span>⏳</span></li>
+                    <li data-step="demo"><?php echo esc_html__( 'Importing Demo - it may take 15-20 minutes', 'wp-travel' ); ?><span>⏳</span></li>
                 </ul>
 
-                <p class="import-done" style="display:none;">✅ Demo Imported Successfully</p>
+                <p class="import-done" style="display:none;">✅ <?php echo esc_html__( 'Demo Imported Successfully', 'wp-travel' ); ?></p>
             </div>
         </div>
 

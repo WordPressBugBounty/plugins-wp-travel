@@ -305,12 +305,12 @@ class WP_Travel_Ajax_Trips {
 	public static function wp_travel_inventory_checking() {
 
 	
-		$permission = WP_Travel::verify_nonce();
+		// $permission = WP_Travel::verify_nonce();
 
-		if ( ! $permission || is_wp_error( $permission ) ) {
-			WP_Travel_Helpers_REST_API::response( $permission );
-			exit;
-		}
+		// if ( ! $permission || is_wp_error( $permission ) ) {
+		// 	WP_Travel_Helpers_REST_API::response( $permission );
+		// 	exit;
+		// }
 
 		header( 'Content-Type: application/json' );
 		$json_str = file_get_contents( 'php://input' );
