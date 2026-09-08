@@ -1799,9 +1799,6 @@ jQuery(function ($) {
         $("[id^='wp-travel-date-of-birth-']"),
         {
             ...commonOptions,
-
-            minDate: '1900-01-01',
-
             maxDate: new Date()
         }
     );
