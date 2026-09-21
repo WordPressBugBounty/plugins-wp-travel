@@ -87,6 +87,8 @@ class WpTravel_Helpers_Strings {
 			'previous'                  => __( 'Previous', 'wp-travel' ),
 			'prices'                    => __( 'Prices', 'wp-travel' ),
 			'price_category'            => __( 'Price Category', 'wp-travel' ),
+			'age_limit'                 => __( 'Age Limit', 'wp-travel' ),
+			'age_limit_enable'          => apply_filters( 'wp_travel_age_limit_enable', false ),
 			'price_per'                 => __( 'Price Per', 'wp-travel' ),
 			'person'                    => __( 'Person', 'wp-travel' ),
 			'price'                     => __( 'Price', 'wp-travel' ),

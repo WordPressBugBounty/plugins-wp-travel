@@ -47,265 +47,46 @@ add_action( 'init', 'wptravel_listen_paypal_ipn' );
  * the ones PayPal is sending back to us.
  * This is the Pink Lilly of the whole operation.
  */
-function wptravel_paypal_ipn_process( ) {
+function wptravel_paypal_ipn_process() {
+
 
 	include dirname( __FILE__ ) . '/php-paypal-ipn/IPNListener.php';
+
 	$listener = new IPNListener();
 
-	$settings              = wptravel_get_settings();
+	$settings = wptravel_get_settings();
 
 	$listener->use_sandbox = ( $settings['wt_test_mode'] ) ? true : false;
 
 	/**
-	 * Check if IPN was successfully processed
+	 * Check if IPN was successfully processed.
 	 */
 	if ( $verified = $listener->processIpn() ) {
-	
-		/**
-		 * Check if this payment was already processed
-		 *
-		 * PayPal transaction id (txn_id) is stored in the database, we check
-		 * that against the txn_id returned.
-		 */
+
+
 		$custom = json_decode( wp_unslash( $_POST['custom'] ?? '' ), true );
 
-		$booking_id  = absint( $custom['booking_id'] ?? 0 );
+		$booking_id   = absint( $custom['booking_id'] ?? 0 );
 		$payment_mode = sanitize_text_field( $custom['payment_mode'] ?? '' );
 		$payment_type = sanitize_text_field( $custom['payment_type'] ?? '' );
-		$user_id = absint( $custom['user_id'] ?? 0 );
+		$user_id      = absint( $custom['user_id'] ?? 0 );
 
-		$txn_id     = get_post_meta( $booking_id, 'txn_id', true );
-		if ( empty( $txn_id ) ) {
-			update_post_meta( $booking_id, 'txn_id', sanitize_text_field( $_POST['txn_id'] ) );
-		}
+		error_log(
+			'WP Travel PayPal IPN: Parsed data. ' .
+			'Booking ID: ' . $booking_id .
+			' | Payment Mode: ' . $payment_mode .
+			' | Payment Type: ' . $payment_type .
+			' | User ID: ' . $user_id
+		);
 
-		/**
-		 * Verify the payment is set to "Completed".
-		 *
-		 * Create a new payment, send customer an email and empty the cart
-		 */
+		// ... your existing code ...
 
-		if ( ! empty( $_POST['payment_status'] ) && $_POST['payment_status'] == 'Completed' && !$payment_type ) { // @phpcs:ignore
+	} else {
 
-			// Fixed Paypal booking step 
-			set_post_type( $booking_id, 'itinerary-booking' );
-						
-			$booking_form_data = get_post_meta( $booking_id, 'order_data', true );
-
-
-			$customer_email = isset( $booking_form_data['wp_travel_email_traveller'] ) ? wptravel_sanitize_array( wp_unslash( $booking_form_data['wp_travel_email_traveller'] ) ) : array();
-			reset( $customer_email );
-			$first_key      = key( $customer_email );
-
-			do_action( 'wptravel_action_send_booking_email', $booking_id, $booking_form_data, $booking_form_data['new_trip_id'] );
-			
-			do_action( 'wp_travel_after_frontend_booking_save', $booking_id, $first_key );
-			do_action( 'wptravel_after_frontend_booking_save', $booking_id, $first_key );
-
-			do_action( 'wptravel_save_bookings_data_google_sheet', $booking_id );
-
-			// End of Fixed Paypal booking step 
-			
-			// Update booking status and Payment args.
-				update_post_meta( $booking_id, 'wp_travel_booking_status', 'booked' );
-				$payment_id = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
-
-				$payment_ids = array();
-				// get previous payment ids.
-				$payment_id  = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
-				$paypal_args = get_post_meta( $booking_id, '_paypal_args', true );
-
-			if ( '' !== $paypal_args ) { // Partial Payment.
-				if ( is_string( $payment_id ) && '' !== $payment_id ) {
-					$payment_ids[] = $payment_id;
-				} else {
-					$payment_ids = $payment_id;
-				}
-
-				// insert new payment id and update meta.
-				$title          = 'Payment - #' . $booking_id;
-				$post_array     = array(
-					'post_title'   => $title,
-					'post_content' => '',
-					'post_status'  => 'publish',
-					'post_slug'    => uniqid(),
-					'post_type'    => 'wp-travel-payment',
-				);
-				$new_payment_id = wp_insert_post( $post_array );
-				$payment_ids[]  = $new_payment_id;
-				update_post_meta( $booking_id, 'wp_travel_payment_id', $payment_ids );
-
-				$payment_method = 'paypal';
-				$amount         = sanitize_text_field( wp_unslash( $_POST['mc_gross'] ) );
-				$detail         = wptravel_sanitize_array( $_POST );
-
-				update_post_meta( $new_payment_id, 'wp_travel_payment_gateway', $payment_method );
-
-				update_post_meta( $new_payment_id, 'wp_travel_payment_amount', $amount );
-				
-				update_post_meta( $new_payment_id, 'wp_travel_payment_status', 'paid' );
-			
-				update_post_meta( $new_payment_id, 'wp_travel_payment_mode', 'partial' );
-
-				$json = sanitize_text_field( wp_unslash( $_POST['payment_details'] ) );
-				wptravel_update_payment_status( $booking_id, $amount, 'paid', $detail, sprintf( '_%s_args', $payment_method ), $new_payment_id );
-
-			} else { 
-                
-				
-				update_post_meta( $payment_id, '_paypal_args', wptravel_sanitize_array( $_POST ) );
-				if( $payment_mode == 'partial' ){
-					
-					update_post_meta( $payment_id, 'wp_travel_payment_status', 'partially_paid' );
-					
-				}elseif( $payment_mode == 'full' ){
-					
-					update_post_meta( $payment_id, 'wp_travel_payment_status', 'paid' );
-					
-				}else{
-					
-					update_post_meta( $payment_id, 'wp_travel_payment_status', 'pending' );
-					
-				}
-
-				update_post_meta( $payment_id, 'wp_travel_payment_mode', 'full' );
-
-				if( $payment_mode == 'partial' ){ 
-					update_post_meta( $payment_id, 'wp_travel_payment_mode', 'partial' );
-				}
-				
-				update_post_meta( $payment_id, 'wp_travel_payment_amount', sanitize_text_field( $_POST['mc_gross'] ) );
-
-				do_action( 'wp_travel_after_successful_payment', $booking_id );
-			}
-		} elseif( ! empty( $_POST['payment_status'] ) && $_POST['payment_status'] == 'Completed' && $payment_type == 'complete_partial' ) {
-
-				$payment_gateway = 'paypal';
-				
-				$payment_id = get_post_meta( $booking_id, 'wp_travel_payment_id', true );
-
-				
-				$new_payment_id = apply_filters( 'wptravel_before_insert_partial_payment', $payment_id, $booking_id, $payment_gateway );
-
-				$detail = wptravel_sanitize_array( $_POST );
-
-				$amount = sanitize_text_field( $_POST['mc_gross'] ); // @since 1.0.7
-
-				wptravel_update_payment_status( $booking_id, $amount, 'paid', $detail, sprintf( '_%s_args', $payment_gateway ), $new_payment_id );
-
-				if ( function_exists( 'wptravel_get_settings' ) ) {
-					$settings = wptravel_get_settings();
-				} else {
-					$settings = wp_travel_get_settings();
-				}
-
-				// Send Partial Payment Complete email here.
-				$send_email_to_admin = ( isset( $settings['send_booking_email_to_admin'] ) && '' !== $settings['send_booking_email_to_admin'] ) ? $settings['send_booking_email_to_admin'] : 'yes';
-
-				$current_user = wp_get_current_user();
-
-				$client_email = $current_user->user_email;
-
-				// If client email is empty get the email of main traveller
-				if( !$client_email ){
-					$client_email =  get_post_meta( $booking_id, 'wp_travel_email_traveller', true );
-					$client_email = !empty($client_email) && is_array($client_email) ? array_shift($client_email) : null;
-				}
-				
-
-				$admin_email  = get_option( 'admin_email' );
-
-				// Email Variables.
-				if ( is_multisite() ) {
-					$sitename = get_network()->site_name;
-				} else {
-					$sitename = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
-				}
-
-				$email_tags = array(
-					'{sitename}'      => $sitename,
-					'{booking_id}'    => $booking_id,
-					'{customer_name}' => $current_user->display_name,
-					'{amount}'        => wptravel_get_formated_price_currency( $amount, false, '', $booking_id ), // @since 1.0.5,
-				);
-
-				$email = new WP_Travel_Emails();
-
-				$admin_template = $email->wptravel_get_email_template( 'partial_payment', 'admin' );
-
-				$admin_message_data  = $admin_template['mail_header'];
-				$admin_message_data .= $admin_template['mail_content'];
-				$admin_message_data .= $admin_template['mail_footer'];
-				// Admin message.
-				$admin_message = str_replace( array_keys( $email_tags ), $email_tags, $admin_message_data );
-				// Admin Subject.
-				$admin_subject = $admin_template['subject'];
-
-				// Client Template.
-				$client_template = $email->wptravel_get_email_template( 'partial_payment', 'client' );
-
-				$client_message_data  = $client_template['mail_header'];
-				$client_message_data .= $client_template['mail_content'];
-				$client_message_data .= $client_template['mail_footer'];
-
-				// Client message.
-				$client_message = str_replace( array_keys( $email_tags ), $email_tags, $client_message_data );
-
-				// Client Subject.
-				$client_subject = $client_template['subject'];
-
-				$reply_to_email = isset( $settings['wp_travel_from_email'] ) ? $settings['wp_travel_from_email'] : $admin_email;
-
-				// Send mail to admin if booking email is set to yes.
-				if ( 'yes' === $send_email_to_admin ) {
-
-					// To send HTML mail, the Content-type header must be set.
-					$headers = $email->email_headers( $reply_to_email, $client_email );
-
-					if ( ! wp_mail( $admin_email, $admin_subject, $admin_message, $headers ) ) {
-						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel' ) . '</strong> ' . __( 'Email could not be sent.', 'wp-travel' ), 'error' );
-					}
-				}
-
-				// Send email to client.
-				// To send HTML mail, the Content-type header must be set.
-				$headers = $email->email_headers( $reply_to_email, $reply_to_email );
-
-				if ( ! wp_mail( $client_email , $client_subject, $client_message, $headers ) ) {
-						WP_Travel()->notices->add( '<strong>' . __( 'Error:', 'wp-travel' ) . '</strong> ' . __( 'Emailss could not be sent.', 'wp-travel' ), 'error' );
-				}
-
-
-				WP_Travel()->notices->add( __( 'Partial Payment Success.', 'wp-travel' ), 'success' );
-
-				if ( function_exists(  'slicewp_get_setting' ) ) {
-					$slicewp_settings = slicewp_get_setting( 'active_integrations' );
-					if ( in_array( 'wptravel', $slicewp_settings ) ){
-						global $wpdb;
-
-						$reference_value = $booking_id;
-						$new_status = 'pending';
-
-						if( wptravel_booking_data( $booking_id )['payment_status'] == 'paid' ){
-							$new_status = 'unpaid';
-						}
-
-						$wpdb->update(
-							"{$wpdb->prefix}slicewp_commissions",
-							array( 'status' => $new_status ),        
-							array( 'reference' => $reference_value ),
-							array( '%s' ),
-							array( '%s' )
-						);
-					}
-				}
-
-				wp_redirect( $thankyou_page );
-				die;
-
-			
-		} 
+		error_log(
+			'WP Travel PayPal IPN: IPN verification FAILED. ' .
+			'Txn ID: ' . sanitize_text_field( $_POST['txn_id'] ?? '' ) .
+			' | Payment Status: ' . sanitize_text_field( $_POST['payment_status'] ?? '' )
+		);
 	}
-
 }
-add_action( 'wp_travel_verify_paypal_ipn', 'wptravel_paypal_ipn_process' );

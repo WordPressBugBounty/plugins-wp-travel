@@ -5123,6 +5123,8 @@ function wt_add_custom_link_column() {
         return;
     }
 
+	
+
     // Add custom_link column if not exists
     $column_exists = $wpdb->get_results(
         $wpdb->prepare(
@@ -5146,9 +5148,52 @@ function wt_add_custom_link_column() {
     if (empty($column_status_exists)) {
         $wpdb->query("ALTER TABLE $table_name ADD booking_status VARCHAR(50) DEFAULT NULL;");
     }
+	
 }
 
 wt_add_custom_link_column();
+
+function wt_update_age_limit_column() {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'wt_price_category_relation';
+
+    // Check if table exists
+    $table_exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW TABLES LIKE %s",
+            $table_name
+        )
+    );
+
+    if ($table_exists !== $table_name) {
+        return;
+    }
+
+    // Check if age_limit column exists
+    $column_exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SHOW COLUMNS FROM `$table_name` LIKE %s",
+            'age_limit'
+        )
+    );
+
+    if ($column_exists) {
+        // Change existing column to VARCHAR
+        $wpdb->query(
+            "ALTER TABLE `$table_name`
+             MODIFY COLUMN `age_limit` VARCHAR(60) DEFAULT '' NULL"
+        );
+    } else {
+        // Add column if it doesn't exist
+        $wpdb->query(
+            "ALTER TABLE `$table_name`
+             ADD COLUMN `age_limit` VARCHAR(60) DEFAULT '' NULL"
+        );
+    }
+}
+
+wt_update_age_limit_column();
 
 
 function wptravel_get_travellers_data( $booking_id ){

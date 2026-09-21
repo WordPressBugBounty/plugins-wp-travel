@@ -70,9 +70,9 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 				continue;
 			}
 
-			$regular_price 			= $result->regular_price;
-			$sale_price    			= $result->sale_price;
-			$sale_percentage_val    = $result->sale_percentage_val;
+			$regular_price 			= $result->regular_price ?? 0;
+			$sale_price    			= $result->sale_price ?? 0;
+			$sale_percentage_val    = $result->sale_percentage_val ?? 0;
 
 			$group_prices     = ! empty( $result->group_prices ) ? maybe_unserialize( $result->group_prices ) : array();
 			$new_group_prices = $group_prices;
@@ -85,14 +85,15 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 			}
 
 			$categories[ $index ]['id']              = $pricing_category_id;
-			$categories[ $index ]['price_per']       = $result->price_per;
-			$categories[ $index ]['regular_price']   = $regular_price;
+			$categories[ $index ]['price_per']       = $result->price_per ?? '';
+			$categories[ $index ]['regular_price']   = $regular_price ?? 0;
 			$categories[ $index ]['is_sale']         = ! empty( $result->is_sale ) ? true : false;
 			$categories[ $index ]['is_sale_percentage']         = ! empty( $result->is_sale_percentage ) ? true : false;
-			$categories[ $index ]['sale_percentage_val']   = $sale_percentage_val;
-			$categories[ $index ]['sale_price']      = $sale_price;
+			$categories[ $index ]['sale_percentage_val']   = $sale_percentage_val ?? 0;
+			$categories[ $index ]['sale_price']      = $sale_price ?? 0;
 			$categories[ $index ]['has_group_price'] = ! empty( $result->has_group_price );
 			$categories[ $index ]['group_prices']    = $new_group_prices;
+			$categories[ $index ]['age_limit']    = $result->age_limit ?? '';;
 
 			if ( ! function_exists( 'wp_travel_group_discount_price' ) ) {
 				$categories[ $index ]['has_group_price'] = false;
@@ -221,6 +222,7 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 			$response = $wpdb->update(
 				$table,
 				array(
+					'age_limit'       => ! empty( $category['age_limit'] ) ? $category['age_limit'] : '',
 					'price_per'       => ! empty( $category['price_per'] ) ? $category['price_per'] : 'person',
 					'regular_price'   => ! empty( $category['regular_price'] ) ? $category['regular_price'] : 0,
 					'is_sale'         => ! empty( $category['is_sale'] ) ? absint( $category['is_sale'] ) : 0,
@@ -285,6 +287,7 @@ class WpTravel_Helpers_Trip_Pricing_Categories {
 			array(
 				'pricing_id'          => $pricing_id,
 				'pricing_category_id' => $category['id'],
+				'age_limit'       => ! empty( $category['age_limit'] ) ? $category['age_limit'] : '',
 				'price_per'           => ! empty( $category['price_per'] ) ? $category['price_per'] : 'person',
 				'regular_price'       => ! empty( $category['regular_price'] ) ? $category['regular_price'] : 0,
 				'is_sale'             => ! empty( $category['is_sale'] ) ? $category['is_sale'] : 0,

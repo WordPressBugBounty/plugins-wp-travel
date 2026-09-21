@@ -84,39 +84,7 @@ if ( ! empty( $_POST['register'] ) && wp_verify_nonce( $nonce_value, 'wp-travel-
 						</div>
 					</div>
 				<button  type="submit" name="login" value="<?php esc_attr_e( 'Login', 'wp-travel' ); ?>" ><?php esc_attr_e( 'Login', 'wp-travel' ); ?></button>
-				<?php 
-			
-				if( wptravel_get_settings()['enable_social_login'] == 'yes' ): ?>
-				<p style="font-size:18px">OR,</p>
-				<?php 
-					 $google_auth_url = "https://accounts.google.com/o/oauth2/v2/auth?" . http_build_query([
-						'client_id' => GOOGLE_CLIENT_ID,
-						'redirect_uri' => GOOGLE_REDIRECT_URI,
-						'response_type' => 'code',     
-						'scope' => 'email profile',
-						'access_type' => 'online',
-						'prompt' => 'select_account'
-					]);
-
-					 // Capture the current page (e.g. /wp-travel-dashboard/) and store it in a cookie
-					$return_to = home_url(add_query_arg(null, null));
-					$return_to = esc_url_raw($return_to);
-
-					setcookie(
-						'wp_travel_login_redirect',
-						$return_to,
-						[
-							'expires'  => time() + 300, // 5 minutes is plenty for an OAuth round trip
-							'path'     => '/',
-							'domain'   => '',           // current domain
-							'secure'   => is_ssl(),
-							'httponly' => true,
-							'samesite' => 'Lax',        // 'Lax' survives the top-level redirect back from Google
-						]
-					);
-				?>
-				<a class="google-login-btn" href="<?php echo esc_url($google_auth_url); ?>"><?php echo esc_html__( 'Login with Google', 'wp-travel' ); ?></a>
-				<?php endif; ?>
+				
 				<?php if ( 'yes' === $enable_my_account_customer_registration ) : ?>
 					<p class="message"><?php echo esc_html__( 'Not registered?', 'wp-travel' ); ?> <a href="#"><?php echo esc_html__( 'Create an account', 'wp-travel' ); ?></a></p>
 				<?php endif; ?>
