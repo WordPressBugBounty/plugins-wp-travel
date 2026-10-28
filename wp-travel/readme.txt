@@ -4,7 +4,7 @@ Tags: travel, tour-booking, travel-agency, tour-operator, travel-booking
 Requires at least: 6.0.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 12.0.4
+Stable tag: 12.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -426,6 +426,22 @@ WP Travel provides live support during standard business hours in the Nepal Time
 Before updating plugin please check ["our latest release notes"](#developers).
 
 == Changelog ==
+
+= 12.1.0 =
+Release Date: 28th October 2026
+
+Fixes:
+* Wrapped payment status texts with the translation-ready function.
+* Fixed a PHP warning logged during Quick Setup.
+* Fixed a PHP warning logged by the wptravel_submit_bank_deposit_slip action.
+
+Enhancements:
+* Added color options to the Coming Soon page settings.
+* Added a booking ownership check so users can only view bookings they own.
+* Reworked the logic for displaying pricing for a specific pricing category.
+* Updated pricing category logic so that when the configured pricing category is unavailable for a trip, the pricing form automatically falls back to another pricing category based on the configured pricing priority: Highest Price or Lowest Price.
+
+**For more details, please refer to our [release note](https://wptravel.io/wp-travel-plugin-v12-1-0-update-release-note).**
 
 = 12.0.4 =
 Release Date: 21st September 2026

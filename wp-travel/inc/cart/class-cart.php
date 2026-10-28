@@ -561,6 +561,10 @@ class WP_Travel_Cart {
 	 * @since 4.4.7
 	 */
 	public function clear_discount_values() {
+		// Give back the coupon slot reserved by this session, if any.
+		if ( ! empty( $this->discounts['coupon_id'] ) ) {
+			WPTravel()->coupon->release_reservation( $this->discounts['coupon_id'] );
+		}
 		$this->discounts = array();
 
 		$items = $this->getItems();

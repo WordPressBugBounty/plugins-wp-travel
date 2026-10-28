@@ -282,6 +282,19 @@ class WP_Travel_Helpers_Cart {
 			}
 			
 			global $wt_cart;
+
+			// Switching coupons: give back the slot held for the previous one.
+			$previous_discount = $wt_cart->get_discounts();
+			if ( ! empty( $previous_discount['coupon_id'] ) && absint( $previous_discount['coupon_id'] ) !== absint( $coupon_id ) ) {
+				WPTravel()->coupon->release_reservation( $previous_discount['coupon_id'] );
+			}
+
+			// Hold one use for this session so other sessions cannot take the same slot.
+			if ( ! WPTravel()->coupon->reserve_usage( $coupon_id ) ) {
+				$error = WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_COUPON_LIMIT_EXCEED' );
+				WP_Travel_Helpers_REST_API::response( $error );
+			}
+
 			$wt_cart->add_discount_values( $coupon_id, $discount_type, $discount_value, $coupon_code );
 			$cart = self::get_cart(); // 2nd assignment after deducting discount.
 

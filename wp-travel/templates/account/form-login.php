@@ -84,7 +84,10 @@ if ( ! empty( $_POST['register'] ) && wp_verify_nonce( $nonce_value, 'wp-travel-
 						</div>
 					</div>
 				<button  type="submit" name="login" value="<?php esc_attr_e( 'Login', 'wp-travel' ); ?>" ><?php esc_attr_e( 'Login', 'wp-travel' ); ?></button>
-				
+				<?php if ( wptravel_get_settings()['enable_social_login'] === 'yes' ) : ?>
+					<p style="font-size:18px">OR,</p>
+					<?php echo wp_travel_google_login_button(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside the function ?>
+				<?php endif; ?>
 				<?php if ( 'yes' === $enable_my_account_customer_registration ) : ?>
 					<p class="message"><?php echo esc_html__( 'Not registered?', 'wp-travel' ); ?> <a href="#"><?php echo esc_html__( 'Create an account', 'wp-travel' ); ?></a></p>
 				<?php endif; ?>

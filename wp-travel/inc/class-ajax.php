@@ -196,10 +196,7 @@ class WP_Travel_Ajax {
 				$trip_price = $price * $pax;
 			}
 
-			// Custom Trip Price.
-			if ( isset( $post_data['trip_price'] ) && $post_data['trip_price'] > 0 ) {
-				$trip_price = $post_data['trip_price'];
-			}
+
 			$attrs['trip'] = array(
 				"category-{$trip_id}" => array( // assigned category for single pricing to match data structure @since 3.0.0
 					'pax'           => $pax,
@@ -220,14 +217,6 @@ class WP_Travel_Ajax {
 			}
 		}
 
-		// Custom Trip Price.
-		if ( isset( $post_data['trip_price'] ) && $post_data['trip_price'] > 0 ) {
-			$trip_price = $post_data['trip_price'];
-			if ( wptravel_is_partial_payment_enabled() ) {
-				$percent            = WP_Travel_Helpers_Pricings::get_payout_percent( $trip_id );
-				$trip_price_partial = $trip_price * $percent / 100;
-			}
-		}
 
 		$attrs['enable_partial'] = wptravel_is_partial_payment_enabled();
 		if ( $attrs['enable_partial'] ) {

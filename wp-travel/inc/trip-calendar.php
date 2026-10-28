@@ -23,6 +23,7 @@ add_action( 'init', function () {
     );
 
     if ( version_compare( $plugin_data['Version'], '11.0.0', '>=' ) ) {
+        
         add_shortcode( 'wp_trip_calendar_view', 'wptravel_custom_calendar_shortcode' );
     } else {
         add_shortcode( 'wp_trip_calendar_view', 'wptravel_custom_calendar_shortcode_legacy' );
@@ -34,9 +35,12 @@ function wptravel_custom_calendar_shortcode($atts) {
 
     $atts = shortcode_atts([
         'layout' => 'one',
+        'popup' => 'disable',
+        'label' => 'Open Calendar',
     ], $atts);
 
     $layout = sanitize_text_field($atts['layout']);
+    $popup = sanitize_text_field($atts['popup']);
 
     if( $layout == 'one' ){
 
@@ -368,75 +372,377 @@ function wptravel_custom_calendar_shortcode($atts) {
         // 5) HTML output (added .trip-price)
         ob_start();
     ?>
-    <div id="wp-trip-calendar" style="max-width:100%; margin-bottom:20px;"></div>
-    <div id="wp-trip-modal" style="z-index: 9999; display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-        background:#fff; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:9999; max-width:420px; width:92%;">
-    <img class="trip-image" src="" alt="" style="width:100%; display:none;">
-    <h2 class="trip-title" style="font-size: 25px; margin: 10px 0 0;"></h2>
-    <div class="trip-rating"></div>
-    <p class="trip-pax" style="margin:0 0 6px;"></p>
-    <p class="trip-price" style="margin:0 0 12px;"></p>
-    <a class="trip-link" href="#" target="_blank" style="text-decoration:none;">
-        <button style="padding:8px 16px; background:#007bff; color:#fff; border:none; cursor:pointer; border-radius:6px;">
-        <?php echo esc_html__('View More', 'wp-travel'); ?>
+    <?php if( $popup == "enable" ): ?>
+        <button type="button" id="openCalendarPopup" class="calendar-popup-btn">
+            <?php echo esc_html( $atts['label'] ); ?>
         </button>
-    </a>
-    <button onclick="document.getElementById('wp-trip-modal').style.display='none'"
-            style="margin-left:10px; padding:8px 16px; background:#ccc; border:none; cursor:pointer; border-radius:6px;">
-        <?php echo esc_html__('Close', 'wp-travel'); ?>
-    </button>
-    </div>
+
+        <div id="calendarPopup" class="calendar-popup">
+            <div class="calendar-popup-content">
+
+                <button type="button" id="closeCalendarPopup" class="popup-close">
+                    &times;
+                </button>
+
+                <div id="wp-trip-calendar" style="max-width:100%; margin-bottom:20px;"></div>
+                
+            </div>
+        </div>
+        <div id="wp-trip-modal" style="z-index: 9999; display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+                    background:#fff; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:9999; max-width:420px; width:92%;">
+            <img class="trip-image" src="" alt="" style="width:100%; display:none;">
+            <h2 class="trip-title" style="font-size: 25px; margin: 10px 0 0;"></h2>
+            <div class="trip-rating"></div>
+            <p class="trip-pax" style="margin:0 0 6px;"></p>
+            <p class="trip-price" style="margin:0 0 12px;"></p>
+            <a class="trip-link" href="#" target="_blank" style="text-decoration:none;">
+                <button style="padding:8px 16px; background:#007bff; color:#fff; border:none; cursor:pointer; border-radius:6px;">
+                <?php echo esc_html__('View More', 'wp-travel'); ?>
+                </button>
+            </a>
+            <button onclick="document.getElementById('wp-trip-modal').style.display='none'"
+                    style="margin-left:10px; padding:8px 16px; background:#ccc; border:none; cursor:pointer; border-radius:6px;">
+                <?php echo esc_html__('Close', 'wp-travel'); ?>
+            </button>
+        </div>
+    <?php else: ?>
+        <div id="wp-trip-calendar" style="max-width:100%; margin-bottom:20px;"></div>
+        <div id="wp-trip-modal" style="z-index: 9999; display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+            background:#fff; padding:20px; box-shadow:0 2px 10px rgba(0,0,0,0.3); z-index:9999; max-width:420px; width:92%;">
+        <img class="trip-image" src="" alt="" style="width:100%; display:none;">
+        <h2 class="trip-title" style="font-size: 25px; margin: 10px 0 0;"></h2>
+        <div class="trip-rating"></div>
+        <p class="trip-pax" style="margin:0 0 6px;"></p>
+        <p class="trip-price" style="margin:0 0 12px;"></p>
+        <a class="trip-link" href="#" target="_blank" style="text-decoration:none;">
+            <button style="padding:8px 16px; background:#007bff; color:#fff; border:none; cursor:pointer; border-radius:6px;">
+            <?php echo esc_html__('View More', 'wp-travel'); ?>
+            </button>
+        </a>
+        <button onclick="document.getElementById('wp-trip-modal').style.display='none'"
+                style="margin-left:10px; padding:8px 16px; background:#ccc; border:none; cursor:pointer; border-radius:6px;">
+            <?php echo esc_html__('Close', 'wp-travel'); ?>
+        </button>
+        </div>
+    <?php endif; ?>
+    
     <style>
-        #wp-trip-calendar thead table {
-            margin-bottom: 0px;
-        }
-        
-        #wp-trip-calendar .fc-header-toolbar.fc-toolbar .fc-toolbar-chunk:last-child{
-            display: none;
-        }
-
-        #wp-trip-calendar.fc .fc-daygrid-day-top {
-            display: flex;
-            flex-direction: row;
+        /* Calendar sizing */
+        #wp-trip-calendar {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto 20px;
+            font-size: 13px;
+            box-sizing: border-box;
         }
 
-        #wp-trip-calendar .fc-header-toolbar .fc-button-group{
-            gap: 5px;
+        #wp-trip-calendar .fc-scrollgrid-sync-table{
+            height: 600px !important;
         }
 
-        #wp-trip-calendar th {
-            padding: 0;
-            background-color: var(--fc-button-bg-color);
-            height: 50px;
-            vertical-align: middle;   /* Ensures table-cell vertical alignment */
-            line-height: 50px;        /* Ensures text is centered even if vertical-align fails */
-            text-align: center;       /* Optional: centers text horizontally */
+        #wp-trip-calendar .fc-view-harness.fc-view-harness-active{
+            height: 640px !important;
         }
 
-        #wp-trip-calendar th a{
-            text-decoration: none;
-            color: #fff;
+        #wp-trip-calendar .fc-col-header {
+            margin-block-end: 0px;
         }
 
-        #wp-trip-calendar tbody .fc-daygrid-day-top a{
-            text-decoration: none;
+        .fc-scroller{
+            overflow: auto !important;
+        }
+
+
+        #wp-trip-calendar *,
+        .calendar-popup *,
+        #wp-trip-modal * {
+            box-sizing: border-box;
+        }
+
+        #wp-trip-calendar .fc-header-toolbar {
+            margin-bottom: 12px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        #wp-trip-calendar .fc-toolbar-title {
             font-size: 20px;
+            line-height: 1.3;
         }
 
-        .fc-daygrid-event-harness{
+        #wp-trip-calendar .fc-button {
+            padding: 5px 9px;
+            font-size: 12px;
+        }
+
+        #wp-trip-calendar .fc-button-group {
+            gap: 4px;
+        }
+
+        #wp-trip-calendar .fc-daygrid-day-frame {
+            min-height: 60px;
+        }
+
+        #wp-trip-calendar .fc-daygrid-day-top a {
+            padding: 3px;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        #wp-trip-calendar .fc-daygrid-event-harness {
             margin: 2px;
         }
 
-        #wp-trip-modal,
-        #wp-trip-modal img{
+        #wp-trip-calendar .fc-event {
+            padding: 1px 3px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        #wp-trip-calendar th {
+            height: 40px;
+            padding: 0;
+            text-align: center;
+            vertical-align: middle;
+            line-height: normal;
+            background-color: var(--fc-button-bg-color);
+        }
+
+        #wp-trip-calendar th a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* Optional: hide the last toolbar section, as in your original CSS. */
+        #wp-trip-calendar .fc-header-toolbar .fc-toolbar-chunk:last-child {
+            display: none;
+        }
+
+        /* Popup overlay */
+        .calendar-popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .calendar-popup.is-open {
+            display: flex;
+        }
+
+        .calendar-popup-content {
+            position: relative;
+            background: #ececec;
+            width: 100%;
+            max-width: 1050px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 45px 30px 25px;
+            border-radius: 8px;
+            margin: auto;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            z-index: 10;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border: 0;
+            border-radius: 4px;
+            background: #222;
+            color: #fff;
+            font-size: 27px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .calendar-popup-btn {
+            padding: 12px 24px;
+            background: #2271b1;
+            color: #fff;
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .calendar-popup-btn:hover {
+            background: #135e96;
+        }
+
+        /* Trip details modal */
+        .wp-trip-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.55);
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .wp-trip-modal.is-open {
+            display: flex;
+        }
+
+        .wp-trip-modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 22px;
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .wp-trip-modal .trip-image {
+            display: block;
+            width: 100%;
+            height: auto;
             border-radius: 6px;
         }
 
-        #wp-trip-modal .trip-rating{
-            color: #ff9200; 
+        .wp-trip-modal .trip-image[hidden] {
+            display: none;
         }
 
+        .wp-trip-modal .trip-title {
+            margin: 10px 0;
+            font-size: 25px;
+            line-height: 1.3;
+        }
+
+        .wp-trip-modal .trip-rating {
+            color: #ff9200;
+        }
+
+        .wp-trip-modal .trip-pax {
+            margin: 0 0 6px;
+        }
+
+        .wp-trip-modal .trip-price {
+            margin: 0 0 12px;
+        }
+
+        .wp-trip-modal .trip-link {
+            display: inline-block;
+            padding: 9px 16px;
+            border-radius: 6px;
+            background: #007bff;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .trip-modal-close {
+            display: block;
+            margin: 0 0 10px auto;
+            width: 32px;
+            height: 32px;
+            border: 0;
+            background: #eee;
+            border-radius: 4px;
+            font-size: 23px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 767px) {
+            .calendar-popup {
+                padding: 8px;
+            }
+
+            .calendar-popup-content {
+                max-height: 95vh;
+                padding: 45px 10px 15px;
+            }
+
+            #wp-trip-calendar {
+                font-size: 11px;
+            }
+
+            #wp-trip-calendar .fc-header-toolbar {
+                gap: 5px;
+            }
+
+            #wp-trip-calendar .fc-toolbar-title {
+                font-size: 16px;
+            }
+
+            #wp-trip-calendar .fc-button {
+                padding: 4px 6px;
+                font-size: 11px;
+            }
+
+            #wp-trip-calendar .fc-daygrid-day-frame {
+                min-height: 42px;
+            }
+
+            #wp-trip-calendar .fc-daygrid-day-top a {
+                padding: 2px;
+                font-size: 12px;
+            }
+
+            #wp-trip-calendar .fc-event {
+                font-size: 10px;
+            }
+
+            .wp-trip-modal-content {
+                padding: 15px;
+            }
+        }
     </style>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const popup = document.getElementById('calendarPopup');
+            const openBtn = document.getElementById('openCalendarPopup');
+            const closeBtn = document.getElementById('closeCalendarPopup');
+
+            if (!popup || !openBtn || !closeBtn) {
+                return;
+            }
+
+            function openPopup() {
+                popup.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+
+                document.querySelector('.fc-next-button')?.click();
+                document.querySelector('.fc-today-button')?.click();
+            }
+
+            function closePopup() {
+                popup.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+
+            openBtn.addEventListener('click', openPopup);
+            closeBtn.addEventListener('click', closePopup);
+
+            popup.addEventListener('click', function (event) {
+                if (event.target === popup) {
+                    closePopup();
+                }
+            });
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && popup.classList.contains('is-open')) {
+                    closePopup();
+                }
+            });
+        });
+        
+    </script>
     <?php
     return ob_get_clean();
     }elseif( $layout == 'two' ){
@@ -499,30 +805,124 @@ function wptravel_custom_calendar_shortcode($atts) {
 
         ob_start();
     ?>
-    <div class="wp-travel-cal-layout">
 
-        <div class="cal-sidebar">
-            <div class="year-nav">
-                <button id="prevYear">‹</button>
-                <span id="year"></span>
-                <button id="nextYear">›</button>
+    <?php if( $popup == "enable" ): ?>
+        <button type="button" id="openCalendarPopup" class="calendar-popup-btn">
+            <?php echo esc_html( $atts['label'] ); ?>
+        </button>
+
+        <div id="calendarPopup" class="calendar-popup">
+            <div class="calendar-popup-content">
+
+                <button type="button" id="closeCalendarPopup" class="popup-close">
+                    &times;
+                </button>
+
+                <div class="wp-travel-cal-layout">
+
+                    <div class="cal-sidebar">
+                        <div class="year-nav">
+                            <button id="prevYear" type="button">‹</button>
+                            <span id="year"></span>
+                            <button id="nextYear" type="button">›</button>
+                        </div>
+                        <ul id="monthList"></ul>
+                    </div>
+
+                    <div class="cal-main">
+                        <h2 id="monthTitle"></h2>
+                        <div class="cal-grid" id="calendar"></div>
+                    </div>
+
+                    <div class="cal-trips">
+                        <h3 id="tripDate">Select a date</h3>
+                        <div id="tripList"></div>
+                    </div>
+
+                </div>
+
             </div>
-            <ul id="monthList"></ul>
         </div>
+    <?php else: ?>
+        <div class="wp-travel-cal-layout">
 
-        <div class="cal-main">
-            <h2 id="monthTitle"></h2>
-            <div class="cal-grid" id="calendar"></div>
+            <div class="cal-sidebar">
+                <div class="year-nav">
+                    <button id="prevYear">‹</button>
+                    <span id="year"></span>
+                    <button id="nextYear">›</button>
+                </div>
+                <ul id="monthList"></ul>
+            </div>
+
+            <div class="cal-main">
+                <h2 id="monthTitle"></h2>
+                <div class="cal-grid" id="calendar"></div>
+            </div>
+
+            <div class="cal-trips">
+                <h3 id="tripDate">Select a date</h3>
+                <div id="tripList"></div>
+            </div>
+
         </div>
-
-        <div class="cal-trips">
-            <h3 id="tripDate">Select a date</h3>
-            <div id="tripList"></div>
-        </div>
-
-    </div>
+    <?php endif; ?>
+    
 
     <style>
+    .calendar-popup {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .calendar-popup.is-open {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calendar-popup-content {
+        position: relative;
+        background: #ececec;
+        width: 100%;
+        max-width: 1200px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 50px;
+        border-radius: 8px;
+        display: grid;
+    }
+
+    .popup-close {
+        position: absolute;
+        right: 0px;
+        z-index: 10;
+        border: 0;
+        background: #000;
+        font-size: 30px;
+        cursor: pointer;
+        line-height: 1;
+        width: 52px;
+    }
+
+    .calendar-popup-btn {
+        padding: 12px 24px;
+        background: #2271b1;
+        color: #fff;
+        border: 0;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .calendar-popup-btn:hover {
+        background: #135e96;
+    }
+
     .wp-travel-cal-layout {
         display: grid;
         grid-template-columns: 220px 1fr 350px;
@@ -670,12 +1070,18 @@ function wptravel_custom_calendar_shortcode($atts) {
         margin-bottom: -5px;
         color: #f4c542;
     }
+    
+
+    
+ 
 
     /* ===== RESPONSIVE CALENDAR ===== */
     @media (max-width: 1200px) {
         .wp-travel-cal-layout {
             grid-template-columns: 200px 1fr 300px;
         }
+
+        
 
         .wp-travel-cal-layout .cal-sidebar, .wp-travel-cal-layout .cal-main, .wp-travel-cal-layout .cal-trips {
             padding: 15px;
@@ -1157,6 +1563,41 @@ $calendar_day_names = apply_filters(
         renderMonths();
         renderCalendar();
 
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const popup = document.getElementById('calendarPopup');
+        const openBtn = document.getElementById('openCalendarPopup');
+        const closeBtn = document.getElementById('closeCalendarPopup');
+
+        if (!popup || !openBtn || !closeBtn) {
+            return;
+        }
+
+        function openPopup() {
+            popup.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePopup() {
+            popup.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        openBtn.addEventListener('click', openPopup);
+        closeBtn.addEventListener('click', closePopup);
+
+        popup.addEventListener('click', function (event) {
+            if (event.target === popup) {
+                closePopup();
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && popup.classList.contains('is-open')) {
+                closePopup();
+            }
+        });
     });
     </script>
 

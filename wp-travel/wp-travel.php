@@ -3,7 +3,7 @@
  * Plugin Name: WP Travel
  * Plugin URI: http://wptravel.io/
  * Description: The best choice for a Travel Agency, Tour Operator or Destination Management Company, wanting to manage packages more efficiently & increase sales.
- * Version: 12.0.4
+ * Version: 12.1.0
  * Author: WP Travel
  * Author URI: http://wptravel.io/
  * Requires at least: 6.0.0
@@ -509,12 +509,18 @@ if ( ! class_exists( 'WP_Travel' ) ) :
 			include sprintf( '%s/inc/widgets/class-wp-travel-search-filters-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/widgets/class-wp-travel-trip-enquiry-form-widget.php', WP_TRAVEL_ABSPATH );
 			include sprintf( '%s/inc/coming-soon.php', WP_TRAVEL_ABSPATH );
-			include sprintf( '%s/inc/social-login.php', WP_TRAVEL_ABSPATH );
+			include sprintf( '%s/inc/travel-guide/post-meta.php', WP_TRAVEL_ABSPATH );
+			include sprintf( '%s/inc/travel-guide/templates/template-handlers.php', WP_TRAVEL_ABSPATH );
+			include sprintf( '%s/inc/trip-reviews.php', WP_TRAVEL_ABSPATH );
+			
+			if( wptravel_get_settings()['enable_social_login'] == 'yes' ){
+				include sprintf( '%s/inc/social-login.php', WP_TRAVEL_ABSPATH );
+			}			
 
 			include sprintf( '%s/inc/trip-calendar.php', WP_TRAVEL_ABSPATH );
 
 			include sprintf( '%s/inc/trip-reminder-email.php', WP_TRAVEL_ABSPATH );
-
+					
 			/**
 			 * Include Query Classes.
 			 *

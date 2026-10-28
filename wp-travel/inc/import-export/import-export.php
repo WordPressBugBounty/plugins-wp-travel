@@ -37,7 +37,7 @@ class WP_Travel_Import_Export {
 
     // Check if the current user has permission
     public function check_permissions() {
-        return current_user_can( 'edit_others_posts' );
+        return current_user_can( 'manage_options' );
     }
 
     // Function to handle importing settings

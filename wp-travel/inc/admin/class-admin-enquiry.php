@@ -4,12 +4,21 @@ class WP_Travel_Admin_Enquiry {
 
 	// private static $post_type = 'itinerary-enquiries';
 
+	/**
+	 * Capability used to access itinerary enquiries.
+	 *
+	 * By default this requires manage_options.
+	 * Developers/site owners can grant access to another role
+	 * using the wp_travel_enquiry_capability filter.
+	 */
+	protected function get_enquiry_capability() {
+		return apply_filters( 'wp_travel_enquiry_capability', 'manage_options' );
+	}
+
 	public function __construct() {
 
 		// Hook into the submenu filter
 		add_filter( 'wp_travel_submenus', [ $this, 'add_enquiry_settings_submenu' ] );
-
-		add_action( 'admin_init', [ $this, 'conditionally_register_admin_ajax' ] );
 
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 			add_action( 'wp_ajax_get_itinerary_enquiries', [ $this, 'get_itinerary_enquiries_callback' ] );
@@ -17,13 +26,6 @@ class WP_Travel_Admin_Enquiry {
 			add_action( 'wp_ajax_wptravel_mark_enquiry_read', [ $this, 'handle_mark_enquiry_read' ] );
 		}
 		
-	}
-
-	public function conditionally_register_admin_ajax() {
-		if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'wp-travel-enquiry-settings' ) {
-			add_action( 'wp_ajax_get_itinerary_enquiries', [ $this, 'get_itinerary_enquiries_callback' ] );
-			add_action( 'wp_ajax_delete_itinerary_enquiry', [ $this, 'handle_delete_itinerary_enquiry' ] );
-		}
 	}
 
 	/**
@@ -85,6 +87,16 @@ class WP_Travel_Admin_Enquiry {
 	 * Renders the submenu page content.
 	 */
 	public static function render_enquiry_page() {
+
+		$capability = apply_filters( 'wp_travel_enquiry_capability', 'manage_options' );
+
+		if ( ! current_user_can( $capability ) ) {
+			wp_die(
+				esc_html__( 'You do not have permission to access this page.', 'wp-travel' ),
+				403
+			);
+		}
+
 		?>
 		<div id="wptravel-admin-enquiry-page">
 			
@@ -101,7 +113,9 @@ class WP_Travel_Admin_Enquiry {
 			exit;
 		}
 
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		$capability = $this->get_enquiry_capability();
+
+		if ( ! current_user_can( $capability ) ) {
 			wp_send_json_error( 'Unauthorized', 403 );
 			exit;
 		}
@@ -109,10 +123,13 @@ class WP_Travel_Admin_Enquiry {
 		$enquiry_id = absint( $_POST['enquiry_id'] ?? 0 );
 		if ( ! $enquiry_id || get_post_type( $enquiry_id ) !== 'itinerary-enquiries' ) {
 			wp_send_json_error( 'Invalid enquiry ID', 400 );
+			exit;
 		}
 
 		// Update post meta to 'Read'
 		update_post_meta( $enquiry_id, 'wp_travel_enquiry_status', 'Read' );
+
+		delete_transient( 'wp_travel_unread_enquiry_count' );
 
 		wp_send_json_success();
 	}
@@ -126,7 +143,9 @@ class WP_Travel_Admin_Enquiry {
 			exit;
 		}
 		
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		$capability = $this->get_enquiry_capability();
+
+		if ( ! current_user_can( $capability ) ) {
 			wp_send_json_error( 'Unauthorized', 403 );
 			exit;
 		}
@@ -198,23 +217,27 @@ class WP_Travel_Admin_Enquiry {
 			exit;
 		}
 		
-		if ( ! is_super_admin()  ) {
-			wp_send_json_error( __( 'Permission denied.', 'wp-travel' ) );
+		$capability = $this->get_enquiry_capability();
+
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error( __( 'Permission denied.', 'wp-travel' ), 403 );
 			exit;
 		}
 
 		$enquiry_id = absint( $_POST['enquiry_id'] ?? 0 );
 
 		if ( ! $enquiry_id || get_post_type( $enquiry_id ) !== 'itinerary-enquiries' ) {
-			wp_send_json_error( __( 'Invalid enquiry ID.', 'wp-travel' ) );
+			wp_send_json_error( __( 'Invalid enquiry ID.', 'wp-travel' ), 400 );
+			exit;
 		}
 
 		$deleted = wp_delete_post( $enquiry_id, true );
 
 		if ( $deleted ) {
+			delete_transient( 'wp_travel_unread_enquiry_count' );
 			wp_send_json_success();
 		} else {
-			wp_send_json_error( __( 'Could not delete enquiry.', 'wp-travel' ) );
+			wp_send_json_error( __( 'Could not delete enquiry.', 'wp-travel' ), 500 );
 		}
 	}
 }

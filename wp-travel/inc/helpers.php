@@ -1996,45 +1996,83 @@ if ( ! function_exists( 'wptravel_format_date' ) ) :
 	 * Format Date.
 	 */
 	function wptravel_format_date( $date, $localize = true, $base_date_format = '' ) {
+
 		if ( ! $date ) {
 			return;
 		}
+
 		$date_format = get_option( 'date_format' );
-		if ( ! $date_format ) :
+
+		if ( ! $date_format ) {
 			$date_format = 'jS M, Y';
-		endif;
+		}
 
-		$strtotime = $date;
+		// If the date is already Y-m-d, don't convert it through strtotime().
+		if ( 'Y-m-d' === $base_date_format || preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
 
-		if ( '' !== $base_date_format ) { // Fixes.
-			if ( 'Y-m-d' !== $base_date_format ) {
-				$date      = DateTime::createFromFormat( $base_date_format, $date );
-				$strtotime = date_format( $date, 'Y-m-d' );
+			$date_object = DateTime::createFromFormat( 'Y-m-d', $date );
+
+			if ( ! $date_object ) {
+				return;
 			}
+
+			if ( $localize ) {
+				$formatted_date = wp_date(
+					$date_format,
+					$date_object->getTimestamp(),
+					wp_timezone()
+				);
+			} else {
+				$formatted_date = $date_object->format( $date_format );
+			}
+
+			return esc_html( $formatted_date );
+		}
+
+		// Existing handling for other date formats.
+		if ( '' !== $base_date_format ) {
+
+			$date_object = DateTime::createFromFormat( $base_date_format, $date );
+
+			if ( ! $date_object ) {
+				return;
+			}
+
+			$date = $date_object->format( 'Y-m-d' );
+
 		} else {
 
 			if ( 'Y-m-d' !== $date_format ) {
-				$date = str_replace( '/', '-', $date );
-				$date = str_replace( '.', '-', $date );
 
-				$dashed_format = str_replace( '/', '-', $date_format );
-				$dashed_format = str_replace( '.', '-', $dashed_format );
-				$date          = DateTime::createFromFormat( $dashed_format, $date );
-				if ( $date && is_object( $date ) ) {
-					$strtotime = date_format( $date, 'Y-m-d' );
+				$date = str_replace( array( '/', '.' ), '-', $date );
+
+				$dashed_format = str_replace( array( '/', '.' ), '-', $date_format );
+
+				$date_object = DateTime::createFromFormat( $dashed_format, $date );
+
+				if ( $date_object ) {
+					$date = $date_object->format( 'Y-m-d' );
 				}
 			}
 		}
-		$strtotime = strtotime( stripslashes( $strtotime ) );
 
-		if ( $localize ) {
-			$formated_date = esc_html( date_i18n( $date_format, $strtotime ) );
-		} else {
-			$formated_date = esc_html( gmdate( $date_format, $strtotime ) );
+		$timestamp = strtotime( $date );
+
+		if ( false === $timestamp ) {
+			return;
 		}
 
-		return $formated_date;
+		if ( $localize ) {
+			$formatted_date = wp_date(
+				$date_format,
+				$timestamp,
+				wp_timezone()
+			);
+		} else {
+			$formatted_date = gmdate( $date_format, $timestamp );
+		}
 
+		return esc_html( $formatted_date );
 	}
 
 	/**

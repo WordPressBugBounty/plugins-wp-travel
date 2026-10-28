@@ -175,9 +175,12 @@ class WP_Travel_Ajax_Trips {
 			return WP_Travel_Helpers_Error_Codes::get_error( 'WP_TRAVEL_INVALID_NONCE' );
 		}
 
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'You have no access to this trip.', 401 );
+		if( apply_filters( 'wptravel_enable_trip_edit_access_editor', false ) == false ){
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( 'You have no access to this trip.', 401 );
+			}
 		}
+		
 
 		// Empty parameter.
 		if ( empty( $_REQUEST['trip_id'] ) ) {
